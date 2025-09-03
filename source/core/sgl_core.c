@@ -1,0 +1,1238 @@
+/* source/core/sgl_core.c
+ *
+ * MIT License
+ *
+ * Copyright(c) 2023-present All contributors of SGL  
+ * Li, Shanwen  (1477153217@qq.com)
+ * Document reference link: www.sgl-io.cn
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+#include <sgl_core.h>
+#include <sgl_math.h>
+#include <sgl_mm.h>
+#include <sgl_log.h>
+#include <string.h>
+#include <sgl_draw.h>
+#include <sgl_font.h>
+#include <sgl_draw_cg.h>
+
+
+#if CONFIG_SGL_USE_OBJ_ID
+static size_t obj_global_id = 0;
+#endif
+
+
+static struct {
+    sgl_page_t *page;
+    bool started;
+    sgl_area_t dirty;
+}current_ctx;
+
+
+/* the frame buffer device, its necessary */
+static sgl_device_fb_t sgl_device_fb = {
+    .xres = 0,
+    .yres = 0,
+    .xres_virtual = 0,
+    .yres_virtual = 0,
+    .framebuffer_size = 0,
+    .framebuffer = NULL,
+};
+
+
+/* the log output device for debug, its optional */
+static sgl_device_log_t sgl_device_log = {
+    .log_puts = NULL,
+};
+
+
+/**
+ * the memory pool, it will be used to allocate memory for the page pool
+*/
+static uint8_t sgl_mem_pool[CONFIG_SGL_HEAP_MEMORY_SIZE];
+
+
+/**
+ * @brief register the frame buffer device
+ * @param fb_dev the frame buffer device
+ * @return int, 0 if success, -1 if failed
+ */
+int sgl_device_fb_register(sgl_device_fb_t *fb_dev)
+{
+    sgl_check_ptr_return(fb_dev, -1);
+
+    if(fb_dev->framebuffer == NULL || fb_dev->flush_area == NULL) {
+        SGL_LOG_ERROR("framebuffer or flush_area is null");
+        return -1;
+    }
+
+    sgl_device_fb.framebuffer      = fb_dev->framebuffer;
+    sgl_device_fb.framebuffer_size = fb_dev->framebuffer_size;
+    sgl_device_fb.xres             = fb_dev->xres;
+    sgl_device_fb.yres             = fb_dev->yres;
+    sgl_device_fb.xres_virtual     = fb_dev->xres_virtual;
+    sgl_device_fb.yres_virtual     = fb_dev->yres_virtual;
+    sgl_device_fb.flush_area       = fb_dev->flush_area;
+
+    return 0;
+}
+
+
+/**
+ * @brief panel flush function
+ * @param x [in] x coordinate
+ * @param y [in] y coordinate
+ * @param w [in] width
+ * @param h [in] height
+ * @param src [in] source color
+ * @return none
+ */
+void sgl_panel_flush_area(int16_t x, int16_t y, int16_t w, int16_t h, sgl_color_t *src)
+{
+    sgl_device_fb.flush_area(x, y, w, h, src);
+}
+
+
+/**
+ * @brief get panel resolution width
+ * @param none
+ * @return panel resolution width
+ */
+int16_t sgl_panel_resolution_width(void)
+{
+    return sgl_device_fb.xres; 
+}
+
+
+/**
+ * @brief get panel resolution height
+ * @param none
+ * @return panel resolution height
+ */
+int16_t sgl_panel_resolution_height(void)
+{
+    return sgl_device_fb.yres; 
+}
+
+
+/**
+ * @brief get panel buffer address
+ * @param none
+ * @return panel buffer address
+ */
+void* sgl_panel_buffer_address(void)
+{
+    return sgl_device_fb.framebuffer;
+}
+
+
+/**
+ * @brief register log output device
+ * @param log_puts log output function
+ * @return none
+ */
+void sgl_device_log_register(void (*log_puts)(const char *str))
+{
+    sgl_device_log.log_puts = log_puts;
+}
+
+
+/**
+ * @brief log output function
+ * @param str log string
+ * @return none
+ */
+void sgl_log_stdout(const char *str)
+{
+    if(sgl_device_log.log_puts) {
+        sgl_device_log.log_puts(str);
+    }
+}
+
+
+/**
+ * @brief add object to parent
+ * @param parent: pointer of parent object
+ * @param obj: pointer of object
+ * @return none
+ */
+void sgl_obj_add_child(sgl_obj_t *parent, sgl_obj_t *obj)
+{
+    SGL_ASSERT(parent != NULL && obj != NULL);
+
+    sgl_obj_t *tail = NULL;
+
+    if(parent->child) {
+        tail = parent->child;
+        while(tail->sibling) {
+            tail = tail->sibling;
+        }
+        tail->sibling = obj;
+    }
+    else {
+        parent->child = obj;
+    }
+
+    obj->parent = parent;
+    obj->sibling = NULL;
+}
+
+
+/**
+ * @brief Add all objects to the page slot
+ * @param head The head of the object list
+ * @return none
+ */
+static void add_obj_to_page_slot(sgl_obj_t *head)
+{
+    SGL_ASSERT(head != NULL);
+    sgl_obj_t *child = NULL;
+
+    sgl_obj_for_each_child(child, head) {
+        /* update child's area */
+        if(!sgl_area_clip(&child->parent->area, &child->coords, &child->area)) {
+            sgl_obj_set_invalid(child);
+        }
+
+        sgl_obj_add_to_slot(current_ctx.page, child);
+
+        if(current_ctx.page->slot_count > SGL_OBJ_SLOT_SIZE) {
+            SGL_LOG_ERROR("too many objects in one page, max is %d", sgl_page_get_slot_count(current_ctx.page));
+            return;
+        }
+
+        /* if the object has child, add them to task list too */
+        if(sgl_obj_has_child(child)) {
+            add_obj_to_page_slot(child);
+        }
+    }
+}
+
+
+/**
+ * @brief remove an object from its parent
+ * @param obj object to remove
+ * @return none
+ */
+void sgl_obj_remove(sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL);
+
+    sgl_obj_t *parent = obj->parent;
+    sgl_obj_t *pos = NULL;
+
+    /* if the object is active, do not remove it */
+    if(obj == sgl_screen_act()) {
+        return;
+    }
+
+    if(parent->child != obj) {
+        pos = parent->child;
+        while(pos->sibling != obj) {
+            pos = pos->sibling;
+        }
+        pos->sibling = obj->sibling;
+    }
+    else {
+        parent->child = obj->sibling;
+    }
+
+    obj->sibling = NULL;
+}
+
+
+/**
+ * @brief  Set the object to be destroyed 
+ * @param  obj: the object to set
+ * @retval None
+ * @note this function is used to set the destroyed flag of the object, then next draw cycle, the object will be removed
+ */
+void sgl_obj_set_destroyed(sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL);
+    obj->destroyed = 1;
+    sgl_obj_t *child = NULL;
+
+    sgl_obj_for_each_child(child, obj) {
+        child->destroyed = 1;
+        if(sgl_obj_has_child(child)) {
+            sgl_obj_set_destroyed(child);
+        }
+    }
+}
+
+
+/**
+ * @brief Set object to dirty
+ * @param obj point to object
+ * @return none
+ * @note this function will set object to dirty, include its children
+ */
+void sgl_obj_set_dirty(sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL);
+    obj->dirty = 1;
+
+    sgl_obj_t *child = NULL;
+    sgl_obj_for_each_child(child, obj) {
+        /* set child to dirty */
+        child->dirty = 1;
+        /* if child has child, set child's child to dirty */
+        if(sgl_obj_has_child(child)) {
+            sgl_obj_set_dirty(child);
+        }
+    }
+}
+
+
+/**
+ * @brief move object position
+ * @param obj point to object
+ * @param x: x position
+ * @param y: y position
+ * @return none
+ */
+static void sgl_obj_move_pos(sgl_obj_t *obj, int16_t x, int16_t y)
+{
+    SGL_ASSERT(obj != NULL);
+    sgl_obj_t *child = NULL;
+    obj->needinit = 1;
+
+    obj->coords.x1 += x;
+    obj->coords.x2 += x;
+    obj->coords.y1 += y;
+    obj->coords.y2 += y;
+
+    sgl_obj_for_each_child(child, obj) {
+        sgl_obj_move_pos(child, x, y);
+    }
+}
+
+
+/**
+ * @brief Set object position
+ * @param obj point to object
+ * @param x: x position
+ * @param y: y position
+ * @return none
+ */
+void sgl_obj_set_pos(sgl_obj_t *obj, int16_t x, int16_t y)
+{
+    SGL_ASSERT(obj != NULL);
+    obj->needinit = 1;
+
+    int16_t x_inc = x - obj->coords.x1;
+    int16_t y_inc = y - obj->coords.y1;
+
+    sgl_obj_dirty_merge(obj);
+
+    if(obj->parent != NULL) {
+        obj->coords.x1 = obj->parent->coords.x1 + x;
+        obj->coords.y1 = obj->parent->coords.y1 + y;
+    }
+    else {
+        obj->coords.x1 = x;
+        obj->coords.y1 = y;
+    }
+
+    obj->coords.x2 = obj->coords.x2 + x_inc;
+    obj->coords.y2 = obj->coords.y2 + y_inc;
+
+    sgl_obj_t *child = NULL;
+    sgl_obj_for_each_child(child, obj) {
+        sgl_obj_move_pos(child, x_inc, y_inc);
+    }
+
+    sgl_obj_set_dirty(obj);
+}
+
+
+/**
+ * @brief get fix radius of object
+ * @param obj object
+ * @return fix radius
+ * @note if radius is larger than object's width or height, fix radius will be returned
+ */
+int16_t sgl_obj_fix_radius(sgl_obj_t *obj, size_t radius)
+{
+    int16_t w = (obj->coords.x2 - obj->coords.x1 + 1) / 2;
+    int16_t h = (obj->coords.y2 - obj->coords.y1 + 1) / 2;
+    int16_t r_min = w > h ? h : w;
+
+    if((int16_t)radius > r_min) {
+        radius = r_min;
+    }
+
+    obj->radius = radius & 0xFFF;
+    return radius;
+}
+
+
+/**
+ * @brief page construct callback function
+ * @param surf surface pointer
+ * @param obj page object
+ * @param evt event
+ * @return none
+ * @note evt not used
+ */
+static void sgl_page_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *evt)
+{
+    sgl_page_t *page = (sgl_page_t *)obj;
+    sgl_pixmap_t *pixmap = page->bg_img;
+
+    if(evt->type == SGL_EVENT_DRAW_MAIN) {
+        if(pixmap == NULL) {
+            sgl_draw_fill_rect(surf, &obj->area, &obj->coords, page->color);
+        }
+        else {
+            sgl_draw_fill_rect_pixmap(surf, &obj->area, &obj->coords, page->bg_img);
+        }
+    }
+}
+
+
+/**
+ * @brief set page style callback function
+ * @param[in] obj pointer to the object
+ * @param[in] style pointer to the style
+ * @param[in] value value of the style
+ * @return none
+ */
+void sgl_page_set_style(sgl_obj_t* obj, sgl_style_type_t type, size_t value)
+{
+    sgl_page_t* page = (sgl_page_t*)obj;
+
+    switch (type)
+    {
+    case SGL_STYLE_COLOR:
+        page->color = sgl_int2color(value);
+        break;
+    
+    case SGL_STYLE_PIXMAP:
+        page->bg_img = (sgl_pixmap_t*)value;
+        break;
+
+    default:
+        SGL_LOG_WARN("page: style type not supported");
+        break;
+    }
+}
+
+
+/**
+ * @brief set page style callback function
+ * @param[in] obj pointer to the object
+ * @param[in] type style type
+ * @return size_t, value of the style
+ */
+size_t sgl_page_get_style(sgl_obj_t* obj, sgl_style_type_t type)
+{
+    sgl_page_t* page = (sgl_page_t*)obj;
+
+    switch (type)
+    {
+    case SGL_STYLE_COLOR:
+        return sgl_color2int(page->color);
+
+    case SGL_STYLE_PIXMAP:
+        return (size_t)page->bg_img;
+
+    default:
+        SGL_LOG_WARN("page: style type not supported");
+        break;
+    }
+
+    return SGL_STYLE_FAILED;
+}
+
+
+/**
+ * @brief create a page
+ * @param none
+ * @return sgl_page_t* the page pointer
+ */
+static sgl_page_t* sgl_page_create(void)
+{
+    sgl_page_t *page = sgl_malloc(sizeof(sgl_page_t));
+    if(page == NULL) {
+        SGL_LOG_ERROR("sgl_page_create: malloc failed");
+        return NULL;
+    }
+
+    /* clear the page all fields */
+    memset(page, 0, sizeof(sgl_page_t));
+
+    sgl_obj_t *obj = &page->obj;
+
+    if(sgl_device_fb.framebuffer == NULL)  {
+        SGL_LOG_ERROR("sgl_page_create: framebuffer is NULL");
+        sgl_free(page);
+        return NULL;
+    }
+
+    page->surf.buffer = (sgl_color_t*)sgl_device_fb.framebuffer;
+    page->surf.x = 0;
+    page->surf.y = 0;
+    page->surf.w = sgl_device_fb.xres;
+    page->surf.h = sgl_device_fb.framebuffer_size / (sgl_device_fb.xres * sizeof(sgl_color_t));
+    page->surf.h_max = sgl_device_fb.yres;
+    page->surf.pitch = sgl_device_fb.xres_virtual;
+    page->color = SGL_WHITE;
+
+    obj->parent = obj;
+    obj->clickable = 1;
+    obj->construct_fn = sgl_page_construct_cb;
+#if CONFIG_SGL_USE_STYLE_UNIFIED_API
+    obj->set_style = sgl_page_set_style;
+    obj->get_style = sgl_page_get_style;
+#endif
+    obj->dirty = 1;
+    obj->coords = (sgl_area_t){
+        .x1 = 0,
+        .y1 = 0,
+        .x2 = sgl_device_fb.xres,
+        .y2 = sgl_device_fb.yres,
+    };
+
+    obj->area = obj->coords;
+
+#if CONFIG_SGL_USE_OBJ_ID
+    obj->id = obj_global_id;
+    obj_global_id ++;
+#endif
+
+    /* init child list */
+    sgl_obj_node_init(&page->obj);
+
+    /* init slot list */
+    sgl_page_slot_init(page);
+
+    if(current_ctx.page == NULL) {
+        current_ctx.page = page;
+    }
+
+    return page;
+}
+
+
+/**
+ * @brief Create an object
+ * @param parent parent object
+ * @return sgl_obj_t
+ * @note if parent is NULL, the object will be as an new page
+ */
+sgl_obj_t* sgl_obj_create(sgl_obj_t *parent)
+{
+    sgl_obj_t *obj;
+
+    /* create page object */
+    if(parent == NULL) {
+        sgl_page_t *page = sgl_page_create();
+        if(page == NULL) {
+            SGL_LOG_ERROR("sgl_obj_create: create page failed");
+            return NULL;
+        }
+        obj = &page->obj;
+        return obj;
+    }
+    else {
+        obj = (sgl_obj_t*)sgl_malloc(sizeof(sgl_obj_t));
+        if(obj == NULL) {
+            SGL_LOG_ERROR("malloc failed");
+            return NULL;
+        }
+
+        obj->coords = parent->coords;
+        obj->parent = parent;
+        obj->event_fn = NULL;
+        obj->event_data = 0;
+        obj->construct_fn = NULL;
+        obj->dirty = 1;
+
+        /* init node */
+        sgl_obj_node_init(obj);
+        /* add the child into parent's child list */
+        sgl_obj_add_child(parent, obj);
+
+        return obj;
+    }
+}
+
+
+/**
+ * @brief set current object as screen object
+ * @param obj object, that you want to set an object as active page
+ * @return none
+ */
+void sgl_screen_load(sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL);
+    current_ctx.page = (sgl_page_t*)obj;
+    current_ctx.started = false;
+
+    /* initialize dirty area */
+    sgl_area_init(&current_ctx.dirty);
+}
+
+
+/**
+ * @brief get current screen object
+ * @param none
+ * @return active current screen object
+ */
+sgl_obj_t* sgl_screen_act(void)
+{
+    if(current_ctx.page == NULL) {
+        /* if no page is active, create a new one */
+        return sgl_obj_create(NULL);
+    }
+    return &current_ctx.page->obj;
+}
+
+
+/**
+ * @brief get active page
+ * @param none
+ * @return page: active page
+ */
+sgl_page_t* sgl_page_get_active(void)
+{
+    return current_ctx.page;
+}
+
+
+/**
+ * @brief color mixer
+ * @param fg_color : foreground color
+ * @param bg_color : background color
+ * @param factor   : color mixer factor
+ * @return sgl_color_t: mixed color
+ */
+sgl_color_t sgl_color_mixer(sgl_color_t fg_color, sgl_color_t bg_color, uint8_t factor)
+{
+    sgl_color_t ret;
+#if (CONFIG_SGL_PANEL_PIXEL_DEPTH == 8)
+
+    ret.ch.red   = bg_color.ch.red + ((fg_color.ch.red - bg_color.ch.red) * (factor >> 5) >> 3);
+    ret.ch.green = bg_color.ch.green + ((fg_color.ch.green - bg_color.ch.green) * (factor >> 5) >> 3);
+    ret.ch.blue  = bg_color.ch.blue + ((fg_color.ch.blue - bg_color.ch.blue) * (factor >>6) >> 2);
+
+#elif (CONFIG_SGL_PANEL_PIXEL_DEPTH == 16)
+
+#if CONFIG_SGL_COLOR16_SWAP
+    uint16_t fgc = (fg_color.full >> 8) | (fg_color.full & 0xFF) << 8;
+    uint16_t bgc = (bg_color.full >> 8) | (bg_color.full & 0xFF) << 8;
+    uint32_t rxb = bgc & 0xF81F;
+    rxb += ((fgc & 0xF81F) - rxb) * (factor >> 2) >> 6;
+    uint32_t xgx = bgc & 0x07E0;
+    xgx += ((fgc & 0x07E0) - xgx) * factor >> 8;
+    ret.full = (rxb & 0xF81F) | (xgx & 0x07E0);
+    ret.full = (ret.full >> 8) | (ret.full & 0xFF) << 8;
+#else
+    uint32_t rxb = bg_color.full & 0xF81F;
+    rxb += ((fg_color.full & 0xF81F) - rxb) * (factor >> 2) >> 6;
+    uint32_t xgx = bg_color.full & 0x07E0;
+    xgx += ((fg_color.full & 0x07E0) - xgx) * factor >> 8;
+    ret.full = (rxb & 0xF81F) | (xgx & 0x07E0);
+#endif
+
+#elif (CONFIG_SGL_PANEL_PIXEL_DEPTH == 24)
+
+    ret.ch.red   = bg_color.ch.red + ((fg_color.ch.red - bg_color.ch.red) * factor >> 8);
+    ret.ch.green = bg_color.ch.green + ((fg_color.ch.green - bg_color.ch.green) * factor >> 8);
+    ret.ch.blue  = bg_color.ch.blue + ((fg_color.ch.blue - bg_color.ch.blue) * factor >> 8);
+
+#elif (CONFIG_SGL_PANEL_PIXEL_DEPTH == 32)
+
+    ret.ch.alpha = bg_color.ch.alpha + ((fg_color.ch.alpha - bg_color.ch.alpha) * factor >> 8);
+    ret.ch.red   = bg_color.ch.red + ((fg_color.ch.red - bg_color.ch.red) * factor >> 8);
+    ret.ch.green = bg_color.ch.green + ((fg_color.ch.green - bg_color.ch.green) * factor >> 8);
+    ret.ch.blue  = bg_color.ch.blue + ((fg_color.ch.blue - bg_color.ch.blue) * factor >> 8);
+
+#endif
+    return ret;
+}
+
+
+/**
+ * @brief check surf and other area is overlap
+ * @param surf surfcare
+ * @param area area b
+ * @return true or false, true means overlap, false means not overlap
+ * @note: this function is unsafe, you should check the surfcare and area is not NULL by yourself
+ */
+bool sgl_surf_area_is_overlap(sgl_surf_t *surf, sgl_area_t *area)
+{
+    SGL_ASSERT(surf != NULL && area != NULL);
+    int16_t h_pos = surf->y + surf->h - 1;
+    int16_t w_pos = surf->x + surf->w - 1;
+
+    if(area->y1 > h_pos || area->y2 < surf->y || area->x1 > w_pos || area->x2 < surf->x) {
+        return false;
+    }
+
+    return true;
+}
+
+
+/**
+ * @brief check two area is overlap
+ * @param area_a area a
+ * @param area_b area b
+ * @return true or false, true means overlap, false means not overlap
+ * @note: this function is unsafe, you should check the area_a and area_b is not NULL by yourself
+ */
+bool sgl_area_is_overlap(sgl_area_t *area_a, sgl_area_t *area_b)
+{
+    SGL_ASSERT(area_a != NULL && area_b != NULL);
+    if(area_b->y1 > area_a->y2 || area_b->y2 < area_a->y1 || area_b->x1 > area_a->x2 || area_b->x2 < area_a->x1) {
+        return false;
+    }
+
+    return true;
+}
+
+
+/**
+ * @brief  Get area intersection between surface and area
+ * @param surf: surface
+ * @param area: area
+ * @param clip: intersection area
+ * @return true: intersect, otherwise false
+ * @note: this function is unsafe, you should check the surf and area is not NULL by yourself
+ */
+bool sgl_surf_clip(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *clip)
+{
+    SGL_ASSERT(surf != NULL && area != NULL && clip != NULL);
+    int16_t h_pos = surf->y + surf->h - 1;
+    int16_t w_pos = surf->x + surf->w - 1;
+
+    if(area->y1 > h_pos || area->y2 < surf->y || area->x1 > w_pos || area->x2 < surf->x) {
+        return false;
+    }
+
+    clip->x1 = sgl_max(surf->x, area->x1);
+    clip->x2 = sgl_min(w_pos, area->x2);
+    clip->y1 = sgl_max(surf->y, area->y1);
+    clip->y2 = sgl_min(h_pos, area->y2);
+
+    return true;
+}
+
+
+/**
+ * @brief  Get area intersection between two areas
+ * @param area_a: area a
+ * @param area_b: area b
+ * @param clip: intersection area
+ * @return true: intersect, otherwise false
+ * @note: this function is unsafe, you should check the area_a and area_b and clip is not NULL by yourself
+ */
+bool sgl_area_clip(sgl_area_t *area_a, sgl_area_t *area_b, sgl_area_t *clip)
+{
+    SGL_ASSERT(area_a != NULL && area_b != NULL && clip != NULL);
+    if(area_b->y1 > area_a->y2 || area_b->y2 < area_a->y1 || area_b->x1 > area_a->x2 || area_b->x2 < area_a->x1) {
+        return false;
+    }
+
+    clip->x1 = sgl_max(area_a->x1, area_b->x1);
+    clip->x2 = sgl_min(area_a->x2, area_b->x2);
+    clip->y1 = sgl_max(area_a->y1, area_b->y1);
+    clip->y2 = sgl_min(area_a->y2, area_b->y2);
+
+    return true;
+}
+
+
+/**
+ * @brief clip area with another area
+ * @param clip [in][out] clip area
+ * @param area [in] area
+ * @return true if clip area is valid, otherwise two area is not overlapped
+ * @note: this function is unsafe, you should check the clip and area is not NULL by yourself
+ */
+bool sgl_area_selfclip(sgl_area_t *clip, sgl_area_t *area)
+{
+    SGL_ASSERT(clip != NULL && area != NULL);
+    if(area->y1 > clip->y2 || area->y2 < clip->y1 || area->x1 > clip->x2 || area->x2 < clip->x1) {
+        return false;
+    }
+
+    clip->x1 = sgl_max(clip->x1, area->x1);
+    clip->x2 = sgl_min(clip->x2, area->x2);
+    clip->y1 = sgl_max(clip->y1, area->y1);
+    clip->y2 = sgl_min(clip->y2, area->y2);
+
+    return true;
+}
+
+
+/**
+ * @brief merge two area, the merge is result of the two area clip
+ * @param area_a [in] area1
+ * @param area_b [in] area2
+ * @param merge  [out] merge result
+ * @return none
+ * @note: this function is unsafe, you should check the area_a and area_b and merge is not NULL by yourself
+ */
+void sgl_area_merge(sgl_area_t *area_a, sgl_area_t *area_b, sgl_area_t *merge)
+{
+    SGL_ASSERT(area_a != NULL && area_b != NULL && merge != NULL);
+    merge->x1 = sgl_min(area_a->x1, area_b->x1);
+    merge->x2 = sgl_max(area_a->x2, area_b->x2);
+    merge->y1 = sgl_min(area_a->y1, area_b->y1);
+    merge->y2 = sgl_max(area_a->y2, area_b->y2);
+}
+
+
+/**
+ * @brief merge two area, the merge is a new area
+ * @param merge [in][out] merge area
+ * @param area [in] area
+ * @return none
+ * @note: this function is unsafe, you should check the merge and area is not NULL by yourself
+ */
+void sgl_area_selfmerge(sgl_area_t *merge, sgl_area_t *area)
+{
+    SGL_ASSERT(merge != NULL && area != NULL);
+    merge->x1 = sgl_min(merge->x1, area->x1);
+    merge->x2 = sgl_max(merge->x2, area->x2);
+    merge->y1 = sgl_min(merge->y1, area->y1);
+    merge->y2 = sgl_max(merge->y2, area->y2); 
+}
+
+
+/**
+ * @brief merge area with current dirty area
+ * @param merge [in] merge area
+ * @return none
+ */
+void sgl_obj_dirty_merge(sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL);
+    sgl_area_selfmerge(&current_ctx.dirty, &obj->area);
+}
+
+
+/**
+ * @brief sgl global initialization
+ * @param none
+ * @return none
+ * @note you should call this function before using sgl
+ */
+void sgl_init(void)
+{
+    /* init memory pool */
+    sgl_mm_init(sgl_mem_pool, sizeof(sgl_mem_pool));
+
+    /* initialize current context */
+    current_ctx.page = NULL;
+    current_ctx.started = false;
+    sgl_area_init(&current_ctx.dirty);
+
+    /* create a screen object for drawing */
+    sgl_obj_create(NULL);
+
+    /* create event queue */
+    sgl_event_queue_init();
+}
+
+
+/**
+ * @brief Set object horizontal layout
+ * @param obj point to object
+ * @return none
+ */
+void sgl_obj_set_horizontal_layout(sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL);
+    obj->h_layout = 1;
+    if(! sgl_obj_has_child(obj)) {
+        return;
+    }
+
+    sgl_obj_t *child = NULL;
+    size_t child_num = sgl_obj_get_child_count(obj);
+    int16_t margin = obj->margin;
+    int16_t child_w = (obj->coords.x2 - obj->coords.x1 - margin * (child_num + 1)) / child_num;
+    int16_t child_xs = obj->coords.x1 + margin;
+
+    sgl_obj_for_each_child(child, obj) {
+        child->coords.x1 = child_xs;
+        child->coords.x2 = child->coords.x1 + child_w;
+        child_xs += (child_w + margin);
+
+        child->coords.y1 = obj->coords.y1 + margin;
+        child->coords.y2 = obj->coords.y2 - margin;
+    }
+}
+
+
+/**
+ * @brief Set object vertical layout
+ * @param obj point to object
+ * @return none
+ */
+void sgl_obj_set_vertical_layout(sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL);
+    obj->v_layout = 1;
+    if(! sgl_obj_has_child(obj)) {
+        return;
+    }
+
+    sgl_obj_t *child = NULL;
+    size_t child_num = sgl_obj_get_child_count(obj);
+    int16_t margin = obj->margin;
+    int16_t child_h = (obj->coords.y2 - obj->coords.y1 - margin * (child_num + 1)) / child_num;
+    int16_t child_ys = obj->coords.y1 + margin;
+
+    sgl_obj_for_each_child(child, obj) {
+        child->coords.y1 = child_ys;
+        child->coords.y2 = child->coords.y1 + child_h;
+        child_ys += (child_h + margin);
+
+        child->coords.x1 = obj->coords.x1 + margin;
+        child->coords.x2 = obj->coords.x2 - margin;
+    }
+}
+
+
+/**
+ * @brief initialize object
+ * @param obj object
+ * @param parent parent object
+ * @return int, 0 means successful, -1 means failed
+ */
+int sgl_obj_init(sgl_obj_t *obj, sgl_obj_t *parent)
+{
+    SGL_ASSERT(obj != NULL);
+
+    if(parent == NULL) {
+        parent = sgl_screen_act();
+        if(parent == NULL) {
+            SGL_LOG_ERROR("sgl_button_create: have no active page");
+            return -1;
+        }
+    }
+
+    /* set essential member */
+    obj->coords = parent->coords;
+    obj->parent = parent;
+    obj->event_fn = NULL;
+    obj->event_data = 0;
+    obj->construct_fn = NULL;
+#if CONFIG_SGL_USE_STYLE_UNIFIED_API
+    obj->set_style = NULL;
+    obj->get_style = NULL;
+#endif
+    obj->dirty = 1;
+    obj->clickable = 0;
+    obj->area = parent->area;
+
+#if CONFIG_SGL_USE_OBJ_ID
+    obj->id = obj_global_id;
+    obj_global_id ++;
+#endif
+
+    /* add object to parent's child list */
+    sgl_obj_add_child(parent, obj);
+
+    /* if first add object, find the last task and add object to the end of task list */
+    if(current_ctx.started) {
+        current_ctx.page->slot_count = 1;
+        add_obj_to_page_slot(&current_ctx.page->obj);
+    }
+
+    if(parent->v_layout) {
+        sgl_obj_set_vertical_layout(parent);
+    }
+    else if(parent->h_layout) {
+        sgl_obj_set_horizontal_layout(parent);
+    }
+
+    return 0;
+}
+
+
+/**
+ * @brief  free an object
+ * @param  obj: object to free
+ * @retval none
+ * @note this function will free all the children of the object
+ */
+void sgl_obj_free(sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL);
+    /* if the object is active, do nothing */
+    if(obj == sgl_screen_act()) {
+        /* clear destroyed flag */
+        obj->destroyed = 0;
+        return;
+    }
+    /* free object */
+    sgl_free(obj);
+
+    /* clear page slot */
+    sgl_page_slot_init(current_ctx.page);
+    /* add all object to page slot */
+    add_obj_to_page_slot(&current_ctx.page->obj);
+}
+
+
+#if (CONFIG_SGL_USE_OBJ_ID && CONFIG_SGL_DEBUG)
+/**
+ * @brief Print all task id of draw task list
+ * @param  none
+ * @return none
+ */
+static inline void sgl_obj_print_all_task_id(void)
+{
+    sgl_obj_t *pos = NULL;
+    sgl_page_t *page = current_ctx.page;
+
+    for (uint32_t i = 0; i < page->slot_count; i++) {
+        pos = page->slot[i];
+        SGL_LOG_INFO("DRAW TASK  ID:  %d", pos->id);
+    }
+}
+#endif
+
+
+/**
+ * @brief get the width of a string
+ * @param str string
+ * @param font sgl font
+ * @return width of string
+ */
+int32_t sgl_font_get_string_len(const char *str, sgl_font_t *font)
+{
+    SGL_ASSERT(font != NULL);
+
+    int32_t len = 0;
+    while(*str) {
+        len += sgl_font_get_char_width(*str, font);
+        str++;
+    }
+
+    return len;
+}
+
+
+/**
+ * @brief get the alignment position
+ * @param parent_size parent size
+ * @param size object size
+ * @param type alignment type
+ * @return alignment position offset
+ */
+sgl_pos_t sgl_get_align_pos(sgl_size_t *parent_size, sgl_size_t *size, sgl_align_type_t type)
+{
+    SGL_ASSERT(parent_size != NULL && size != NULL);
+    sgl_pos_t ret = {.x = 0, .y = 0};
+    switch(type) {
+        case SGL_ALIGN_CENTER:
+            ret.x = (parent_size->w - size->w)/2;
+            ret.y = (parent_size->h - size->h)/2;
+        break;
+
+        case SGL_ALIGN_TOP_MID:          
+            ret.x = (parent_size->w - size->w)/2;
+            ret.y = 0;
+        break;
+
+        case SGL_ALIGN_TOP_LEFT:
+            ret.x = 0;
+            ret.y = 0;
+        break; 
+            
+        case SGL_ALIGN_TOP_RIGHT:    
+            ret.x = parent_size->w - size->w;
+            ret.y = 0;
+        break;
+
+        case SGL_ALIGN_BOT_MID:
+            ret.x = (parent_size->w - size->w)/2;
+            ret.y = parent_size->h - size->h;
+        break;
+
+        case SGL_ALIGN_BOT_LEFT:
+            ret.x = 0;
+            ret.y = parent_size->h - size->h;
+        break;
+
+        case SGL_ALIGN_BOT_RIGHT:
+            ret.x = parent_size->w - size->w;
+            ret.y = parent_size->h - size->h;
+        break;
+
+        case SGL_ALIGN_LEFT_MID:
+            ret.x = 0;
+            ret.y = (parent_size->h - size->h)/2;
+        break;
+
+        case SGL_ALIGN_RIGHT_MID:
+            ret.x = parent_size->w - size->w;
+            ret.y = (parent_size->h - size->h)/2;
+        break;
+
+        default: break;
+    }
+    return ret;
+}
+
+
+/**
+ * @brief get the text position in the area
+ * @param area point to area
+ * @param font point to font
+ * @param text text string
+ * @param offset text offset
+ * @param type alignment type
+ * @return sgl_pos_t position of text
+ */
+sgl_pos_t sgl_get_text_pos(sgl_area_t *area, sgl_font_t *font, const char *text, int16_t offset, sgl_align_type_t type)
+{
+    SGL_ASSERT(area != NULL && font != NULL);
+    sgl_pos_t ret = {.x = 0, .y = 0};
+    sgl_size_t parent_size = {
+        .w = area->x2 - area->x1 + 1,
+        .h = area->y2 - area->y1 + 1,
+    };
+
+    sgl_size_t text_size = {
+        .w = sgl_font_get_string_len(text, font) + offset,
+        .h = sgl_font_get_height(font),
+    };
+
+    ret = sgl_get_align_pos(&parent_size, &text_size, type);
+    ret.x += area->x1;
+    ret.y += area->y1;
+
+    return ret;
+}
+
+
+/**
+ * @brief get the icon position of area
+ * @param area point to area
+ * @param icon point to icon
+ * @param offset offset
+ * @param type align type
+ */
+sgl_pos_t sgl_get_icon_pos(sgl_area_t *area, sgl_icon_pixmap_t *icon, int16_t offset, sgl_align_type_t type)
+{
+    SGL_ASSERT(area != NULL && icon != NULL);
+    sgl_pos_t ret = {.x = 0, .y = 0};
+    sgl_size_t parent_size = {
+        .w = area->x2 - area->x1 + 1,
+        .h = area->y2 - area->y1 + 1,
+    };
+
+    sgl_size_t text_size = {
+        .w = icon->width + offset,
+        .h = icon->height,
+    };
+
+    ret = sgl_get_align_pos(&parent_size, &text_size, type);
+    ret.x += area->x1;
+    ret.y += area->y1;
+
+    return ret;
+}
+
+
+/**
+ * @brief Set the alignment position of the object relative to its parent object.
+ * @param obj The object to set the alignment position.
+ * @param type The alignment type.
+ * @return none
+ */
+void sgl_obj_set_align(sgl_obj_t *obj, sgl_align_type_t type)
+{
+    SGL_ASSERT(obj != NULL);
+
+    sgl_size_t p_size   = {0};
+    sgl_pos_t  p_pos    = {0};
+    sgl_pos_t  obj_pos  = {0};
+    sgl_size_t obj_size = {
+        .w = obj->coords.x2 - obj->coords.x1 + 1,
+        .h = obj->coords.y2 - obj->coords.y1 + 1,
+    };
+
+    if(obj->parent == NULL) {
+        p_size = (sgl_size_t){
+            .w = sgl_device_fb.xres,
+            .h = sgl_device_fb.yres,
+        };
+        p_pos = (sgl_pos_t){
+            .x = 0,
+            .y = 0,
+        };
+    }
+    else {
+        p_size = (sgl_size_t){
+            .w = obj->parent->coords.x2 - obj->parent->coords.x1 + 1,
+            .h = obj->parent->coords.y2 - obj->parent->coords.y1 + 1,
+        };
+        p_pos = (sgl_pos_t){
+            .x = obj->parent->coords.x1,
+            .y = obj->parent->coords.y1,
+        };
+    }
+
+    obj_pos = sgl_get_align_pos(&p_size, &obj_size, type);
+
+    sgl_obj_set_pos(obj, p_pos.x + obj_pos.x,
+                         p_pos.y + obj_pos.y
+                    );
+}
+
+
+/**
+ * @brief sgl task handle function
+ * @param none
+ * @return none
+ * @note this function should be called in main loop or timer or thread
+ */
+void sgl_task_handle(void)
+{
+    /* only run once that add all object to draw list */
+    if(unlikely(current_ctx.started == false)){
+        /* add all child object of current page to draw list */
+        add_obj_to_page_slot(&current_ctx.page->obj);
+
+        /* clear flag */
+        current_ctx.started = true;
+
+#if (CONFIG_SGL_DEBUG && CONFIG_SGL_USE_OBJ_ID)
+        sgl_obj_print_all_task_id();
+#endif
+    };
+
+    /* event task */
+    sgl_event_task();
+
+    /* draw task  */
+    sgl_draw_frame(current_ctx.page, &current_ctx.dirty);
+
+    /* initialize dirty area */
+    sgl_area_init(&current_ctx.dirty);
+}
