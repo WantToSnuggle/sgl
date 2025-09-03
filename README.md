@@ -1,6 +1,13 @@
 # SGL (Small Graphics Library)
 ![SGL_LOGO](SGL_logo.png)
 
+
+#### Minimum hardware requirements
+| Flash Size | Ram Size |
+| :---------:| :------: |
+| 15kB       |    3kb   |
+
+
 #### Introduction
 SGL (Small Graphics Library) is a lightweight and fast graphics library designed to provide a beautiful and lightweight GUI (Graphics User Interface) for MCU-level processors.
 Please refer to the `docs` directory for documentation.
