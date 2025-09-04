@@ -617,5 +617,24 @@ void sgl_draw_icon_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t
 void sgl_draw_icon_with_alpha( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, sgl_color_t color, uint8_t alpha, sgl_icon_pixmap_t *icon);
 
 
+/**
+ * @brief draw an arc
+ * @param surf pointer to surface
+ * @param area pointer to area
+ * @param desc pointer to arc description
+ * @return none
+ */
+void sgl_draw_fill_arc(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_arc_t *desc);
+
+
+/**
+ * @brief draw an arc with alpha
+ * @param surf pointer to surface
+ * @param area pointer to area
+ * @param desc pointer to arc description
+ * @return none
+ */
+void sgl_draw_fill_arc_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_arc_t *desc);
+
 
 #endif // !__SGL_DRAW_CG_H__

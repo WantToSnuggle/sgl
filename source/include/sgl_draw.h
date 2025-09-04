@@ -28,15 +28,18 @@
 
 
 #include <sgl_core.h>
-#include <sgl_draw_cg.h>
 
-
+/* text draw mode */
 #define  SGL_DRAW_TEXT_NORMAL                  (0)
 #define  SGL_DRAW_TEXT_ROLL                    (1)
 #define  SGL_DRAW_TEXT_LINES                   (2)
 
+
+/* arc draw mode */
 #define  SGL_DRAW_ARC_NORMAL                   (0)
-#define  SGL_DRAW_ARC_ROUND                    (1)
+#define  SGL_DRAW_ARC_RING                     (1)
+#define  SGL_DRAW_ARC_NORMAL_SMOOTH            (2)
+#define  SGL_DRAW_ARC_RING_SMOOTH              (3)
 
 
 /**
@@ -176,6 +179,20 @@ typedef struct sgl_draw_ring {
 
 
 /**
+ * @brief icon description
+ * @icon: icon pixmap
+ * @color: icon color
+ * @alpha: alpha of icon
+ */
+typedef struct sgl_draw_icon {
+    sgl_icon_pixmap_t *icon;
+    sgl_color_t       color;
+    uint8_t           alpha;
+    uint8_t           align: 5;
+}sgl_draw_icon_t;
+
+
+/**
  * @brief arc description
  * @cx: center x
  * @cy: center y
@@ -198,20 +215,6 @@ typedef struct sgl_draw_arc {
     uint32_t         mode: 2;
     sgl_color_t      bg_color;
 }sgl_draw_arc_t;
-
-
-/**
- * @brief icon description
- * @icon: icon pixmap
- * @color: icon color
- * @alpha: alpha of icon
- */
-typedef struct sgl_draw_icon {
-    sgl_icon_pixmap_t *icon;
-    sgl_color_t       color;
-    uint8_t           alpha;
-    uint8_t           align: 5;
-}sgl_draw_icon_t;
 
 
 /**

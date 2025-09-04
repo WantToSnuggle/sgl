@@ -65,6 +65,10 @@ void sgl_arc_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
         arc->desc.color = sgl_int2color(value);
         break;
 
+    case SGL_STYLE_BG_COLOR:
+        arc->desc.bg_color = sgl_int2color(value);
+        break;
+
     case SGL_STYLE_RADIUS:
         arc->desc.radius_out = value;
         break;
@@ -133,6 +137,9 @@ size_t sgl_arc_get_style(sgl_obj_t *obj, sgl_style_type_t type)
     case SGL_STYLE_COLOR:
         return sgl_color2int(arc->desc.color);
 
+    case SGL_STYLE_BG_COLOR:
+        return sgl_color2int(arc->desc.bg_color);
+
     case SGL_STYLE_RADIUS:
         return arc->desc.radius_out;
 
@@ -173,7 +180,6 @@ static void sgl_arc_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
         if(arc->desc.start_angle == 0 && arc->desc.end_angle == 360) {
             sgl_draw_ring(surf, &arc->obj.area, (sgl_draw_ring_t*)(&arc->desc));
-            SGL_LOG_WARN("sgl_arc_construct_cb: draw ring");
         }
         else {
             sgl_draw_arc(surf, &arc->obj.area, &arc->desc);

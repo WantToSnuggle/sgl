@@ -115,7 +115,7 @@ void sgl_textline_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
         break;
 
     case SGL_STYLE_LABEL_TRANSPARENT:
-        textline->desc.bg_flag = (uint8_t)value;
+        textline->desc.bg_flag = (value == 1 ? 0 : 1);
         break;
 
     default:
@@ -243,6 +243,7 @@ sgl_obj_t* sgl_textline_create(sgl_obj_t* parent)
     textline->desc.alpha = SGL_ALPHA_MAX;
     textline->desc.bg_flag = true;
     textline->desc.bg_color = SGL_BLACK;
+    textline->desc.color = SGL_WHITE;
     textline->desc.line_space = 1;
     textline->desc.mode = SGL_DRAW_TEXT_LINES;
     textline->desc.text = "textline";
