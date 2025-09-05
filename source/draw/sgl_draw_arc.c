@@ -73,10 +73,10 @@ static void arc_dot_sin_cos(int16_t cx, int16_t cy, int16_t radius_in, int16_t r
 
 static inline uint8_t arc_get_dot(sgl_arc_dot_t *dot,int ax, int ay)
 {
-    uint16_t temp;
+    int32_t temp;
     uint8_t alpha = SGL_ALPHA_MIN, max = SGL_ALPHA_MIN;
     sgl_arc_dot_t *p = dot;
-    int16_t rate = (0xff00) / (dot->rmax - dot->r2);
+    int32_t rate = (0xff00) / (dot->rmax - dot->r2);
 
     for(int k = 0; k < 2; k++, p++) {
         int x = ax > p->cx ? ax - p->cx : p->cx-ax;
@@ -120,13 +120,13 @@ void sgl_draw_fill_arc(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_arc_t *desc)
 
     int in_r2_max = sgl_pow2(desc->radius_in - 1);
     int out_r2_max = sgl_pow2(desc->radius_out + 1);
-    int16_t rate = (0xff00) / (in_r2 - in_r2_max);
+    int32_t rate = (0xff00) / (in_r2 - in_r2_max);
 
     sgl_color_t *buf = NULL;
-    int16_t dx, dy;
+    int32_t dx, dy;
     uint8_t flag = 0xff, in_range;
-    int16_t ds = 0, de = 0, sd = 0, ed = 0;
-    int16_t sx = 0, sy = 0, ex = 0, ey = 0;
+    int32_t ds = 0, de = 0, sd = 0, ed = 0;
+    int32_t sx = 0, sy = 0, ex = 0, ey = 0;
     sgl_color_t tmp_color;
     sgl_area_t clip;
 
@@ -262,13 +262,13 @@ void sgl_draw_fill_arc_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_a
 
     int in_r2_max = sgl_pow2(desc->radius_in - 1);
     int out_r2_max = sgl_pow2(desc->radius_out + 1);
-    int16_t rate = (0xff00) / (in_r2 - in_r2_max);
+    int32_t rate = (0xff00) / (in_r2 - in_r2_max);
 
     sgl_color_t *buf = NULL;
-    int16_t dx, dy;
+    int32_t dx, dy;
     uint8_t flag = 0xff, in_range;
-    int16_t ds = 0, de = 0, sd = 0, ed = 0;
-    int16_t sx = 0, sy = 0, ex = 0, ey = 0;
+    int32_t ds = 0, de = 0, sd = 0, ed = 0;
+    int32_t sx = 0, sy = 0, ex = 0, ey = 0;
     sgl_color_t tmp_color;
     sgl_area_t clip;
 

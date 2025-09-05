@@ -43,6 +43,8 @@ extern "C" {
 #define _SGL_LOG_LEVEL_NUM             6 /**< Number of log levels*/
 
 
+#if CONFIG_SGL_DEBUG
+
 /**
  * @brief ebraid log printing function, used to print debugging information. Note that this function 
  *        should only be called in debugging mode, otherwise it may affect system real-time 
@@ -54,6 +56,7 @@ extern "C" {
  * @return none
 */
 void sgl_log(const char *level, const char * format, ...);
+
 
 /**
  * @brief ebraid assert handler, used to handle assertions
@@ -67,7 +70,6 @@ void sgl_log(const char *level, const char * format, ...);
 void sgl_assert_handler(const char *file, const char *func, int line);
 
 
-#if CONFIG_SGL_DEBUG
 #if CONFIG_SGL_LOG_COLOR
 
 #define SGL_LOG_NONE                    "\033[0m"
