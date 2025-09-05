@@ -1,6 +1,11 @@
 # SGL (Small Graphics Library)
 ![SGL_LOGO](SGL_logo.png)
 
+#### 硬件最小要求
+| Flash Size | Ram Size |
+| :---------:| :------: |
+| 15kB       |    3kb   |
+
 #### 介绍
 SGL (Small Graphics Library)是一种轻量快速的图形库，该库旨在为MCU级别的处理器提供一美观轻量的GUI（Graphics User Interface).
 使用文档请参考`docs`目录
