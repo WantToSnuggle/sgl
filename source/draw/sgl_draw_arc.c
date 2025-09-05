@@ -73,7 +73,7 @@ static void arc_dot_sin_cos(int16_t cx, int16_t cy, int16_t radius_in, int16_t r
 
 static inline uint8_t arc_get_dot(sgl_arc_dot_t *dot,int ax, int ay)
 {
-    int32_t temp;
+    uint32_t temp;
     uint8_t alpha = SGL_ALPHA_MIN, max = SGL_ALPHA_MIN;
     sgl_arc_dot_t *p = dot;
     int32_t rate = (0xff00) / (dot->rmax - dot->r2);
