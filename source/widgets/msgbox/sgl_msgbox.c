@@ -76,7 +76,7 @@ void sgl_msgbox_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
         msgbox->title_desc.alpha = value;
         msgbox->title_line_desc.alpha = value;
         msgbox->apply_text.alpha = value;
-        msgbox->close_text.align = value;
+        msgbox->close_text.alpha = value;
         break;;
     
     case SGL_STYLE_TEXT:
