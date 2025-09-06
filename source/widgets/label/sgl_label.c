@@ -113,7 +113,7 @@ void sgl_label_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
         label->desc.line_space = (int16_t)value;
         break;
 
-    case SGL_STYLE_LABEL_TRANSPARENT:
+    case SGL_STYLE_BG_TRANSPARENT:
         label->desc.bg_flag = (value == 1) ? 0 : 1;
         break;
 
@@ -188,7 +188,7 @@ size_t sgl_label_get_style(sgl_obj_t *obj, sgl_style_type_t type)
     case SGL_STYLE_LINE_SPACE:
         return label->desc.line_space;
 
-    case SGL_STYLE_LABEL_TRANSPARENT:
+    case SGL_STYLE_BG_TRANSPARENT:
         return label->desc.bg_flag;
 
     default:

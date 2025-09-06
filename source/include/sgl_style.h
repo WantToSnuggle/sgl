@@ -56,7 +56,7 @@ typedef enum sgl_style_type {
     SGL_STYLE_CENTER_X_OFFSET,
     SGL_STYLE_CENTER_Y_OFFSET,
     /* label style */
-    SGL_STYLE_LABEL_TRANSPARENT,
+    SGL_STYLE_BG_TRANSPARENT,
     /* line style */
     SGL_STYLE_LINE_WIDTH,
     SGL_STYLE_LINE_SPACE,

@@ -114,12 +114,12 @@ void sgl_textline_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
         textline->desc.line_space = (int16_t)value;
         break;
 
-    case SGL_STYLE_LABEL_TRANSPARENT:
+    case SGL_STYLE_BG_TRANSPARENT:
         textline->desc.bg_flag = (value == 1 ? 0 : 1);
         break;
 
     default:
-        SGL_LOG_WARN("sgl_label_set_style: unsupported style type %d", type);
+        SGL_LOG_WARN("sgl_textline_set_style: unsupported style type %d", type);
     }
 
     /* set dirty */
@@ -190,11 +190,11 @@ size_t sgl_textline_get_style(sgl_obj_t *obj, sgl_style_type_t type)
     case SGL_STYLE_LINE_SPACE:
         return textline->desc.line_space;
 
-    case SGL_STYLE_LABEL_TRANSPARENT:
+    case SGL_STYLE_BG_TRANSPARENT:
         return textline->desc.bg_flag;
 
     default:
-        SGL_LOG_WARN("sgl_label_get_style: unsupported style type %d", type);
+        SGL_LOG_WARN("sgl_textline_get_style: unsupported style type %d", type);
     }
 
     return SGL_STYLE_FAILED;
@@ -252,20 +252,3 @@ sgl_obj_t* sgl_textline_create(sgl_obj_t* parent)
     return obj;
 }
 
-
-/**
- * @brief Set the text of the textline object
- * @param obj pointer to the textline object
- * @param text pointer to the text
- * @return none
- */
-void sgl_textline_set_text(sgl_obj_t *obj, const char *text)
-{
-    if(obj == NULL || text == NULL) {
-        SGL_LOG_ERROR("sgl_textline_set_text: obj or text is NULL");
-        return;
-    }
-
-    sgl_textline_t *textline = (sgl_textline_t *)obj;
-    textline->desc.text = text;
-}

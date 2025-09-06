@@ -1,4 +1,4 @@
-/* source/widgets/sgl_textline.h
+/* source/widgets/sgl_textbox.h
  *
  * MIT License
  *
@@ -23,8 +23,8 @@
  * SOFTWARE.
  */
 
-#ifndef __SGL_TEXTLINE_H__
-#define __SGL_TEXTLINE_H__
+#ifndef __SGL_TEXTBOX_H__
+#define __SGL_TEXTBOX_H__
 
 #include <sgl_core.h>
 #include <sgl_draw.h>
@@ -36,21 +36,27 @@
 
 
 /**
- * @brief sgl textline struct
+ * @brief sgl textbox struct
  * @desc: text description
  */
-typedef struct sgl_textline {
+typedef struct sgl_textbox {
     sgl_obj_t       obj;
+    sgl_draw_rect_t bg;
     sgl_draw_text_t desc;
-}sgl_textline_t;
+    sgl_rect_t      scroll_bg_coords;
+    sgl_draw_rect_t scroll_bg;
+    sgl_rect_t      scroll_fg_coords;
+    sgl_draw_rect_t scroll_fg;
+    uint32_t        text_height;
+}sgl_textbox_t;
 
 
 /**
- * @brief create a textline object
- * @param parent parent of the textline
- * @return textline object
+ * @brief create a textbox object
+ * @param parent parent of the textbox
+ * @return textbox object
  */
-sgl_obj_t* sgl_textline_create(sgl_obj_t* parent);
+sgl_obj_t* sgl_textbox_create(sgl_obj_t* parent);
 
 
 /**
@@ -72,4 +78,4 @@ void sgl_textline_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
 size_t sgl_textline_get_style(sgl_obj_t *obj, sgl_style_type_t type);
 
 
-#endif // !__SGL_TEXTLINE_H__
+#endif // !__SGL_TEXTBOX_H__

@@ -1,4 +1,4 @@
-/* source/widgets/sgl_arc.c
+/* source/widgets/sgl_rectangle.c
  *
  * MIT License
  *

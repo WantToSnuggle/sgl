@@ -234,11 +234,20 @@ void sgl_draw_string(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, c
     int16_t offset_x = x;
     uint32_t ch_index;
 
+    #if CONFIG_SGL_TEXT_UTF8
+    uint32_t unicode = 0;
+    #endif
+
     while(*str) {
+        #if CONFIG_SGL_TEXT_UTF8
+        str += sgl_utf8_to_unicode(str, &unicode);
+        ch_index = sgl_search_unicode_ch_index(font, unicode);
+        #else
         ch_index = ((uint32_t)*str) - 32;
+        str++;
+        #endif
         sgl_draw_character(surf, area, offset_x, y, ch_index, color, bg_color, font);
         offset_x += font->table[ch_index].box_w;
-        str++;
     }
 }
 
@@ -260,11 +269,20 @@ void sgl_draw_string_on_bg(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_
     int16_t offset_x = x + margin;
     uint32_t ch_index;
 
+    #if CONFIG_SGL_TEXT_UTF8
+    uint32_t unicode = 0;
+    #endif
+
     while(*str) {
+        #if CONFIG_SGL_TEXT_UTF8
+        str += sgl_utf8_to_unicode(str, &unicode);
+        ch_index = sgl_search_unicode_ch_index(font, unicode);
+        #else
         ch_index = ((uint32_t)*str) - 32;
+        str++;
+        #endif
         sgl_draw_character_on_bg(surf, area, offset_x, y, ch_index, color, font);
         offset_x += font->table[ch_index].box_w;
-        str++;
     }
 }
 
@@ -287,11 +305,20 @@ void sgl_draw_string_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t x, i
     int16_t offset_x = x + margin;
     uint32_t ch_index;
 
+    #if CONFIG_SGL_TEXT_UTF8
+    uint32_t unicode = 0;
+    #endif
+
     while(*str) {
+        #if CONFIG_SGL_TEXT_UTF8
+        str += sgl_utf8_to_unicode(str, &unicode);
+        ch_index = sgl_search_unicode_ch_index(font, unicode);
+        #else
         ch_index = ((uint32_t)*str) - 32;
+        str++;
+        #endif
         sgl_draw_character_with_alpha(surf, area, offset_x, y, ch_index, color, alpha, font);
         offset_x += font->table[ch_index].box_w;
-        str++;
     }
 }
 
@@ -316,8 +343,19 @@ void sgl_draw_string_lines(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_
     int16_t ch_index;
     int16_t ch_width;
 
+    #if CONFIG_SGL_TEXT_UTF8
+    uint32_t unicode = 0;
+    #endif
+
     while(*str) {
+        #if CONFIG_SGL_TEXT_UTF8
+        str += sgl_utf8_to_unicode(str, &unicode);
+        ch_index = sgl_search_unicode_ch_index(font, unicode);
+        #else
         ch_index = ((uint32_t)*str) - 32;
+        str++;
+        #endif
+
         ch_width = font->table[ch_index].box_w;
 
         if((offset_x + ch_width + margin) > area->x2) {
@@ -328,7 +366,6 @@ void sgl_draw_string_lines(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_
         sgl_draw_character(surf, area, offset_x, y, ch_index, color, bg_color, font);
 
         offset_x += ch_width;
-        str++;
     }
 }
 
@@ -352,8 +389,19 @@ void sgl_draw_string_lines_on_bg(sgl_surf_t *surf, sgl_area_t *area, int16_t x, 
     int16_t ch_index;
     int16_t ch_width;
 
+    #if CONFIG_SGL_TEXT_UTF8
+    uint32_t unicode = 0;
+    #endif
+
     while(*str) {
+        #if CONFIG_SGL_TEXT_UTF8
+        str += sgl_utf8_to_unicode(str, &unicode);
+        ch_index = sgl_search_unicode_ch_index(font, unicode);
+        #else
         ch_index = ((uint32_t)*str) - 32;
+        str++;
+        #endif
+
         ch_width = font->table[ch_index].box_w;
 
         if((offset_x + ch_width + margin) > area->x2) {
@@ -364,7 +412,6 @@ void sgl_draw_string_lines_on_bg(sgl_surf_t *surf, sgl_area_t *area, int16_t x, 
         sgl_draw_character_on_bg(surf, area, offset_x, y, ch_index, color, font);
         
         offset_x += ch_width;
-        str++;
     }
 }
 
@@ -389,8 +436,18 @@ void sgl_draw_string_lines_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_
     int16_t ch_index;
     int16_t ch_width;
 
+    #if CONFIG_SGL_TEXT_UTF8
+    uint32_t unicode = 0;
+    #endif
+
     while(*str) {
+        #if CONFIG_SGL_TEXT_UTF8
+        str += sgl_utf8_to_unicode(str, &unicode);
+        ch_index = sgl_search_unicode_ch_index(font, unicode);
+        #else
         ch_index = ((uint32_t)*str) - 32;
+        str++;
+        #endif
 
         ch_width = font->table[ch_index].box_w;
 
@@ -402,7 +459,6 @@ void sgl_draw_string_lines_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_
         sgl_draw_character_with_alpha(surf, area, offset_x, y, ch_index, color, alpha, font);
 
         offset_x += ch_width;
-        str++;
     }
 }
 

@@ -1585,7 +1585,7 @@ static const sgl_font_table_t sgl_ascii_consolas23_tab[] = {
 };
 
 
-#if (SGL_CONFIG_TEXT_UTF8)
+#if (CONFIG_SGL_TEXT_UTF8)
 static const uint16_t unicode_list_1[] = {
     0x0020,	/*( )*/
     0x0021,	/*(!)*/
@@ -1685,14 +1685,14 @@ static const uint16_t unicode_list_1[] = {
     0x007f,	/*()*/
     0x0000,    /*End indicator*/
 };
-#endif //!SGL_CONFIG_TEXT_UTF8
+#endif //!CONFIG_SGL_TEXT_UTF8
 
 sgl_font_t consolas23 = {
     .bitmap = sgl_ascii_consolas23_bitmap,
     .table = sgl_ascii_consolas23_tab,
     .font_height = 23,
     .bpp = 4,
-#ifdef SGL_CONFIG_TEXT_UTF8
+#ifdef CONFIG_SGL_TEXT_UTF8
     .unicode_list = unicode_list_1,
     .unicode_list_len = sizeof(unicode_list_1) / sizeof(unicode_list_1[0])
 #endif        

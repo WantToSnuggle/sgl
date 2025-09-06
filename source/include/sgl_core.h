@@ -1366,18 +1366,26 @@ void sgl_obj_free(sgl_obj_t *obj);
 int sgl_obj_init(sgl_obj_t *obj, sgl_obj_t *parent);
 
 
+#if(CONFIG_SGL_TEXT_UTF8 == 1)
+
 /**
- * @brief get character width in font
- * @param c character
- * @param font pointer to sgl_font_t
- * @return width of character, -1 means error
- * @note this function is used to get the width of a character in a font
+ * @brief Convert UTF-8 string to Unicode
+ * @param utf8_str Pointer to the UTF-8 string to be converted
+ * @param p_unicode_buffer Pointer to the buffer where the converted Unicode will be stored
+ * @return The number of bytes in the UTF-8 string
  */
-static inline int16_t sgl_font_get_char_width(char c, sgl_font_t *font)
-{
-    SGL_ASSERT(font != NULL);
-    return font->table[(uint32_t)c - 32].box_w;
-}
+uint32_t sgl_utf8_to_unicode(const char *utf8_str, uint32_t *p_unicode_buffer);
+
+
+/**
+ * @brief Search for the index of a Unicode character in the font table
+ * @param font Pointer to the font structure containing character data
+ * @param unicode Unicode of the character to be searched
+ * @return Index of the character in the font table
+ */
+uint32_t sgl_search_unicode_ch_index(sgl_font_t *font, uint32_t unicode);
+
+#endif // !CONFIG_SGL_TEXT_UTF8
 
 
 /**
@@ -1399,7 +1407,7 @@ static inline int16_t sgl_font_get_height(sgl_font_t *font)
  * @param font sgl font
  * @return width of string
  */
-int32_t sgl_font_get_string_len(const char *str, sgl_font_t *font);
+int32_t sgl_font_get_string_width(const char *str, sgl_font_t *font);
 
 
 /**

@@ -1016,22 +1016,83 @@ static inline void sgl_obj_print_all_task_id(void)
 #endif
 
 
+#if(CONFIG_SGL_TEXT_UTF8 == 1)
+
+/**
+ * @brief Convert UTF-8 string to Unicode
+ * @param utf8_str Pointer to the UTF-8 string to be converted
+ * @param p_unicode_buffer Pointer to the buffer where the converted Unicode will be stored
+ * @return The number of bytes in the UTF-8 string
+ */
+uint32_t sgl_utf8_to_unicode(const char *utf8_str, uint32_t *p_unicode_buffer)
+{
+    int bytes = 0;
+    if (((uint8_t)(*utf8_str)) < 0x80) { // 1-byte/7-bit ASCII
+        bytes = 1;
+        *p_unicode_buffer = utf8_str[0];
+    } else if ((((uint8_t)(*utf8_str)) & 0xE0) == 0xC0) { // 2-byte
+        bytes = 2;
+        *p_unicode_buffer = (utf8_str[0] & 0x1F) << 6;
+        *p_unicode_buffer |= (utf8_str[1] & 0x3F);
+    } else if ((((uint8_t)(*utf8_str)) & 0xF0) == 0xE0) { // 3-byte
+        bytes = 3;
+        *p_unicode_buffer = (utf8_str[0] & 0x0F) << 12;
+        *p_unicode_buffer |= (utf8_str[1] & 0x3F) << 6;
+        *p_unicode_buffer |= (utf8_str[2] & 0x3F);        
+    } else if ((((uint8_t)(*utf8_str)) & 0xF8) == 0xF0) { // 4-byte
+        bytes = 4;
+        *p_unicode_buffer = (utf8_str[0] & 0x07) << 18;
+        *p_unicode_buffer |= (utf8_str[2] & 0x3F) << 6;
+        *p_unicode_buffer |= (utf8_str[1] & 0x3F) << 12;
+        *p_unicode_buffer |= (utf8_str[3] & 0x3F);        
+    }
+    return bytes;
+}
+
+
+/**
+ * @brief Search for the index of a Unicode character in the font table
+ * @param font Pointer to the font structure containing character data
+ * @param unicode Unicode of the character to be searched
+ * @return Index of the character in the font table
+ */
+uint32_t sgl_search_unicode_ch_index(sgl_font_t *font, uint32_t unicode)
+{
+    for (uint32_t i = 0; i < font->unicode_list_len; i++){
+        if (font->unicode_list[i] == unicode) {
+            return i;
+        }
+    }
+    return 0;
+}
+
+#endif // !CONFIG_SGL_TEXT_UTF8
+
+
 /**
  * @brief get the width of a string
  * @param str string
  * @param font sgl font
  * @return width of string
  */
-int32_t sgl_font_get_string_len(const char *str, sgl_font_t *font)
+int32_t sgl_font_get_string_width(const char *str, sgl_font_t *font)
 {
     SGL_ASSERT(font != NULL);
-
     int32_t len = 0;
+#if CONFIG_SGL_TEXT_UTF8
+    uint32_t unicode = 0;
+    uint32_t ch_index = 0;
     while(*str) {
-        len += sgl_font_get_char_width(*str, font);
+        str += sgl_utf8_to_unicode(str, &unicode);
+        ch_index = sgl_search_unicode_ch_index(font, unicode);
+        len += font->table[ch_index].box_w;
+    }
+#else
+    while(*str) {
+        len += font->table[(uint8_t)(*str) - 32].box_w;
         str++;
     }
-
+#endif
     return len;
 }
 
@@ -1118,7 +1179,7 @@ sgl_pos_t sgl_get_text_pos(sgl_area_t *area, sgl_font_t *font, const char *text,
     };
 
     sgl_size_t text_size = {
-        .w = sgl_font_get_string_len(text, font) + offset,
+        .w = sgl_font_get_string_width(text, font) + offset,
         .h = sgl_font_get_height(font),
     };
 

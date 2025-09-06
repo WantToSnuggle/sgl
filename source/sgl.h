@@ -41,6 +41,7 @@
 #include "widgets/switch/sgl_switch.h"
 #include "widgets/msgbox/sgl_msgbox.h"
 #include "widgets/textline/sgl_textline.h"
+#include "widgets/textbox/sgl_textbox.h"
 #include "widgets/checkbox/sgl_checkbox.h"
 #include "widgets/icon/sgl_icon.h"
 #include "widgets/listview/sgl_listview.h"
