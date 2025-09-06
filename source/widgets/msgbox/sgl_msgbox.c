@@ -62,6 +62,10 @@ void sgl_msgbox_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
         msgbox->body_desc.radius = sgl_obj_fix_radius(obj, value);
         break;
 
+    case SGL_STYLE_PIXMAP:
+        msgbox->body_desc.pixmap = (sgl_pixmap_t *)value;
+        break;
+
     case SGL_STYLE_BORDER_COLOR:
         msgbox->body_desc.border_color = sgl_int2color(value);
         break;

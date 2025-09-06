@@ -239,6 +239,7 @@ sgl_obj_t* sgl_arc_create(sgl_obj_t* parent)
     arc->desc.alpha = SGL_ALPHA_MAX;
     arc->desc.mode = SGL_DRAW_ARC_NORMAL;
     arc->desc.color = SGL_BLACK;
+    arc->desc.bg_color = SGL_WHITE;
     arc->desc.start_angle = 0;
     arc->desc.end_angle = 360;
     arc->desc.radius_out = 0;
