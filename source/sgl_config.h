@@ -14,6 +14,7 @@
 #define    CONFIG_SGL_LOG_COLOR               1
 #define    CONFIG_SGL_LOG_LEVEL               0
 #define    CONFIG_SGL_FONT                    1
+#define    CONFIG_SGL_TEXT_UTF8               1
 #define    CONFIG_SGL_USE_OBJ_ID              1
 #define    CONFIG_SGL_USE_STYLE_UNIFIED_API     1
 #define    CONFIG_SGL_HEAP_ALGO               lwmem

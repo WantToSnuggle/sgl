@@ -63,7 +63,7 @@ void sgl_draw_one_icon( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y
 
     if(icon->bpp == 4) {
         for(int y = clip.y1; y <= clip.y2; y ++) {
-            buf = sgl_surf_get_buf(surf, clip.x1, y - surf->y);
+            buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
 
             for(int x = clip.x1; x <= clip.x2; x += 2) {
                 aplha = dot[((x - icon_rect.x1) >> 1) + ((y - icon_rect.y1) * icon->width >> 1)];
@@ -78,7 +78,7 @@ void sgl_draw_one_icon( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y
     }
     else if(icon->bpp == 8) {
         for(int y = clip.y1; y <= clip.y2; y ++) {
-            buf = sgl_surf_get_buf(surf, clip.x1, y - surf->y);
+            buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
 
             for(int x = clip.x1; x <= clip.x2; x ++) {
                 aplha = dot[(x - icon_rect.x1) + (y - icon_rect.y1) * icon->width];
@@ -121,7 +121,7 @@ void sgl_draw_icon_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t
 
     if(icon->bpp == 4) {
         for(int y = clip.y1; y <= clip.y2; y++) {
-            buf = sgl_surf_get_buf(surf, clip.x1, y - surf->y);
+            buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
             for(int x = clip.x1; x <= clip.x2; x += 2) {
                 aplha = dot[((x - icon_rect.x1) >> 1) + ((y - icon_rect.y1) * icon->width >> 1)];
                 *buf = sgl_color_mixer(color, *buf, ((aplha >> 4) & 0xF) * 16);
@@ -137,7 +137,7 @@ void sgl_draw_icon_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t
     }
     else if(icon->bpp == 8) {
         for(int y = clip.y1; y <= clip.y2; y++) {
-            buf = sgl_surf_get_buf(surf, clip.x1, y - surf->y);
+            buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
             for(int x = clip.x1; x <= clip.x2; x ++) {
                 aplha = dot[(x - icon_rect.x1) + (y - icon_rect.y1) * icon->width];
                 *buf = sgl_color_mixer(color, *buf, aplha);
@@ -181,7 +181,7 @@ void sgl_draw_icon_with_alpha( sgl_surf_t *surf, sgl_area_t *area, int16_t x, in
 
     if(icon->bpp == 4) {
         for(int y = clip.y1; y <= clip.y2; y++) {
-            buf = sgl_surf_get_buf(surf, clip.x1, y - surf->y);
+            buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
             for(int x = clip.x1; x <= clip.x2; x += 2) {
                 uint8_t edge_aplha = dot[((x - icon_rect.x1) >> 1) + ((y - icon_rect.y1) * icon->width >> 1)];
 
@@ -200,7 +200,7 @@ void sgl_draw_icon_with_alpha( sgl_surf_t *surf, sgl_area_t *area, int16_t x, in
     }
     else if(icon->bpp == 8) {
         for(int y = clip.y1; y <= clip.y2; y++) {
-            buf = sgl_surf_get_buf(surf, clip.x1, y - surf->y);
+            buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
             for(int x = clip.x1; x <= clip.x2; x ++) {
                 uint8_t edge_aplha = dot[(x - icon_rect.x1) + (y - icon_rect.y1) * icon->width];
 

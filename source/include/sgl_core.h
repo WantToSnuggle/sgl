@@ -221,8 +221,7 @@ typedef struct sgl_surf {
     int16_t      y;
     int16_t      w;
     int16_t      h;
-    int16_t      pitch;
-    int16_t      h_max;
+    size_t       size;
 }sgl_surf_t;
 
 

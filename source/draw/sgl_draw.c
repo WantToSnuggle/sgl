@@ -64,7 +64,7 @@ static inline void draw_widget_slice(sgl_page_t *page, sgl_surf_t *surf, int16_t
     /* if there is have dirty area, start flush to display */
     if(dirty_flag) {
         /* flush dirty area into screen */
-        sgl_panel_flush_area(surf->x, surf->y, surf->w, dirty_h, &surf->buffer[surf->x]);
+        sgl_panel_flush_area(surf->x, surf->y, surf->w, dirty_h, surf->buffer);
     }
 }
 
@@ -166,8 +166,9 @@ void sgl_draw_frame(sgl_page_t *page, sgl_area_t *dirty)
     surf->y = dirty->y1;
     surf->x = sgl_max(dirty->x1 - 2, 0);
     surf->w = sgl_min(dirty->x2 - dirty->x1 + 5, head->area.x2 - surf->x);
+    surf->h = surf->size / surf->w;
 
-    SGL_LOG_TRACE("start draw dirty area: x = %d, y = %d, w = %d, h = %d", surf->x, surf->y, surf->w, dirty->y2 - surf->y);
+    SGL_LOG_TRACE("start draw dirty area: x = %d, y = %d, w = %d, h = %d, dirty_h = %d", surf->x, surf->y, surf->w, surf->h, dirty->y2 - surf->y);
 
     while(surf->y < dirty->y2) {
         /* cycle draw widget slice until the end of dirty area */

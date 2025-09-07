@@ -64,7 +64,7 @@ void sgl_draw_fill_circle(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_
 
     for (int y = clip.y1; y <= clip.y2; y++) {
         y2 = sgl_pow2(y - cy);
-        buf = sgl_surf_get_buf(surf, clip.x1, y - surf->y);
+        buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
 
         for (int x = clip.x1; x <= clip.x2; x++, buf++) {
             real_r2 = sgl_pow2(x - cx) + y2;
@@ -122,7 +122,7 @@ void sgl_draw_fill_circle_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t
 
     for (int y = clip.y1; y <= clip.y2; y++) {
         y2 = sgl_pow2(y - cy);
-        buf = sgl_surf_get_buf(surf, clip.x1, y - surf->y);
+        buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
 
         for (int x = clip.x1; x <= clip.x2; x++, buf++) {
             real_r2 = sgl_pow2(x - cx) + y2;
@@ -183,7 +183,7 @@ void sgl_draw_fill_circle_pixmap(sgl_surf_t *surf, sgl_area_t *area, int16_t cx,
 
     for (int y = clip.y1; y <= clip.y2; y++) {
         y2 = sgl_pow2(y - cy);
-        buf = sgl_surf_get_buf(surf, clip.x1, y - surf->y);
+        buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
         sgl_color_t *pixmap_color = sgl_pixmap_get_buf(pixmap, px - (cx - clip.x1), py - (cy - y));
 
         for (int x = clip.x1; x <= clip.x2; x++, buf++, pixmap_color++) {
@@ -244,7 +244,7 @@ void sgl_draw_fill_circle_pixmap_with_alpha(sgl_surf_t *surf, sgl_area_t *area, 
 
     for (int y = clip.y1; y <= clip.y2; y++) {
         y2 = sgl_pow2(y - cy);
-        buf = sgl_surf_get_buf(surf, clip.x1, y - surf->y);
+        buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
         sgl_color_t *pixmap_color = sgl_pixmap_get_buf(pixmap, px - (cx - clip.x1), py - (cy - y));
 
         for (int x = clip.x1; x <= clip.x2; x++, buf++, pixmap_color++) {
@@ -298,7 +298,7 @@ void sgl_draw_fill_circle_with_border(sgl_surf_t *surf, sgl_area_t *area, int16_
 
     for (int y = clip.y1; y <= clip.y2; y++) {
         y2 = sgl_pow2(y - cy);
-        buf = sgl_surf_get_buf(surf, clip.x1, y - surf->y);
+        buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
 
         for (int x = clip.x1; x <= clip.x2; x++, buf++) {
             real_r2 = sgl_pow2(x - cx) + y2;
@@ -359,7 +359,7 @@ void sgl_draw_fill_circle_with_alpha_border(sgl_surf_t *surf, sgl_area_t *area, 
 
     for (int y = clip.y1; y <= clip.y2; y++) {
         y2 = sgl_pow2(y - cy);
-        buf = sgl_surf_get_buf(surf, clip.x1, y - surf->y);
+        buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
 
         for (int x = clip.x1; x <= clip.x2; x++, buf++) {
             real_r2 = sgl_pow2(x - cx) + y2;

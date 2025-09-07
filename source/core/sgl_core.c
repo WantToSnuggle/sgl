@@ -492,8 +492,7 @@ static sgl_page_t* sgl_page_create(void)
     page->surf.y = 0;
     page->surf.w = sgl_device_fb.xres;
     page->surf.h = sgl_device_fb.framebuffer_size / (sgl_device_fb.xres * sizeof(sgl_color_t));
-    page->surf.h_max = sgl_device_fb.yres;
-    page->surf.pitch = sgl_device_fb.xres_virtual;
+    page->surf.size = sgl_device_fb.framebuffer_size / sizeof(sgl_color_t);
     page->color = SGL_WHITE;
 
     obj->parent = obj;

@@ -4,7 +4,7 @@
  *
  * Copyright(c) 2023-present All contributors of SGL  
  * Li, Shanwen  (1477153217@qq.com)
- * Document reference link: www.sgl-io.cn
+ * Document reference link: docs directory
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,8 +31,9 @@
 #include <sgl.h>
 
 
-#define  CONFIG_SGL_PANEL_WIDTH    800
-#define  CONFIG_SGL_PANEL_HEIGHT   480
+#define  CONFIG_SGL_PANEL_WIDTH         800
+#define  CONFIG_SGL_PANEL_HEIGHT        480
+#define  CONFIG_SGL_PANEL_BUFFER_LINE   40
 
 
 static SDL_Renderer * m_renderer = NULL;
@@ -92,6 +93,7 @@ static uint32_t system_tick(uint32_t interval, void *param)
 {
     sgl_mm_monitor_t mm = sgl_mm_get_monitor();
     sgl_port_sdl2_t *sdl2_dev = (sgl_port_sdl2_t*)param;
+    SGL_UNUSED(mm);
     SGL_LOG_INFO("SGL SDL2 Frame = %d", sdl2_dev->frame_count);
 
     SGL_LOG_INFO("Memory: total: %lld used: %lld, free = %lld", mm.total_size, mm.used_size, mm.free_size);
@@ -140,7 +142,8 @@ static int mouse_event_interrupt(void *userdata, SDL_Event *event)
 static void panel_flush_area(int16_t x, int16_t y, int16_t w, int16_t h, sgl_color_t *src)
 {
     sgl_color_t *dest = sdl2_frame_buffer;
-    dest += x + y * CONFIG_SGL_PANEL_WIDTH;
+    dest += (x + y * CONFIG_SGL_PANEL_WIDTH);
+    SGL_LOG_WARN("SGL SDL2 flush area: %d, %d, %d, %d", x, y, w, h);
 
     for(int i = 0; i < h; i ++) {
         memcpy(dest, src, w * sizeof(sgl_color_t));
@@ -152,7 +155,7 @@ static void panel_flush_area(int16_t x, int16_t y, int16_t w, int16_t h, sgl_col
 }
 
 
-static sgl_color_t panel_buffer[CONFIG_SGL_PANEL_WIDTH * 40] = {0};
+static sgl_color_t panel_buffer[CONFIG_SGL_PANEL_WIDTH * CONFIG_SGL_PANEL_BUFFER_LINE] = {0};
 
 
 void log_stdout(const char *str)
@@ -173,7 +176,7 @@ sgl_port_sdl2_t* sgl_port_sdl2_init(void)
         .yres_virtual = CONFIG_SGL_PANEL_HEIGHT,
         .flush_area = panel_flush_area,
         .framebuffer = panel_buffer,
-        .framebuffer_size = sizeof(panel_buffer),
+        .framebuffer_size = CONFIG_SGL_PANEL_WIDTH * CONFIG_SGL_PANEL_BUFFER_LINE * sizeof(sgl_color_t),
     };
 
     sgl_device_fb_register(&fb_dev);
