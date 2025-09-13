@@ -121,6 +121,7 @@ void sgl_draw_fill_arc(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_arc_t *desc)
     int in_r2_max = sgl_pow2(desc->radius_in - 1);
     int out_r2_max = sgl_pow2(desc->radius_out + 1);
     int32_t rate = (0xff00) / (in_r2 - in_r2_max);
+    int32_t rate2 = (0xff00) / (out_r2_max - out_r2);
 
     sgl_color_t *buf = NULL;
     int32_t dx, dy;
@@ -194,7 +195,7 @@ void sgl_draw_fill_arc(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_arc_t *desc)
             }
             else if (real_r2 > out_r2) {
                 if(inv_outer == 0) {
-                    inv_outer = (0xff00) / (out_r2_max - out_r2);
+                    inv_outer = rate2;
                 }
                 alpha = (out_r2_max - real_r2) * inv_outer >> 8;
             }
@@ -263,6 +264,7 @@ void sgl_draw_fill_arc_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_a
     int in_r2_max = sgl_pow2(desc->radius_in - 1);
     int out_r2_max = sgl_pow2(desc->radius_out + 1);
     int32_t rate = (0xff00) / (in_r2 - in_r2_max);
+    int32_t rate2 = (0xff00) / (out_r2_max - out_r2);
 
     sgl_color_t *buf = NULL;
     int32_t dx, dy;
@@ -332,11 +334,11 @@ void sgl_draw_fill_arc_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_a
                 if(inv_inner == 0) {
                     inv_inner = rate;
                 }
-                edge_alpha  = (real_r2 - in_r2_max) *inv_inner >> 8;
+                edge_alpha  = (real_r2 - in_r2_max) * inv_inner >> 8;
             }
             else if (real_r2 > out_r2) {
                 if(inv_outer == 0) {
-                    inv_outer = (0xff00) / (out_r2_max - out_r2);
+                    inv_outer = rate2;
                 }
                 edge_alpha = (out_r2_max - real_r2) * inv_outer >> 8;
             }

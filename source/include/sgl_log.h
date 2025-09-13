@@ -174,7 +174,7 @@ void sgl_assert_handler(const char *file, const char *func, int line);
 #endif
 
 
-#if CONFIG_DEBUG
+#if CONFIG_SGL_DEBUG
 #define SGL_DEBUG_TRACE(...)             sgl_log(SGL_DEBUG_TRACE_FLAG, __VA_ARGS__)
 #else
 #define SGL_DEBUG_TRACE(...)             do {}while(0)

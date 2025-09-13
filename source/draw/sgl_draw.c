@@ -79,10 +79,10 @@ static inline void draw_widget_slice(sgl_page_t *page, sgl_surf_t *surf, int16_t
 static bool draw_calculate_dirty_area(sgl_page_t *page, sgl_area_t *dirty)
 {
     bool need_draw = false;
-    sgl_obj_t *obj = NULL;
+    sgl_obj_t *obj = NULL, *n = NULL;
 
     /* for each all object from the first task of page */
-    sgl_page_for_each_slot(obj, page) {
+    sgl_page_for_each_slot_safe(obj, n, page) {
 
         if(sgl_obj_is_hidden(obj)) {
             continue;

@@ -238,7 +238,7 @@ typedef struct sgl_pixmap {
     const uint8_t *bitmap;
     uint32_t       width : 12;
     uint32_t       height : 12;
-    uint32_t       format : 4;
+    uint32_t       format : 8;
 }sgl_pixmap_t;
 
 
@@ -253,7 +253,7 @@ typedef struct sgl_icon_pixmap {
     const uint8_t *bitmap;
     uint32_t       width : 12;
     uint32_t       height : 12;
-    uint32_t       bpp : 4;
+    uint32_t       bpp : 8;
 }sgl_icon_pixmap_t;
 
 
@@ -269,10 +269,10 @@ typedef struct sgl_icon_pixmap {
 */
 typedef struct sgl_font_table {
     const uint32_t bitmap_index;
-    const uint16_t box_h;
-    const uint16_t box_w;
-    const uint16_t ofs_x;
-    const uint16_t ofs_y;
+    const int16_t box_h;
+    const int16_t box_w;
+    const int16_t ofs_x;
+    const int16_t ofs_y;
 
 }sgl_font_table_t;
 
@@ -293,7 +293,7 @@ typedef struct sgl_font {
     uint16_t  font_table_size;
     uint16_t  font_height : 12;
     uint16_t  bpp : 4;          // AA depth TODO: add 1, 2, 4, 8 bpp
-#ifdef CONFIG_SGL_TEXT_UTF8
+#if (CONFIG_SGL_TEXT_UTF8)
     const uint16_t *unicode_list;
     uint32_t unicode_list_len;
 #endif
@@ -348,18 +348,22 @@ typedef struct sgl_obj {
     void               (*set_style)(struct sgl_obj *obj, sgl_style_type_t type, size_t value);
     size_t             (*get_style)(struct sgl_obj *obj, sgl_style_type_t type);
 #endif
+
+#if (CONFIG_SGL_OBJ_SLOT_DYNAMIC)
+    sgl_list_node_t    slot;
+#endif
     uint8_t            destroyed: 1;
     uint8_t            dirty: 1;
     uint8_t            hide: 1;
     uint8_t            needinit: 1;
-    uint8_t            h_layout: 1;
-    uint8_t            v_layout: 1;
+    uint8_t            layout: 2;
     uint8_t            clickable: 1;
     uint8_t            movable: 1;
     uint8_t            margin;
     uint16_t           flexible: 1;
     uint16_t           invalid: 1;
     uint16_t           pressed: 1;
+    uint16_t           clip: 1;
     uint16_t           radius: 12;
 #if CONFIG_SGL_USE_OBJ_ID
     size_t             id;
@@ -388,8 +392,12 @@ typedef struct sgl_obj {
 typedef struct sgl_page {
     sgl_obj_t       obj;
     sgl_surf_t      surf;
+#if (CONFIG_SGL_OBJ_SLOT_DYNAMIC)
+    sgl_list_node_t head;
+#else
     sgl_obj_t       *slot[SGL_OBJ_SLOT_SIZE + 1];
     uint32_t        slot_count;
+#endif
     sgl_color_t     color;
     sgl_pixmap_t    *bg_img;
 }sgl_page_t;
@@ -569,6 +577,36 @@ static inline sgl_color_t sgl_rgb2color(uint8_t red, uint8_t green, uint8_t blue
 #define SGL_ICON(x)                                               (size_t)(&(x))
 
 
+
+#if (CONFIG_SGL_OBJ_SLOT_DYNAMIC)
+/**
+ * @brief for each all slot of page
+ * @param _obj: pointer of object
+ * @param page: pointer of page object
+ * @note it's a for cycle macro
+ */
+#define  sgl_page_for_each_slot(_obj, page)                       sgl_list_for_each_entry(_obj, &page->head, sgl_obj_t, slot)
+
+
+/**
+ * @brief for each all slot of page with safe
+ * @param _obj: pointer of object
+ * @param page: pointer of page object
+ * @note it's a for cycle macro
+ */
+#define  sgl_page_for_each_slot_safe(_obj, n, page)               sgl_list_for_each_entry_safe(_obj, n, &page->head, sgl_obj_t, slot)
+
+
+/**
+ * @brief for each all slot of page
+ * @param _obj: pointer of object
+ * @param page: pointer of page object
+ * @note it's a for cycle macro
+ */
+#define  sgl_page_for_each_slot_reverse(_obj, page)               sgl_list_for_each_entry_reverse(_obj, &page->head, sgl_obj_t, slot)
+
+
+#else
 /**
  * @brief for each all slot of page
  * @param _obj: pointer of object
@@ -579,12 +617,23 @@ static inline sgl_color_t sgl_rgb2color(uint8_t red, uint8_t green, uint8_t blue
 
 
 /**
+ * @brief for each all slot of page with safe
+ * @param _obj: pointer of object
+ * @param page: pointer of page object
+ * @note it's a for cycle macro
+ */
+#define  sgl_page_for_each_slot_safe(_obj, n, page)               (void)n; _obj = page->slot[0]; for (uint32_t i = 0; i < page->slot_count; i++, _obj = page->slot[i])
+
+
+/**
  * @brief for each all slot of page
  * @param _obj: pointer of object
  * @param page: pointer of page object
  * @note it's a for cycle macro
  */
 #define  sgl_page_for_each_slot_reverse(_obj, page)               _obj = page->slot[page->slot_count - 1]; for (uint32_t i = page->slot_count - 1; i > 0; i--, _obj = page->slot[i])
+
+#endif
 
 
 /**
@@ -633,35 +682,6 @@ void sgl_obj_add_child(sgl_obj_t *parent, sgl_obj_t *obj);
  * @return none
  */
 void sgl_obj_remove(sgl_obj_t *obj);
-
-
-/**
- * @brief add object to page slot
- * @param page: pointer of page
- * @param obj: pointer of object
- * @return none
- */
-static inline void sgl_obj_add_to_slot(sgl_page_t *page, sgl_obj_t *obj)
-{
-    SGL_ASSERT(page != NULL && obj != NULL);
-    page->slot[page->slot_count] = obj;
-    page->slot_count ++;
-}
-
-
-/**
- * @brief init page slot
- * @param page: pointer of page
- * @return none
- * @note this function only initialize the count to 0 and add obj of page to page slot
- */
-static inline void sgl_page_slot_init(sgl_page_t *page)
-{
-    SGL_ASSERT(page != NULL);
-    page->slot_count = 0;
-    /* init draw task list  */
-    sgl_obj_add_to_slot(page, &page->obj);
-}
 
 
 /**
@@ -891,6 +911,42 @@ static inline bool sgl_obj_is_clickable(sgl_obj_t *obj)
 {
     SGL_ASSERT(obj != NULL);
     return obj->clickable == 1 ? true : false;
+}
+
+
+/**
+ * @brief set object flexible
+ * @param obj point to object
+ * @return none
+ */
+static inline void sgl_obj_set_flexible(sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL);
+    obj->flexible = 1;
+}
+
+
+/**
+ * @brief set object unflexible
+ * @param obj point to object
+ * @return none
+ */
+static inline void sgl_obj_set_unflexible(sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL);
+    obj->flexible = 0;
+}
+
+
+/**
+ * @brief check object flexible
+ * @param obj point to object
+ * @return true or false
+ */
+static inline bool sgl_obj_is_flexible(sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL);
+    return obj->flexible == 1 ? true : false;
 }
 
 
@@ -1196,18 +1252,6 @@ sgl_page_t* sgl_page_get_active(void);
 
 
 /**
- * @brief get page slot count
- * @param page: page
- * @return slot count
- */
-static inline uint32_t sgl_page_get_slot_count(sgl_page_t *page)
-{
-    SGL_ASSERT(page != NULL);
-    return page->slot_count;
-}
-
-
-/**
  * @brief color mixer
  * @param fg_color : foreground color
  * @param bg_color : background color
@@ -1340,14 +1384,6 @@ void sgl_init(void);
 
 
 /**
- * @brief allocate a sgl object
- * @param parent the parent of object that you want to create
- * @return the pointer of object
- */
-sgl_obj_t* sgl_obj_alloc(sgl_obj_t *parent);
-
-
-/**
  * @brief  free an object
  * @param  obj: object to free
  * @retval none
@@ -1365,7 +1401,7 @@ void sgl_obj_free(sgl_obj_t *obj);
 int sgl_obj_init(sgl_obj_t *obj, sgl_obj_t *parent);
 
 
-#if(CONFIG_SGL_TEXT_UTF8 == 1)
+#if (CONFIG_SGL_TEXT_UTF8)
 
 /**
  * @brief Convert UTF-8 string to Unicode

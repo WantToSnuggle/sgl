@@ -95,6 +95,12 @@ extern "C" {
 #define SGL_STYLE_INVALID                       (UINT32_MAX)
 
 
+#define SGL_COLOR_RGB233                        (8)
+#define SGL_COLOR_RGB565                        (16)
+#define SGL_COLOR_RGB888                        (24)
+#define SGL_COLOR_ARGB8888                      (32)
+
+
 #ifdef __GNUC__   /* gcc compiler      */
 #define likely(x)                               __builtin_expect(!!(x), 1)
 #define unlikely(x)                             __builtin_expect(!!(x), 0)
@@ -137,11 +143,11 @@ extern "C" {
 
 
 // prototype: sgl_rgb(uint8_t r, uint8_t g, uint8_t b)
-#if (CONFIG_SGL_PANEL_PIXEL_DEPTH == 32 || CONFIG_SGL_PANEL_PIXEL_DEPTH == 24)
+#if (CONFIG_SGL_PANEL_PIXEL_DEPTH == SGL_COLOR_ARGB8888 || CONFIG_SGL_PANEL_PIXEL_DEPTH == SGL_COLOR_RGB888)
 #define sgl_rgb(r,g,b)                          (sgl_color_t){ .ch.blue    = (b),              \
                                                                .ch.green   = (g),              \
                                                                .ch.red     = (r),}
-#elif (CONFIG_SGL_PANEL_PIXEL_DEPTH == 16)
+#elif (CONFIG_SGL_PANEL_PIXEL_DEPTH == SGL_COLOR_RGB565)
 #if CONFIG_SGL_COLOR16_SWAP                   
 #define sgl_rgb(r,g,b)                          (sgl_color_t){ .ch.green_h = (g >>2) >> 3,     \
                                                                .ch.red     = (r) >> 3,         \
@@ -152,7 +158,7 @@ extern "C" {
                                                                .ch.green   = (g) >> 2,         \
                                                                .ch.red     = (r) >> 3,}
 #endif
-#elif (CONFIG_SGL_PANEL_PIXEL_DEPTH == 8)
+#elif (CONFIG_SGL_PANEL_PIXEL_DEPTH == SGL_COLOR_RGB233)
 #define sgl_rgb(r,g,b)                          (sgl_color_t){ .ch.blue    = (b >> 6),         \
                                                                .ch.green   = (g >> 5),         \
                                                                .ch.red     = (r >> 5),}

@@ -44,6 +44,7 @@
 void sgl_draw_fill_hline(sgl_surf_t *surf, sgl_area_t *area, int16_t y, int16_t x1, int16_t x2, int16_t width, sgl_color_t color)
 {
     sgl_area_t clip;
+    sgl_color_t *buf = NULL;
     sgl_area_t coords = {
         .x1 = x1,
         .y1 = y,
@@ -59,8 +60,11 @@ void sgl_draw_fill_hline(sgl_surf_t *surf, sgl_area_t *area, int16_t y, int16_t 
         return;
     }
 
-    for(int i = coords.y1; i <= coords.y2; i++) {
-        sgl_surf_hline(surf, i - surf->y, coords.x1, coords.x2, color);
+    for(int y = coords.y1; y <= coords.y2; y++) {
+        buf = sgl_surf_get_buf(surf,  coords.x1 - surf->x, y - surf->y);
+        for(int x = coords.x1; x <= coords.x2; x++, buf++) {
+            *buf = color;
+        }
     }
 }
 
@@ -80,6 +84,7 @@ void sgl_draw_fill_hline(sgl_surf_t *surf, sgl_area_t *area, int16_t y, int16_t 
 void sgl_draw_fill_hline_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t y, int16_t x1, int16_t x2, int16_t width, sgl_color_t color, uint8_t alpha)
 {
     sgl_area_t clip;
+    sgl_color_t *buf = NULL;
     sgl_area_t coords = {
         .x1 = x1,
         .y1 = y,
@@ -95,9 +100,10 @@ void sgl_draw_fill_hline_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t 
         return;
     }
 
-    for(int i = coords.y1; i <= coords.y2; i++) {
-        for(int j = coords.x1; j <= coords.x2; j++) {
-            sgl_surf_set_pixel(surf, j, i - surf->y, sgl_color_mixer(color, sgl_surf_get_pixel(surf, j, i - surf->y), alpha));
+    for(int y = coords.y1; y <= coords.y2; y++) {
+        buf = sgl_surf_get_buf(surf,  coords.x1 - surf->x, y - surf->y);
+        for(int x = coords.x1; x <= coords.x2; x++, buf++) {
+            *buf = sgl_color_mixer(color, *buf, alpha);
         }
     }
 }

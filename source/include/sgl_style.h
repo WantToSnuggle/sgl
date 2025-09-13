@@ -27,6 +27,12 @@
 #define __SGL_STYLE_H__
 
 
+#define  SGL_LAYOUT_NONE                           (0)
+#define  SGL_LAYOUT_HORIZONTAL                     (1)
+#define  SGL_LAYOUT_VERTICAL                       (2)
+#define  SGL_LAYOUT_GRID                           (3)
+
+
 typedef enum sgl_style_type {
     SGL_STYLE_POS_X = 0,
     SGL_STYLE_POS_Y,

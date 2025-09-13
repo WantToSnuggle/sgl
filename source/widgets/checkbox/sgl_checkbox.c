@@ -70,9 +70,8 @@ void sgl_checkbox_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
         break;
 
     case SGL_STYLE_RADIUS:
-        int r_min = sgl_obj_fix_radius(obj, value);
-        checkbox->select_bg.radius = r_min;
-        checkbox->select.radius = r_min / 2;
+        checkbox->select_bg.radius = sgl_obj_fix_radius(obj, value);
+        checkbox->select.radius = checkbox->select_bg.radius / 2;
         break;
 
     case SGL_STYLE_TEXT_COLOR:

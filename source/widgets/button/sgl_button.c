@@ -225,20 +225,24 @@ static void sgl_button_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
         }
     }
     else if(evt->type == SGL_EVENT_PRESSED) {
-        obj->coords.x1 -= 2;
-        obj->coords.x2 += 2;
-        obj->coords.y1 -= 2;
-        obj->coords.y2 += 2;
+        if(sgl_obj_is_flexible(obj)) {
+            obj->coords.x1 -= 2;
+            obj->coords.x2 += 2;
+            obj->coords.y1 -= 2;
+            obj->coords.y2 += 2;
+        }
 
         if(obj->event_fn) {
             obj->event_fn(evt);
         }
     }
     else if(evt->type == SGL_EVENT_RELEASED) {
-        obj->coords.x1 += 2;
-        obj->coords.x2 -= 2;
-        obj->coords.y1 += 2;
-        obj->coords.y2 -= 2;
+        if(sgl_obj_is_flexible(obj)) {
+            obj->coords.x1 += 2;
+            obj->coords.x2 -= 2;
+            obj->coords.y1 += 2;
+            obj->coords.y2 -= 2;
+        }
 
         if(obj->event_fn) {
             obj->event_fn(evt);
@@ -267,6 +271,7 @@ sgl_obj_t* sgl_button_create(sgl_obj_t* parent)
     sgl_obj_t *obj = &button->obj;
     sgl_obj_init(&button->obj, parent);
     sgl_obj_set_clickable(obj);
+    sgl_obj_set_flexible(obj);
 
     obj->construct_fn = sgl_button_construct_cb;
 #if CONFIG_SGL_USE_STYLE_UNIFIED_API

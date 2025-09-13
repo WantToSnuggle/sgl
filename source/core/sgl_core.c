@@ -38,6 +38,7 @@ static size_t obj_global_id = 0;
 #endif
 
 
+/* current context, page pointer, and dirty area and started flag */
 static struct {
     sgl_page_t *page;
     bool started;
@@ -194,6 +195,163 @@ void sgl_obj_add_child(sgl_obj_t *parent, sgl_obj_t *obj)
 }
 
 
+#if (CONFIG_SGL_OBJ_SLOT_DYNAMIC)
+
+/**
+ * @brief add object to task list
+ * @param page: pointer of page
+ * @param obj: pointer of object
+ * @return none
+ */
+static inline void sgl_obj_add_to_task(sgl_page_t *page, sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL && obj != NULL);
+    sgl_list_add_node_at_tail(&page->head, &obj->slot);
+}
+
+
+/**
+ * @brief init page slot
+ * @param page: pointer of page
+ * @return none
+ * @note this function only initialize the count to 0 and add obj of page to page slot
+ */
+static inline void sgl_page_slot_init(sgl_page_t *page)
+{
+    SGL_ASSERT(page != NULL);
+    /* init draw task list  */
+    sgl_list_init(&page->head);
+    /* add obj of page to page slot */
+    sgl_obj_add_to_task(page, &page->obj);
+}
+
+
+/**
+ * @brief Add an object to the event task
+ * @param head The head of the object list
+ * @return none
+ */
+void add_obj_to_page_slot(sgl_obj_t *head)
+{
+    SGL_ASSERT(head != NULL);
+    sgl_obj_t *child = NULL;
+
+    sgl_obj_for_each_child(child, head) {
+        /* update child's area */
+        if(!sgl_area_clip(&child->parent->area, &child->coords, &child->area)) {
+            sgl_obj_set_invalid(child);
+        }
+
+        sgl_obj_add_to_task(current_ctx.page, child);
+
+        /* if the object has child, add them to task list too */
+        if(sgl_obj_has_child(child)) {
+            add_obj_to_page_slot(child);
+        }
+    }
+}
+
+
+/**
+ * @brief free object slot
+ * @param obj: pointer of object
+ * @return none
+ */
+static inline void obj_free_slot(sgl_obj_t *obj)
+{
+    sgl_list_del_node(&obj->slot);
+    sgl_free(obj);
+}
+
+
+/**
+ * @brief get last child of an object
+ * @param obj object
+ * @return last child
+ */
+static inline sgl_obj_t* sgl_obj_get_last_child(sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL);
+    sgl_obj_t *child = NULL;
+
+    sgl_obj_for_each_child(child, obj) {
+        if(child->sibling == NULL) {
+            return child;
+        }
+    }
+
+    return NULL;
+}
+
+
+/**
+ * @brief init object slot
+ * @param parent: pointer of parent object
+ * @param obj: pointer of object
+ * @return none
+ */
+static inline void obj_slot_init(sgl_obj_t *parent, sgl_obj_t *obj)
+{
+    /* construct object tree */
+    sgl_obj_node_init(obj);
+
+    /* if first add object, find the last task and add object to the end of task list */
+    if(current_ctx.started) {
+        sgl_obj_t *sibling = sgl_obj_get_last_child(parent);
+        if(sibling != NULL) {
+            sgl_list_add_node_at_after(&sibling->slot, &obj->slot);
+        }
+        else {
+            sgl_list_add_node_at_after(&parent->slot, &obj->slot);
+        }
+    }
+
+    /* add object to parent's child list */
+    sgl_obj_add_child(parent, obj);
+}
+
+#else
+/**
+ * @brief add object to page slot
+ * @param page: pointer of page
+ * @param obj: pointer of object
+ * @return none
+ */
+static inline void sgl_obj_add_to_slot(sgl_page_t *page, sgl_obj_t *obj)
+{
+    SGL_ASSERT(page != NULL && obj != NULL);
+    page->slot[page->slot_count] = obj;
+    page->slot_count ++;
+}
+
+
+/**
+ * @brief init page slot
+ * @param page: pointer of page
+ * @return none
+ * @note this function only initialize the count to 0 and add obj of page to page slot
+ */
+static inline void sgl_page_slot_init(sgl_page_t *page)
+{
+    SGL_ASSERT(page != NULL);
+    page->slot_count = 0;
+    /* init draw task list  */
+    sgl_obj_add_to_slot(page, &page->obj);
+}
+
+
+/**
+ * @brief get page slot count
+ * @param page: page
+ * @return slot count
+ */
+static inline uint32_t sgl_page_get_slot_count(sgl_page_t *page)
+{
+    SGL_ASSERT(page != NULL);
+    return page->slot_count;
+}
+
+
 /**
  * @brief Add all objects to the page slot
  * @param head The head of the object list
@@ -223,6 +381,43 @@ static void add_obj_to_page_slot(sgl_obj_t *head)
         }
     }
 }
+
+
+/**
+ * @brief free object slot
+ * @param obj: pointer of object
+ * @return none
+ */
+static inline void obj_free_slot(sgl_obj_t *obj)
+{
+    /* free object */
+    sgl_free(obj);
+
+    /* clear page slot */
+    sgl_page_slot_init(current_ctx.page);
+    /* add all object to page slot */
+    add_obj_to_page_slot(&current_ctx.page->obj);
+}
+
+
+/**
+ * @brief to init object slot
+ * @param parent: parent object
+ * @param obj: object
+ * @return none
+ */
+static inline void obj_slot_init(sgl_obj_t *parent, sgl_obj_t *obj)
+{
+    /* add object to parent's child list */
+    sgl_obj_add_child(parent, obj);
+
+    /* if first add object, find the last task and add object to the end of task list */
+    if(current_ctx.started) {
+        current_ctx.page->slot_count = 1;
+        add_obj_to_page_slot(&current_ctx.page->obj);
+    }
+}
+#endif
 
 
 /**
@@ -627,13 +822,13 @@ sgl_page_t* sgl_page_get_active(void)
 sgl_color_t sgl_color_mixer(sgl_color_t fg_color, sgl_color_t bg_color, uint8_t factor)
 {
     sgl_color_t ret;
-#if (CONFIG_SGL_PANEL_PIXEL_DEPTH == 8)
+#if (CONFIG_SGL_PANEL_PIXEL_DEPTH == SGL_COLOR_RGB233)
 
     ret.ch.red   = bg_color.ch.red + ((fg_color.ch.red - bg_color.ch.red) * (factor >> 5) >> 3);
     ret.ch.green = bg_color.ch.green + ((fg_color.ch.green - bg_color.ch.green) * (factor >> 5) >> 3);
     ret.ch.blue  = bg_color.ch.blue + ((fg_color.ch.blue - bg_color.ch.blue) * (factor >>6) >> 2);
 
-#elif (CONFIG_SGL_PANEL_PIXEL_DEPTH == 16)
+#elif (CONFIG_SGL_PANEL_PIXEL_DEPTH == SGL_COLOR_RGB565)
 
 #if CONFIG_SGL_COLOR16_SWAP
     uint16_t fgc = (fg_color.full >> 8) | (fg_color.full & 0xFF) << 8;
@@ -652,13 +847,13 @@ sgl_color_t sgl_color_mixer(sgl_color_t fg_color, sgl_color_t bg_color, uint8_t 
     ret.full = (rxb & 0xF81F) | (xgx & 0x07E0);
 #endif
 
-#elif (CONFIG_SGL_PANEL_PIXEL_DEPTH == 24)
+#elif (CONFIG_SGL_PANEL_PIXEL_DEPTH == SGL_COLOR_RGB888)
 
     ret.ch.red   = bg_color.ch.red + ((fg_color.ch.red - bg_color.ch.red) * factor >> 8);
     ret.ch.green = bg_color.ch.green + ((fg_color.ch.green - bg_color.ch.green) * factor >> 8);
     ret.ch.blue  = bg_color.ch.blue + ((fg_color.ch.blue - bg_color.ch.blue) * factor >> 8);
 
-#elif (CONFIG_SGL_PANEL_PIXEL_DEPTH == 32)
+#elif (CONFIG_SGL_PANEL_PIXEL_DEPTH == SGL_COLOR_ARGB8888)
 
     ret.ch.alpha = bg_color.ch.alpha + ((fg_color.ch.alpha - bg_color.ch.alpha) * factor >> 8);
     ret.ch.red   = bg_color.ch.red + ((fg_color.ch.red - bg_color.ch.red) * factor >> 8);
@@ -862,7 +1057,7 @@ void sgl_init(void)
 void sgl_obj_set_horizontal_layout(sgl_obj_t *obj)
 {
     SGL_ASSERT(obj != NULL);
-    obj->h_layout = 1;
+    obj->layout = SGL_LAYOUT_HORIZONTAL;
     if(! sgl_obj_has_child(obj)) {
         return;
     }
@@ -892,7 +1087,7 @@ void sgl_obj_set_horizontal_layout(sgl_obj_t *obj)
 void sgl_obj_set_vertical_layout(sgl_obj_t *obj)
 {
     SGL_ASSERT(obj != NULL);
-    obj->v_layout = 1;
+    obj->layout = SGL_LAYOUT_VERTICAL;
     if(! sgl_obj_has_child(obj)) {
         return;
     }
@@ -911,6 +1106,19 @@ void sgl_obj_set_vertical_layout(sgl_obj_t *obj)
         child->coords.x1 = obj->coords.x1 + margin;
         child->coords.x2 = obj->coords.x2 - margin;
     }
+}
+
+
+/**
+ * @brief set object grid layout
+ * @param obj point to object
+ * @return none
+ */
+void sgl_obj_set_grid_layout(sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL);
+    obj->layout = SGL_LAYOUT_GRID;
+    /* TODO: set grid layout */
 }
 
 
@@ -951,20 +1159,16 @@ int sgl_obj_init(sgl_obj_t *obj, sgl_obj_t *parent)
     obj_global_id ++;
 #endif
 
-    /* add object to parent's child list */
-    sgl_obj_add_child(parent, obj);
+    obj_slot_init(parent, obj);
 
-    /* if first add object, find the last task and add object to the end of task list */
-    if(current_ctx.started) {
-        current_ctx.page->slot_count = 1;
-        add_obj_to_page_slot(&current_ctx.page->obj);
-    }
-
-    if(parent->v_layout) {
+    if(parent->layout == SGL_LAYOUT_HORIZONTAL) {
         sgl_obj_set_vertical_layout(parent);
     }
-    else if(parent->h_layout) {
+    else if(parent->layout == SGL_LAYOUT_VERTICAL) {
         sgl_obj_set_horizontal_layout(parent);
+    }
+    else if(parent->layout == SGL_LAYOUT_GRID) {
+        sgl_obj_set_grid_layout(parent);
     }
 
     return 0;
@@ -986,13 +1190,8 @@ void sgl_obj_free(sgl_obj_t *obj)
         obj->destroyed = 0;
         return;
     }
-    /* free object */
-    sgl_free(obj);
-
-    /* clear page slot */
-    sgl_page_slot_init(current_ctx.page);
-    /* add all object to page slot */
-    add_obj_to_page_slot(&current_ctx.page->obj);
+    
+    obj_free_slot(obj);
 }
 
 
@@ -1007,8 +1206,7 @@ static inline void sgl_obj_print_all_task_id(void)
     sgl_obj_t *pos = NULL;
     sgl_page_t *page = current_ctx.page;
 
-    for (uint32_t i = 0; i < page->slot_count; i++) {
-        pos = page->slot[i];
+    sgl_page_for_each_slot(pos, page) {
         SGL_LOG_INFO("DRAW TASK  ID:  %d", pos->id);
     }
 }

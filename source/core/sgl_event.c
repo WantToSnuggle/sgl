@@ -35,11 +35,6 @@
 #define SGL_EVENT_QUEUE_SIZE  CONFIG_SGL_EVENT_QUEUE_SIZE
 
 
-/* delcaration of sgl_obj_t */
-typedef struct sgl_obj sgl_obj_t;
-typedef struct sgl_page sgl_page_t;
-
-
 /**
  * @brief event lost object
  * @note this object is used to recode event lost object
@@ -51,7 +46,7 @@ static sgl_event_pos_t touch_atc_pos[2] = {
 };
 
 
-struct event_queue {
+static struct event_queue {
     sgl_event_t* buffer;
     uint16_t capacity;
     uint16_t head;

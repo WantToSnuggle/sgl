@@ -9,12 +9,11 @@
 
 #define    CONFIG_SGL_PANEL_PIXEL_DEPTH       32
 #define    CONFIG_SGL_EVENT_QUEUE_SIZE        16
-#define    CONFIG_SGL_OBJ_NUM_MAX             100
+#define    CONFIG_SGL_OBJ_SLOT_DYNAMIC        1
 #define    CONFIG_SGL_DEBUG                   1
 #define    CONFIG_SGL_LOG_COLOR               1
 #define    CONFIG_SGL_LOG_LEVEL               0
 #define    CONFIG_SGL_FONT                    1
-#define    CONFIG_SGL_TEXT_UTF8               1
 #define    CONFIG_SGL_USE_OBJ_ID              1
 #define    CONFIG_SGL_USE_STYLE_UNIFIED_API     1
 #define    CONFIG_SGL_HEAP_ALGO               lwmem
