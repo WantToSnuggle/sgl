@@ -27,7 +27,7 @@
 #include <sgl_mm.h>
 #include "lwmem.h"
 #include <sgl_log.h>
-#include <sgl_config.h>
+#include <sgl_cfgfix.h>
 
 
 static sgl_mm_monitor_t mem = {

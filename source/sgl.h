@@ -29,6 +29,7 @@
 
 #include <sgl_list.h>
 #include <sgl_core.h>
+#include <sgl_anim.h>
 #include <sgl_types.h>
 #include "widgets/line/sgl_line.h"
 #include "widgets/rectangle/sgl_rectangle.h"

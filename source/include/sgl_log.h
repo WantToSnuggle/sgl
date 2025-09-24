@@ -26,7 +26,7 @@
 #ifndef __SGL_LOG_H__
 #define __SGL_LOG_H__
 
-#include <sgl_config.h>
+#include <sgl_cfgfix.h>
 
 
 #ifdef __cplusplus

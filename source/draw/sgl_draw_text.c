@@ -73,8 +73,11 @@ void sgl_draw_character( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t 
     int offset_y2 = font->font_height - font->table[ch_index].ofs_y;
     const uint8_t *dot = &font->bitmap[font->table[ch_index].bitmap_index];
     const uint8_t font_w = font->table[ch_index].box_w;
+    int rel_x, rel_y, byte_x, dot_index;
+    uint8_t alpha_byte, alpha_dot;
     sgl_area_t clip;
     sgl_color_t *buf = NULL;
+
     sgl_area_t text_rect = {
         .x1 = x + font->table[ch_index].ofs_x,
         .x2 = x + font_w - 1,
@@ -90,18 +93,25 @@ void sgl_draw_character( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t 
         return;
     }
 
-    for(int y = clip.y1; y <= clip.y2; y ++) {
+    for (int y = clip.y1; y <= clip.y2; y++) {
         buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
-        for(int x = clip.x1; x <= clip.x2; x += 2) {
-            uint8_t aplha = dot[((x - text_rect.x1) >> 1) + ((y - text_rect.y1) * font_w >> 1)];
-            *buf = sgl_color_mixer(color, bg_color, ((aplha >> 4) & 0xF) * 16);
-            buf ++;
+        rel_y = y - text_rect.y1;
 
-            if((x + 2) > clip.x2)
-                continue;
+        for (int x = clip.x1; x <= clip.x2; x++) {
+            rel_x = x - text_rect.x1;
 
-            *buf = sgl_color_mixer(color, bg_color, ((aplha) & 0xF) * 16);
-            buf ++;
+            byte_x = rel_x >> 1;
+            dot_index = byte_x + (rel_y * (font_w >> 1));
+            alpha_byte = dot[dot_index];
+
+            if (rel_x & 1) {
+                alpha_dot = alpha_byte & 0xF;
+            } else {
+                alpha_dot = (alpha_byte >> 4) & 0xF;
+            }
+
+            *buf = sgl_color_mixer(color, bg_color, alpha_dot * 16);
+            buf++;
         }
     }
 }
@@ -127,6 +137,9 @@ void sgl_draw_character_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, in
     const uint8_t font_w = font->table[ch_index].box_w;
     sgl_area_t clip;
     sgl_color_t *buf = NULL;
+    int rel_x, rel_y, byte_x, dot_index;
+    uint8_t alpha_byte, alpha_dot;
+
     sgl_area_t text_rect = {
         .x1 = x + font->table[ch_index].ofs_x,
         .x2 = x + font_w - 1,
@@ -142,18 +155,25 @@ void sgl_draw_character_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, in
         return;
     }
 
-    for(int y = clip.y1; y <= clip.y2; y++) {
+    for (int y = clip.y1; y <= clip.y2; y++) {
         buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
-        for(int x = clip.x1; x <= clip.x2; x += 2) {
-            uint8_t aplha = dot[((x - text_rect.x1) >> 1) + ((y - text_rect.y1) * font_w >> 1)];
-            *buf = sgl_color_mixer(color, *buf, ((aplha >> 4) & 0xF) * 16);
-            buf ++;
+        rel_y = y - text_rect.y1;
 
-            if((x + 2) > clip.x2)
-                continue;
+        for (int x = clip.x1; x <= clip.x2; x++) {
+            rel_x = x - text_rect.x1;
 
-            *buf = sgl_color_mixer(color, *buf, ((aplha) & 0xF) * 16);
-            buf ++;
+            byte_x = rel_x >> 1;
+            dot_index = byte_x + (rel_y * (font_w >> 1));
+            alpha_byte = dot[dot_index];
+
+            if (rel_x & 1) {
+                alpha_dot = alpha_byte & 0xF;
+            } else {
+                alpha_dot = (alpha_byte >> 4) & 0xF;
+            }
+
+            *buf = sgl_color_mixer(color, *buf, alpha_dot * 16);
+            buf++;
         }
     }
 }
@@ -178,9 +198,12 @@ void sgl_draw_character_with_alpha( sgl_surf_t *surf, sgl_area_t *area, int16_t 
     int offset_y2 = font->font_height - font->table[ch_index].ofs_y;
     const uint8_t *dot = &font->bitmap[font->table[ch_index].bitmap_index];
     const uint8_t font_w = font->table[ch_index].box_w;
+    int rel_x, rel_y, byte_x, dot_index;
+    uint8_t alpha_byte, alpha_dot;
     sgl_color_t color_mix;
     sgl_color_t *buf = NULL;
     sgl_area_t clip;
+
     sgl_area_t text_rect = {
         .x1 = x + font->table[ch_index].ofs_x,
         .x2 = x + font_w - 1,
@@ -196,21 +219,26 @@ void sgl_draw_character_with_alpha( sgl_surf_t *surf, sgl_area_t *area, int16_t 
         return;
     }
 
-    for(int y = clip.y1; y <= clip.y2; y++) {
+    for (int y = clip.y1; y <= clip.y2; y++) {
         buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
-        for(int x = clip.x1; x <= clip.x2; x += 2) {
-            uint8_t edge_aplha = dot[((x - text_rect.x1) >> 1) + ((y - text_rect.y1) * font_w >> 1)];
+        rel_y = y - text_rect.y1;
 
-            color_mix = sgl_color_mixer(color, *buf, ((edge_aplha >> 4) & 0xF) * 16);
+        for (int x = clip.x1; x <= clip.x2; x++) {
+            rel_x = x - text_rect.x1;
+
+            byte_x = rel_x >> 1;
+            dot_index = byte_x + (rel_y * (font_w >> 1));
+            alpha_byte = dot[dot_index];
+
+            if (rel_x & 1) {
+                alpha_dot = alpha_byte & 0xF;
+            } else {
+                alpha_dot = (alpha_byte >> 4) & 0xF;
+            }
+
+            color_mix = sgl_color_mixer(color, *buf, alpha_dot * 16);
             *buf = sgl_color_mixer(color_mix, *buf, alpha);
-            buf ++;
-
-            if((x + 2) > clip.x2)
-                continue;
-
-            color_mix = sgl_color_mixer(color, *buf, (edge_aplha & 0xF) * 16);
-            *buf = sgl_color_mixer(color_mix, *buf, alpha);
-            buf ++;
+            buf++;
         }
     }
 }

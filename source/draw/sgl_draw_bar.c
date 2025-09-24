@@ -27,7 +27,7 @@
 #include <sgl_draw_cg.h>
 #include <sgl_math.h>
 #include <sgl_log.h>
-#include <sgl_config.h>
+#include <sgl_cfgfix.h>
 #include <sgl_mm.h>
 #include <string.h>
 

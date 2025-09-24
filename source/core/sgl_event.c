@@ -25,7 +25,7 @@
 
 #include <sgl_event.h>
 #include <sgl_math.h>
-#include <sgl_config.h>
+#include <sgl_cfgfix.h>
 #include <sgl_log.h>
 #include <string.h>
 #include <sgl_mm.h>
@@ -278,15 +278,18 @@ static void sgl_get_move_info(sgl_event_t *evt)
         if (dx > 0) {
             evt->move = SGL_EVENT_MOVE_RIGHT;
             evt->distance = dx;
-        } else {
+        }
+        else {
             evt->move = SGL_EVENT_MOVE_LEFT;
             evt->distance = -dx;
         }
-    } else {
+    }
+    else {
         if (dy > 0) {
             evt->move = SGL_EVENT_MOVE_DOWN;
             evt->distance = dy;
-        } else {
+        }
+        else {
             evt->move = SGL_EVENT_MOVE_UP;
             evt->distance = -dy;
         }

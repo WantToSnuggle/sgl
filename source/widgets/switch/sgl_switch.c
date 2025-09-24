@@ -28,7 +28,7 @@
 #include <sgl_math.h>
 #include <sgl_log.h>
 #include <sgl_mm.h>
-#include <sgl_config.h>
+#include <sgl_cfgfix.h>
 #include <string.h>
 #include "sgl_switch.h"
 
@@ -203,6 +203,7 @@ static void sgl_switch_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
         p_switch->color = bg_desc->color;
         knob_rect->y1 = obj->coords.y1 + bg_desc->border;
         knob_rect->y2 = obj->coords.y2 - bg_desc->border;
+        p_switch->bg_desc.radius = sgl_obj_fix_radius(obj, (obj->coords.y2 - obj->coords.y1) / 2);
         knob_desc->radius = bg_desc->radius - bg_desc->border - 1;
     }
 }

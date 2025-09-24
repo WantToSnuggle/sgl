@@ -44,7 +44,7 @@ static inline void draw_widget_slice(sgl_page_t *page, sgl_surf_t *surf, int16_t
     sgl_page_for_each_slot(obj, page) {
 
         /* if obj is hide or invalid, skip it, of course it' obj also hide */
-        if(sgl_obj_is_invalid(obj)) {
+        if(unlikely(sgl_obj_is_invalid(obj))) {
             continue;
         }
 
@@ -53,11 +53,11 @@ static inline void draw_widget_slice(sgl_page_t *page, sgl_surf_t *surf, int16_t
 
         /* if surface is overlap with obj ares, call construct function to execute draw event */
         if(sgl_surf_area_is_overlap(surf, &obj->area)) {
-            if(obj->construct_fn) {
-                obj->construct_fn(surf, obj, &evt);
-                /* set dirty flag to true */
-                dirty_flag = true;
-            }
+            SGL_ASSERT(obj->construct_fn != NULL);
+
+            obj->construct_fn(surf, obj, &evt);
+            /* set dirty flag to true */
+            dirty_flag = true;
         }
     }
 
@@ -84,12 +84,12 @@ static bool draw_calculate_dirty_area(sgl_page_t *page, sgl_area_t *dirty)
     /* for each all object from the first task of page */
     sgl_page_for_each_slot_safe(obj, n, page) {
 
-        if(sgl_obj_is_hidden(obj)) {
+        if(unlikely(sgl_obj_is_hidden(obj))) {
             continue;
         }
 
         /* check if obj is destroyed */
-        if(sgl_obj_is_destroyed(obj)) {
+        if(unlikely(sgl_obj_is_destroyed(obj))) {
             /* merge destroy area */
             sgl_area_selfmerge(dirty, &obj->area);
 
@@ -98,6 +98,9 @@ static bool draw_calculate_dirty_area(sgl_page_t *page, sgl_area_t *dirty)
 
             /* free obj resource */
             sgl_obj_free(obj);
+
+            /* update parent layout */
+            sgl_obj_set_layout(obj->parent, (sgl_layout_type_t)obj->parent->layout);
 
             need_draw = true;
             /* obj is destroyed, skip */
@@ -108,7 +111,7 @@ static bool draw_calculate_dirty_area(sgl_page_t *page, sgl_area_t *dirty)
         if(sgl_obj_is_dirty(obj)){
 
             /* update obj area */
-            if(! sgl_area_clip(&obj->parent->area, &obj->coords, &obj->area)) {
+            if(unlikely(!sgl_area_clip(&obj->parent->area, &obj->coords, &obj->area))) {
                 sgl_obj_set_invalid(obj);
                 continue;
             }
@@ -126,7 +129,7 @@ static bool draw_calculate_dirty_area(sgl_page_t *page, sgl_area_t *dirty)
         }
 
         /* check child need init coords */
-        if(sgl_obj_is_needinit(obj)) {
+        if(unlikely(sgl_obj_is_needinit(obj))) {
             sgl_event_t evt = {
                 .type = SGL_EVENT_DRAW_INIT,
             };
@@ -174,5 +177,10 @@ void sgl_draw_frame(sgl_page_t *page, sgl_area_t *dirty)
         /* cycle draw widget slice until the end of dirty area */
         draw_widget_slice(page, surf, sgl_min(dirty->y2 - surf->y, surf->h));
         surf->y += surf->h;
+
+        /* swap buffer for dma operation, but it depends on double buffer */
+        #if (CONFIG_SGL_DRAW_USE_DMA)
+        sgl_surf_buffer_swap(surf);
+        #endif
     }
 }

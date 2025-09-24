@@ -28,7 +28,7 @@
 #include <sgl_math.h>
 #include <sgl_log.h>
 #include <sgl_mm.h>
-#include <sgl_config.h>
+#include <sgl_cfgfix.h>
 #include <string.h>
 #include "sgl_label.h"
 

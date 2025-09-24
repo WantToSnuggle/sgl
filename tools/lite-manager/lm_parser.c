@@ -301,7 +301,7 @@ static int evaluate_factor(const char *expression, int *index)
         if (result == -1) 
             return -1;
         
-            result = !result;
+        result = !result;
     }
     else if (expression[*index] == '(') {
         (*index)++;
@@ -492,7 +492,7 @@ static int lm_parser_get_keystring_depend_value(char* keystring)
     char *p = keystring;
     int i = 0;
     int status = 0;
-    int ret = -1, flag = 0;
+    int flag = 0;
 
     while(*p) {
         switch(status) {
@@ -503,6 +503,7 @@ static int lm_parser_get_keystring_depend_value(char* keystring)
                 else {
                     status = 1;
                 }
+                // fall through
 
             // match macro name
             case 1:
@@ -516,6 +517,7 @@ static int lm_parser_get_keystring_depend_value(char* keystring)
                     macro_name[i] = '\0';
                     i = 0;
                 }
+                // fall through
             
             // filter space
             case 2:
@@ -525,7 +527,7 @@ static int lm_parser_get_keystring_depend_value(char* keystring)
                 else {
                     status = 3;
                 }
-
+                // fall through
             // match '='
             case 3:
                 if(*p == '=' && *(p + 1) == '=') {
@@ -537,6 +539,7 @@ static int lm_parser_get_keystring_depend_value(char* keystring)
                 else {
                     return -1; //error
                 }
+                // fall through
 
             // filter space
             case 4:
@@ -546,6 +549,7 @@ static int lm_parser_get_keystring_depend_value(char* keystring)
                 else {
                     status = 5;
                 }
+                // fall through
 
             // match value
             case 5:
@@ -558,6 +562,7 @@ static int lm_parser_get_keystring_depend_value(char* keystring)
                 else {
                     status = 6;
                 }
+                // fall through
 
             case 6:
                 if(*p != ' ') {
@@ -693,7 +698,6 @@ static lm_parser_err_e lm_parser_prompt_src_add_list(const char *path, char *rea
                 break;
             }
 
-
         case 2:
             while(*p) {
                 if(*p == '+' && *(p+1) == '=') {
@@ -711,7 +715,6 @@ static lm_parser_err_e lm_parser_prompt_src_add_list(const char *path, char *rea
             if(!enable) {
                 return LM_PARSER_OK;
             }
-
 
             int num = lm_str_num_str_space(p);
             char *pick = NULL;
@@ -1133,12 +1136,14 @@ static char *lm_parser_prompt_is_include(char *read_line)
                 return "syntax_error";
             }
             
+            // fall through
         case 2:
             p = lm_str_get_quote(read_line);
             if(p == NULL) {
                 return "syntax_error";
             }
             return lm_parser_prompt_process_var(p);
+            // fall through
         }
         p++;
     }
@@ -1150,8 +1155,6 @@ static char *lm_parser_prompt_is_include(char *read_line)
 static lm_parser_err_e lm_parser_prompt_is_choice_number(lm_macro_t *macro, char *str)
 {
     char *p_sc = str;
-    int str_len = strlen(str);
-    int colon = 0;
     double range_min, range_max;
 
     lm_parser_skip_space(&p_sc);
@@ -1530,8 +1533,10 @@ static void lm_parser_macro_choice_helper(const char *file, int lines, lm_macro_
 }
 
 
-static void lm_parser_file_line_preprocess(FILE *file, char *read_line, int *line_count)
+static int lm_parser_file_line_preprocess(FILE *file, char *read_line)
 {
+    int count = 0;
+
     if (read_line[strlen(read_line) - 1] == '\n' || read_line[strlen(read_line) - 1] == '\r') {
         read_line[strlen(read_line) - 1] = '\0';
     }
@@ -1546,7 +1551,7 @@ static void lm_parser_file_line_preprocess(FILE *file, char *read_line, int *lin
                 read_line_tmp[strlen(read_line_tmp) - 1] = '\0';
             }
 
-            *line_count ++;
+            count ++;
             char *pure = lm_str_delete_head_tail_space(read_line_tmp);
             
             read_line[strlen(read_line) - 1] = '\0';
@@ -1560,6 +1565,8 @@ static void lm_parser_file_line_preprocess(FILE *file, char *read_line, int *lin
 
         lm_free(read_line_tmp);
     }
+
+    return count;
 }
 
 
@@ -1599,7 +1606,7 @@ int lm_parser_lm_file(const char *base_path, const char *path)
 
         line_count++;
 
-        lm_parser_file_line_preprocess(file_p, read_line, &line_count);
+        line_count += lm_parser_file_line_preprocess(file_p, read_line);
 
         if (lm_parser_is_skip_line(read_line)) {
             if(macro && macro->choice.count == 0) {

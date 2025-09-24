@@ -50,7 +50,7 @@ Where `xxx` is the widget name, such as `sgl_button_set_style`, `sgl_label_set_s
 - SGL_STYLE_TEXT_X_OFFSET : Set label text X-axis offset
 - SGL_STYLE_TEXT_Y_OFFSET : Set label text Y-axis offset
 - SGL_STYLE_LINE_SPACE : Set label line spacing
-- SGL_STYLE_LABEL_TRANSPARENT: Set label to not display background
+- SGL_STYLE_BG_TRANSPARENT: Set label to not display background
 
 ### Message Box Supported Styles
 - SGL_STYLE_POS_X: Set message box X coordinate

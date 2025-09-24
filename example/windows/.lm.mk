@@ -5,13 +5,16 @@
 
 CONFIG_SGL_PANEL_PIXEL_DEPTH = 32
 CONFIG_SGL_EVENT_QUEUE_SIZE = 16
-CONFIG_SGL_OBJ_NUM_MAX = 100
+CONFIG_SGL_OBJ_SLOT_DYNAMIC = y
+CONFIG_SGL_OBJ_NUM_MAX = n
+CONFIG_SGL_DRAW_USE_DMA = n
 CONFIG_SGL_COLOR16_SWAP = n
+CONFIG_SGL_ANIMATION = y
+CONFIG_SGL_ANIMATION_TICK_MS = 1
 CONFIG_SGL_DEBUG = y
 CONFIG_SGL_LOG_COLOR = y
 CONFIG_SGL_LOG_LEVEL = 0
-CONFIG_SGL_FONT = y
-CONFIG_SGL_TEXT_UTF8 = y
+CONFIG_SGL_TEXT_UTF8 = n
 CONFIG_SGL_USE_OBJ_ID = y
 CONFIG_SGL_USE_STYLE_UNIFIED_API = y
 CONFIG_SGL_HEAP_ALGO = lwmem
@@ -22,12 +25,12 @@ CONFIG_SGL_FONT_CONSOLAS23 = y
 CONFIG_SGL_FONT_KAI33 = y
 
 # Variables provided for Makefile
-C_SOURCE := main.c sgl_port_sdl2.c ../../source/core/sgl_core.c ../../source/core/sgl_log.c ../../source/core/sgl_math.c ../../source/core/sgl_event.c ../../source/mm/lwmem/lwmem.c ../../source/mm/lwmem/sgl_mm.c ../../source/draw/sgl_draw_line.c ../../source/draw/sgl_draw_rect.c ../../source/draw/sgl_draw.c ../../source/draw/sgl_draw_bar.c ../../source/draw/sgl_draw_circle.c ../../source/draw/sgl_draw_arc.c ../../source/draw/sgl_draw_text.c \
-            ../../source/draw/sgl_draw_ring.c ../../source/draw/sgl_draw_icon.c ../../source/widgets/line/sgl_line.c ../../source/widgets/rectangle/sgl_rectangle.c ../../source/widgets/circle/sgl_circle.c ../../source/widgets/ring/sgl_ring.c ../../source/widgets/arc/sgl_arc.c ../../source/widgets/button/sgl_button.c ../../source/widgets/slider/sgl_slider.c ../../source/widgets/label/sgl_label.c ../../source/widgets/switch/sgl_switch.c ../../source/widgets/msgbox/sgl_msgbox.c ../../source/widgets/textline/sgl_textline.c ../../source/widgets/textbox/sgl_textbox.c ../../source/widgets/checkbox/sgl_checkbox.c ../../source/widgets/listview/sgl_listview.c ../../source/widgets/icon/sgl_icon.c ../../source/fonts/sgl_ascii_song23.c ../../source/fonts/sgl_ascii_consolas23.c ../../source/fonts/sgl_ascii_kai33.c test.c bg.c
+C_SOURCE := main.c sgl_port_sdl2.c ../../source/core/sgl_core.c ../../source/core/sgl_log.c ../../source/core/sgl_math.c ../../source/core/sgl_event.c ../../source/core/sgl_anim.c ../../source/mm/lwmem/lwmem.c ../../source/mm/lwmem/sgl_mm.c ../../source/draw/sgl_draw_line.c ../../source/draw/sgl_draw_rect.c ../../source/draw/sgl_draw.c ../../source/draw/sgl_draw_bar.c ../../source/draw/sgl_draw_circle.c ../../source/draw/sgl_draw_arc.c \
+            ../../source/draw/sgl_draw_text.c ../../source/draw/sgl_draw_ring.c ../../source/draw/sgl_draw_icon.c ../../source/widgets/line/sgl_line.c ../../source/widgets/rectangle/sgl_rectangle.c ../../source/widgets/circle/sgl_circle.c ../../source/widgets/ring/sgl_ring.c ../../source/widgets/arc/sgl_arc.c ../../source/widgets/button/sgl_button.c ../../source/widgets/slider/sgl_slider.c ../../source/widgets/label/sgl_label.c ../../source/widgets/switch/sgl_switch.c ../../source/widgets/msgbox/sgl_msgbox.c ../../source/widgets/textline/sgl_textline.c ../../source/widgets/textbox/sgl_textbox.c ../../source/widgets/checkbox/sgl_checkbox.c ../../source/widgets/listview/sgl_listview.c ../../source/widgets/icon/sgl_icon.c ../../source/fonts/sgl_ascii_song23.c ../../source/fonts/sgl_ascii_consolas23.c ../../source/fonts/sgl_ascii_kai33.c test.c bg.c
 
 C_PATH := -Isdl/include/SDL2 -I../../source -I../../source/include
 
-C_FLAG :=  -O2 -Wl,-Bstatic -ffunction-sections -fdata-sections  -g
+C_FLAG :=  -O2 -Wl,-Bstatic -ffunction-sections -fdata-sections -nostdlib -ffreestanding -Wunused-function -Wall -Wextra -Werror -std=c99  -g
 
 LIB_NAME := -lmingw32 -lSDL2main -lSDL2.dll
 

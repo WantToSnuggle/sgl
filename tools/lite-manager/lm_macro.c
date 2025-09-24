@@ -220,8 +220,8 @@ int lm_macro_delete(lm_macro_head_t *head, lm_macro_t *macro)
 
 static void lm_macro_update_cache(lm_macro_head_t *head, lm_macro_t *macro)
 {
-    int min_index = 0;
-    int min_count = 0;
+    uint64_t min_index = 0;
+    uint64_t min_count = 0;
 
     for(int i = 0; i < CONFIG_MACRO_CACHE_SIZE; i++) {
         if(head->cache[i].macro) {

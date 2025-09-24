@@ -27,7 +27,7 @@
 #include <stdint.h>
 #include <sgl_mm.h>
 #include <sgl_log.h>
-#include <sgl_config.h>
+#include <sgl_cfgfix.h>
 
 
 static tlsf_t mem_tlsf;

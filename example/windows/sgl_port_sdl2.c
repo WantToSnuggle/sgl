@@ -41,6 +41,7 @@ static SDL_Renderer * m_renderer = NULL;
 typedef struct sgl_port_sdl2 {
     SDL_Window    *m_window;
     SDL_TimerID   systick;
+    SDL_TimerID   anim_systick;
     size_t        frame_count;
 } sgl_port_sdl2_t;
 
@@ -101,6 +102,15 @@ static uint32_t system_tick(uint32_t interval, void *param)
 	return interval;
 }
 
+
+static uint32_t anim_systick(uint32_t interval, void *param)
+{
+    SGL_UNUSED(param);
+    sgl_anim_tick_inc(1);
+    return interval;
+}
+
+
 static bool mouse_press = false;
 
 static int mouse_event_interrupt(void *userdata, SDL_Event *event) 
@@ -143,7 +153,6 @@ static void panel_flush_area(int16_t x, int16_t y, int16_t w, int16_t h, sgl_col
 {
     sgl_color_t *dest = sdl2_frame_buffer;
     dest += (x + y * CONFIG_SGL_PANEL_WIDTH);
-    SGL_LOG_WARN("SGL SDL2 flush area: %d, %d, %d, %d", x, y, w, h);
 
     for(int i = 0; i < h; i ++) {
         memcpy(dest, src, w * sizeof(sgl_color_t));
@@ -176,7 +185,7 @@ sgl_port_sdl2_t* sgl_port_sdl2_init(void)
         .yres_virtual = CONFIG_SGL_PANEL_HEIGHT,
         .flush_area = panel_flush_area,
         .framebuffer = panel_buffer,
-        .framebuffer_size = CONFIG_SGL_PANEL_WIDTH * CONFIG_SGL_PANEL_BUFFER_LINE * sizeof(sgl_color_t),
+        .framebuffer_size = SGL_ARRAY_SIZE(panel_buffer),
     };
 
     sgl_device_fb_register(&fb_dev);
@@ -204,6 +213,7 @@ sgl_port_sdl2_t* sgl_port_sdl2_init(void)
     }
 
     sdl2_dev->systick = SDL_AddTimer(1000, system_tick, sdl2_dev);
+    sdl2_dev->anim_systick = SDL_AddTimer(1, anim_systick, sdl2_dev);
     sdl2_dev->frame_count = 0;
 
     SDL_AddEventWatch(mouse_event_interrupt, NULL);
@@ -227,7 +237,7 @@ void sgl_port_sdl2_increase_frame_count(sgl_port_sdl2_t* sdl2_dev)
 void sgl_port_sdl2_deinit(sgl_port_sdl2_t* sdl2_dev)
 {
     SDL_RemoveTimer(sdl2_dev->systick);
-
+    SDL_RemoveTimer(sdl2_dev->anim_systick);
     SDL_DestroyWindow(sdl2_dev->m_window);
     SDL_DestroyRenderer(m_renderer);
 }

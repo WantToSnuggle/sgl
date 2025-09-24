@@ -26,7 +26,7 @@
 #ifndef __SGL_CORE_H__
 #define __SGL_CORE_H__
 
-#include <sgl_config.h>
+#include <sgl_cfgfix.h>
 #include <stddef.h>
 #include <sgl_log.h>
 #include <sgl_list.h>
@@ -40,11 +40,22 @@ extern "C" {
 #endif
 
 
-/* define object slot size */
-#ifndef CONFIG_SGL_OBJ_NUM_MAX
-#define SGL_OBJ_SLOT_SIZE  256
+/**
+ * @brief This macro defines the size of the object slot
+ */
+#if (!CONFIG_SGL_OBJ_SLOT_DYNAMIC)
+    #ifndef CONFIG_SGL_OBJ_NUM_MAX
+    #define SGL_OBJ_SLOT_SIZE  128
+    #else
+    #define SGL_OBJ_SLOT_SIZE  CONFIG_SGL_OBJ_NUM_MAX
+    #endif
+#endif
+
+
+#if (CONFIG_SGL_DRAW_USE_DMA)
+#define SGL_DRAW_BUFFER_SIZE      2
 #else
-#define SGL_OBJ_SLOT_SIZE  CONFIG_SGL_OBJ_NUM_MAX
+#define SGL_DRAW_BUFFER_SIZE      1
 #endif
 
 
@@ -64,6 +75,19 @@ typedef enum sgl_align_type {
     SGL_ALIGN_RIGHT_MID,
 
 }sgl_align_type_t;
+
+
+/**
+* @brief This enumeration type defines the layout of controls in sgl, 
+*        i.e. coordinate positions
+*/
+typedef enum sgl_layout_type {
+    SGL_LAYOUT_NONE = 0,
+    SGL_LAYOUT_HORIZONTAL = 1,
+    SGL_LAYOUT_VERTICAL = 2,
+    SGL_LAYOUT_GRID = 3,
+    SGL_LAYOUT_NUM = 4,
+}sgl_layout_type_t;
 
 
 /**
@@ -352,19 +376,19 @@ typedef struct sgl_obj {
 #if (CONFIG_SGL_OBJ_SLOT_DYNAMIC)
     sgl_list_node_t    slot;
 #endif
-    uint8_t            destroyed: 1;
-    uint8_t            dirty: 1;
-    uint8_t            hide: 1;
-    uint8_t            needinit: 1;
-    uint8_t            layout: 2;
-    uint8_t            clickable: 1;
-    uint8_t            movable: 1;
+    uint8_t            destroyed : 1;
+    uint8_t            dirty : 1;
+    uint8_t            hide : 1;
+    uint8_t            needinit : 1;
+    uint8_t            layout : 2;
+    uint8_t            clickable : 1;
+    uint8_t            movable : 1;
     uint8_t            margin;
-    uint16_t           flexible: 1;
-    uint16_t           invalid: 1;
-    uint16_t           pressed: 1;
-    uint16_t           clip: 1;
-    uint16_t           radius: 12;
+    uint16_t           flexible : 1;
+    uint16_t           invalid : 1;
+    uint16_t           pressed : 1;
+    uint16_t           reserved : 1;
+    uint16_t           radius : 12;
 #if CONFIG_SGL_USE_OBJ_ID
     size_t             id;
 #endif
@@ -425,12 +449,51 @@ typedef struct sgl_device_fb {
 
 
 /**
+ * @brief internal frame buffer device info
+ * @brief sgl framebuffer device struct
+ * @framebuffer: framebuffer, this specify the memory address of the framebuffer 
+ * @framebuffer_size: framebuffer size
+ * @xres: x resolution
+ * @yres: y resolution
+ * @xres_virtual: x virtual resolution
+ * @yres_virtual: y virtual resolution
+ * @flush_area: flush area callback function pointer
+ */
+typedef struct sgl_device_fb_info {
+    void      *framebuffer[SGL_DRAW_BUFFER_SIZE];
+    size_t     framebuffer_size;
+    int16_t    xres;
+    int16_t    yres;
+    int16_t    xres_virtual;
+    int16_t    yres_virtual;
+    void       (*flush_area)(int16_t x, int16_t y, int16_t w, int16_t h, sgl_color_t *src);
+}sgl_device_fb_info_t;
+
+
+/**
  * @brief sgl log print device struct
  * @log_puts: log print callback function pointer
  */
 typedef struct sgl_device_log {
     void      (*log_puts)(const char *str);
 }sgl_device_log_t;
+
+
+/* current context, page pointer, and dirty area and started flag */
+typedef struct current_ctx {
+    sgl_page_t *page;
+    bool       started;
+#if (CONFIG_SGL_DRAW_USE_DMA)
+    uint8_t    fb_swap;
+#endif
+    sgl_area_t dirty;
+}current_ctx_t;
+
+
+/* dont to use this variable, it is used internally by sgl library */
+extern sgl_device_fb_info_t sgl_device_fb;
+extern current_ctx_t current_ctx;
+extern sgl_device_log_t sgl_device_log;
 
 
 /**
@@ -450,7 +513,10 @@ int sgl_device_fb_register(sgl_device_fb_t *fb_dev);
  * @param src [in] source color
  * @return none
  */
-void sgl_panel_flush_area(int16_t x, int16_t y, int16_t w, int16_t h, sgl_color_t *src);
+static inline void sgl_panel_flush_area(int16_t x, int16_t y, int16_t w, int16_t h, sgl_color_t *src)
+{
+    sgl_device_fb.flush_area(x, y, w, h, src);
+}
 
 
 /**
@@ -458,7 +524,10 @@ void sgl_panel_flush_area(int16_t x, int16_t y, int16_t w, int16_t h, sgl_color_
  * @param none
  * @return panel resolution width
  */
-int16_t sgl_panel_resolution_width(void);
+static inline int16_t sgl_panel_resolution_width(void)
+{
+    return sgl_device_fb.xres; 
+}
 
 
 /**
@@ -466,7 +535,10 @@ int16_t sgl_panel_resolution_width(void);
  * @param none
  * @return panel resolution height
  */
-int16_t sgl_panel_resolution_height(void);
+static inline int16_t sgl_panel_resolution_height(void)
+{
+    return sgl_device_fb.yres; 
+}
 
 
 /**
@@ -474,7 +546,10 @@ int16_t sgl_panel_resolution_height(void);
  * @param none
  * @return panel buffer address
  */
-void* sgl_panel_buffer_address(void);
+static inline void* sgl_panel_buffer_address(void)
+{
+    return sgl_device_fb.framebuffer[0];
+}
 
 
 /**
@@ -482,7 +557,10 @@ void* sgl_panel_buffer_address(void);
  * @param log_puts log output function
  * @return none
  */
-void sgl_device_log_register(void (*log_puts)(const char *str));
+static inline void sgl_device_log_register(void (*log_puts)(const char *str))
+{
+    sgl_device_log.log_puts = log_puts;
+}
 
 
 /**
@@ -490,7 +568,12 @@ void sgl_device_log_register(void (*log_puts)(const char *str));
  * @param str log string
  * @return none
  */
-void sgl_log_stdout(const char *str);
+static inline void sgl_log_stdout(const char *str)
+{
+    if(sgl_device_log.log_puts) {
+        sgl_device_log.log_puts(str);
+    }
+}
 
 
 /**
@@ -504,9 +587,9 @@ static inline sgl_color_t sgl_int2color(uint32_t color)
 #if (CONFIG_SGL_PANEL_PIXEL_DEPTH == 32)
     c.full = color;
 #elif (CONFIG_SGL_PANEL_PIXEL_DEPTH == 24)
-    c.ch.blue  = (uint8_t)(color & 0xff);
-    c.ch.green = (uint8_t)((color >> 8) & 0xff);
-    c.ch.red   = (uint8_t)((color >> 16) & 0xff);
+    c.ch.blue    = (uint8_t)(color & 0xff);
+    c.ch.green   = (uint8_t)((color >> 8) & 0xff);
+    c.ch.red     = (uint8_t)((color >> 16) & 0xff);
 #elif (CONFIG_SGL_PANEL_PIXEL_DEPTH == 16)
     #if CONFIG_SGL_COLOR16_SWAP
     c.ch.green_h = (uint8_t)((color >> 13) & 0x07);
@@ -514,14 +597,14 @@ static inline sgl_color_t sgl_int2color(uint32_t color)
     c.ch.blue    = (uint8_t)((color >> 3) & 0x1f);
     c.ch.green_l = (uint8_t)((color) & 0x07);
     #else
-    c.ch.blue   = (uint8_t)(color & 0x1f);
-    c.ch.green = (uint8_t)((color >> 5) & 0x3f);
-    c.ch.red  = (uint8_t)((color >> 11) & 0x1f);
+    c.ch.blue    = (uint8_t)(color & 0x1f);
+    c.ch.green   = (uint8_t)((color >> 5) & 0x3f);
+    c.ch.red     = (uint8_t)((color >> 11) & 0x1f);
     #endif
 #elif (CONFIG_SGL_PANEL_PIXEL_DEPTH == 8)
-    c.ch.blue  = (uint8_t)(color & 0x3);
-    c.ch.green = (uint8_t)((color >> 2) & 0x7);
-    c.ch.red   = (uint8_t)((color >> 5) & 0x7);
+    c.ch.blue    = (uint8_t)(color & 0x3);
+    c.ch.green   = (uint8_t)((color >> 2) & 0x7);
+    c.ch.red     = (uint8_t)((color >> 5) & 0x7);
 #endif
     return c;
 }
@@ -553,14 +636,13 @@ static inline uint32_t sgl_color2int(sgl_color_t color)
 */
 static inline sgl_color_t sgl_rgb2color(uint8_t red, uint8_t green, uint8_t blue)
 {
-#if CONFIG_SGL_COLOR16_SWAP
     sgl_color_t color;
+#if CONFIG_SGL_COLOR16_SWAP
     color.ch.green_h = (uint16_t)((green>>3) & 0x7);
     color.ch.red = red;
     color.ch.blue = blue;
     color.ch.green_l = (uint16_t)(green & 0x7);
 #else
-    sgl_color_t color;
     color.ch.blue = blue;
     color.ch.green = green;
     color.ch.red = red;
@@ -1203,11 +1285,23 @@ int16_t sgl_obj_fix_radius(sgl_obj_t *obj, size_t radius);
 
 
 /**
+ * @brief sgl set object layout type
+ * @param obj [in] object
+ * @param type [in] layout type, SGL_LAYOUT_NONE, SGL_LAYOUT_HORIZONTAL, SGL_LAYOUT_VERTICAL, SGL_LAYOUT_GRID
+ * @return none
+ */
+void sgl_obj_set_layout(sgl_obj_t *obj, sgl_layout_type_t type);
+
+
+/**
  * @brief Set object horizontal layout
  * @param obj point to object
  * @return none
  */
-void sgl_obj_set_horizontal_layout(sgl_obj_t *obj);
+static inline void sgl_obj_set_horizontal_layout(sgl_obj_t *obj)
+{
+    sgl_obj_set_layout(obj, SGL_LAYOUT_HORIZONTAL);
+}
 
 
 /**
@@ -1215,7 +1309,21 @@ void sgl_obj_set_horizontal_layout(sgl_obj_t *obj);
  * @param obj point to object
  * @return none
  */
-void sgl_obj_set_vertical_layout(sgl_obj_t *obj);
+static inline void sgl_obj_set_vertical_layout(sgl_obj_t *obj)
+{
+    sgl_obj_set_layout(obj, SGL_LAYOUT_VERTICAL);
+}
+
+
+/**
+ * @brief Set object grid layout
+ * @param obj point to object
+ * @return none
+ */
+static inline void sgl_obj_set_grid_layout(sgl_obj_t *obj)
+{
+    sgl_obj_set_layout(obj, SGL_LAYOUT_GRID);
+}
 
 
 /**
@@ -1225,6 +1333,21 @@ void sgl_obj_set_vertical_layout(sgl_obj_t *obj);
  * @note if parent is NULL, the object will be as an new page
  */
 sgl_obj_t* sgl_obj_create(sgl_obj_t *parent);
+
+
+/**
+ * @brief delete object
+ * @param obj point to object
+ * @return none
+ * @note this function will set object and his childs to be destroyed, then next draw cycle, the object will be removed
+ */
+static inline void sgl_obj_delete(sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL);
+    SGL_ASSERT(obj->parent != NULL);
+    sgl_obj_set_destroyed(obj);
+    sgl_obj_set_dirty(obj);
+}
 
 
 /**
@@ -1240,7 +1363,10 @@ void sgl_screen_load(sgl_obj_t *obj);
  * @param none
  * @return active current screen object
  */
-sgl_obj_t* sgl_screen_act(void);
+static inline sgl_obj_t* sgl_screen_act(void)
+{
+    return &current_ctx.page->obj;
+}
 
 
 /**
@@ -1248,7 +1374,10 @@ sgl_obj_t* sgl_screen_act(void);
  * @param none
  * @return page: active page
  */
-sgl_page_t* sgl_page_get_active(void);
+static inline sgl_page_t* sgl_page_get_active(void)
+{
+    return current_ctx.page;
+}
 
 
 /**
@@ -1373,6 +1502,20 @@ void sgl_area_merge(sgl_area_t *area_a, sgl_area_t *area_b, sgl_area_t *merge);
  * @note: this function is unsafe, you should check the merge and area is not NULL by yourself
  */
 void sgl_area_selfmerge(sgl_area_t *merge, sgl_area_t *area);
+
+
+#if (CONFIG_SGL_DRAW_USE_DMA)
+/**
+ * @brief swap the framebuffer buffer
+ * @param surf [in] surface
+ * @return none
+ */
+static inline void sgl_surf_buffer_swap(sgl_surf_t *surf)
+{
+    current_ctx.fb_swap ^= 1;
+    surf->buffer = sgl_device_fb.framebuffer[current_ctx.fb_swap];
+}
+#endif // !CONFIG_SGL_DRAW_USE_DMA
 
 
 /**
@@ -1512,6 +1655,30 @@ void sgl_page_set_style(sgl_obj_t* obj, sgl_style_type_t type, size_t value);
  * @return size_t, value of the style
  */
 size_t sgl_page_get_style(sgl_obj_t* obj, sgl_style_type_t type);
+
+
+/**
+ * @brief get patent of an object
+ * @param obj the object
+ * @return the patent of the object
+ */
+static inline sgl_obj_t* sgl_obj_get_patent(sgl_obj_t* obj)
+{
+    SGL_ASSERT(obj != NULL);
+    return obj->parent;
+}
+
+
+/**
+ * @brief get child of an object
+ * @param obj the object
+ * @return the child of the object
+ */
+static inline sgl_obj_t* sgl_obj_get_child(sgl_obj_t* obj)
+{
+    SGL_ASSERT(obj != NULL);
+    return obj->child;
+}
 
 
 #if (CONFIG_SGL_USE_STYLE_UNIFIED_API)

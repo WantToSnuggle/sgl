@@ -1828,7 +1828,7 @@ sgl_font_t song23 = {
     .table = sgl_ascii_song23_tab,
     .font_height = 23,
     .bpp = 4,
-#ifdef CONFIG_SGL_TEXT_UTF8
+#if (CONFIG_SGL_TEXT_UTF8)
     .unicode_list = unicode_list_1,
     .unicode_list_len = sizeof(unicode_list_1) / sizeof(unicode_list_1[0])
 #endif        

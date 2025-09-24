@@ -24,6 +24,7 @@
  */
 
 #include <sgl_core.h>
+#include <sgl_anim.h>
 #include <sgl_math.h>
 #include <sgl_mm.h>
 #include <sgl_log.h>
@@ -39,26 +40,21 @@ static size_t obj_global_id = 0;
 
 
 /* current context, page pointer, and dirty area and started flag */
-static struct {
-    sgl_page_t *page;
-    bool started;
-    sgl_area_t dirty;
-}current_ctx;
+current_ctx_t current_ctx;
 
 
 /* the frame buffer device, its necessary */
-static sgl_device_fb_t sgl_device_fb = {
+sgl_device_fb_info_t sgl_device_fb = {
     .xres = 0,
     .yres = 0,
     .xres_virtual = 0,
     .yres_virtual = 0,
     .framebuffer_size = 0,
-    .framebuffer = NULL,
 };
 
 
 /* the log output device for debug, its optional */
-static sgl_device_log_t sgl_device_log = {
+sgl_device_log_t sgl_device_log = {
     .log_puts = NULL,
 };
 
@@ -83,8 +79,22 @@ int sgl_device_fb_register(sgl_device_fb_t *fb_dev)
         return -1;
     }
 
-    sgl_device_fb.framebuffer      = fb_dev->framebuffer;
+    sgl_device_fb.framebuffer[0]   = fb_dev->framebuffer;
+
+    /* double buffer for dma mode */
+    #if (CONFIG_SGL_DRAW_USE_DMA)
+    current_ctx.fb_swap = 0;
+    sgl_device_fb.framebuffer_size = fb_dev->framebuffer_size / 2;
+    sgl_device_fb.framebuffer[1]   = ((sgl_color_t*)fb_dev->framebuffer) + sgl_device_fb.framebuffer_size;
+
+    if(((int16_t)sgl_device_fb.framebuffer_size) < fb_dev->xres) {
+        SGL_LOG_ERROR("framebuffer size is too small");
+        return -1;
+    }
+
+    #else
     sgl_device_fb.framebuffer_size = fb_dev->framebuffer_size;
+    #endif
     sgl_device_fb.xres             = fb_dev->xres;
     sgl_device_fb.yres             = fb_dev->yres;
     sgl_device_fb.xres_virtual     = fb_dev->xres_virtual;
@@ -92,78 +102,6 @@ int sgl_device_fb_register(sgl_device_fb_t *fb_dev)
     sgl_device_fb.flush_area       = fb_dev->flush_area;
 
     return 0;
-}
-
-
-/**
- * @brief panel flush function
- * @param x [in] x coordinate
- * @param y [in] y coordinate
- * @param w [in] width
- * @param h [in] height
- * @param src [in] source color
- * @return none
- */
-void sgl_panel_flush_area(int16_t x, int16_t y, int16_t w, int16_t h, sgl_color_t *src)
-{
-    sgl_device_fb.flush_area(x, y, w, h, src);
-}
-
-
-/**
- * @brief get panel resolution width
- * @param none
- * @return panel resolution width
- */
-int16_t sgl_panel_resolution_width(void)
-{
-    return sgl_device_fb.xres; 
-}
-
-
-/**
- * @brief get panel resolution height
- * @param none
- * @return panel resolution height
- */
-int16_t sgl_panel_resolution_height(void)
-{
-    return sgl_device_fb.yres; 
-}
-
-
-/**
- * @brief get panel buffer address
- * @param none
- * @return panel buffer address
- */
-void* sgl_panel_buffer_address(void)
-{
-    return sgl_device_fb.framebuffer;
-}
-
-
-/**
- * @brief register log output device
- * @param log_puts log output function
- * @return none
- */
-void sgl_device_log_register(void (*log_puts)(const char *str))
-{
-    sgl_device_log.log_puts = log_puts;
-}
-
-
-/**
- * @brief log output function
- * @param str log string
- * @return none
- */
-void sgl_log_stdout(const char *str)
-{
-    if(sgl_device_log.log_puts) {
-        sgl_device_log.log_puts(str);
-    }
 }
 
 
@@ -231,7 +169,7 @@ static inline void sgl_page_slot_init(sgl_page_t *page)
  * @param head The head of the object list
  * @return none
  */
-void add_obj_to_page_slot(sgl_obj_t *head)
+static void add_obj_to_page_slot(sgl_obj_t *head)
 {
     SGL_ASSERT(head != NULL);
     sgl_obj_t *child = NULL;
@@ -310,7 +248,7 @@ static inline void obj_slot_init(sgl_obj_t *parent, sgl_obj_t *obj)
     sgl_obj_add_child(parent, obj);
 }
 
-#else
+#else // !CONFIG_SGL_OBJ_SLOT_DYNAMIC
 /**
  * @brief add object to page slot
  * @param page: pointer of page
@@ -417,7 +355,7 @@ static inline void obj_slot_init(sgl_obj_t *parent, sgl_obj_t *obj)
         add_obj_to_page_slot(&current_ctx.page->obj);
     }
 }
-#endif
+#endif // !CONFIG_SGL_OBJ_SLOT_DYNAMIC
 
 
 /**
@@ -676,18 +614,18 @@ static sgl_page_t* sgl_page_create(void)
 
     sgl_obj_t *obj = &page->obj;
 
-    if(sgl_device_fb.framebuffer == NULL)  {
+    if(sgl_device_fb.framebuffer[0] == NULL)  {
         SGL_LOG_ERROR("sgl_page_create: framebuffer is NULL");
         sgl_free(page);
         return NULL;
     }
 
-    page->surf.buffer = (sgl_color_t*)sgl_device_fb.framebuffer;
+    page->surf.buffer = (sgl_color_t*)sgl_device_fb.framebuffer[0];
     page->surf.x = 0;
     page->surf.y = 0;
     page->surf.w = sgl_device_fb.xres;
-    page->surf.h = sgl_device_fb.framebuffer_size / (sgl_device_fb.xres * sizeof(sgl_color_t));
-    page->surf.size = sgl_device_fb.framebuffer_size / sizeof(sgl_color_t);
+    page->surf.h = sgl_device_fb.framebuffer_size / sgl_device_fb.xres;
+    page->surf.size = sgl_device_fb.framebuffer_size;
     page->color = SGL_WHITE;
 
     obj->parent = obj;
@@ -781,34 +719,13 @@ void sgl_screen_load(sgl_obj_t *obj)
     current_ctx.page = (sgl_page_t*)obj;
     current_ctx.started = false;
 
+    /* initilize framebuffer swap */
+    #if (CONFIG_SGL_DRAW_USE_DMA)
+    current_ctx.fb_swap = 0;
+    #endif
+
     /* initialize dirty area */
     sgl_area_init(&current_ctx.dirty);
-}
-
-
-/**
- * @brief get current screen object
- * @param none
- * @return active current screen object
- */
-sgl_obj_t* sgl_screen_act(void)
-{
-    if(current_ctx.page == NULL) {
-        /* if no page is active, create a new one */
-        return sgl_obj_create(NULL);
-    }
-    return &current_ctx.page->obj;
-}
-
-
-/**
- * @brief get active page
- * @param none
- * @return page: active page
- */
-sgl_page_t* sgl_page_get_active(void)
-{
-    return current_ctx.page;
 }
 
 
@@ -1050,75 +967,60 @@ void sgl_init(void)
 
 
 /**
- * @brief Set object horizontal layout
- * @param obj point to object
+ * @brief sgl set object layout type
+ * @param obj [in] object
+ * @param type [in] layout type, SGL_LAYOUT_NONE, SGL_LAYOUT_HORIZONTAL, SGL_LAYOUT_VERTICAL, SGL_LAYOUT_GRID
  * @return none
  */
-void sgl_obj_set_horizontal_layout(sgl_obj_t *obj)
+void sgl_obj_set_layout(sgl_obj_t *obj, sgl_layout_type_t type)
 {
     SGL_ASSERT(obj != NULL);
-    obj->layout = SGL_LAYOUT_HORIZONTAL;
-    if(! sgl_obj_has_child(obj)) {
+    obj->layout = (((uint8_t)type) & 0x03);
+
+    if((!sgl_obj_has_child(obj)) || (type == SGL_LAYOUT_NONE)) {
         return;
     }
 
     sgl_obj_t *child = NULL;
     size_t child_num = sgl_obj_get_child_count(obj);
-    int16_t margin = obj->margin;
-    int16_t child_w = (obj->coords.x2 - obj->coords.x1 - margin * (child_num + 1)) / child_num;
-    int16_t child_xs = obj->coords.x1 + margin;
+    int16_t margin = obj->margin, child_w, child_xs, child_h, child_ys;
 
-    sgl_obj_for_each_child(child, obj) {
-        child->coords.x1 = child_xs;
-        child->coords.x2 = child->coords.x1 + child_w;
-        child_xs += (child_w + margin);
+    /* set object to dirty flag for layout change */
+    sgl_obj_set_dirty(obj);
 
-        child->coords.y1 = obj->coords.y1 + margin;
-        child->coords.y2 = obj->coords.y2 - margin;
+    switch(obj->layout) {
+    case SGL_LAYOUT_HORIZONTAL:
+        child_w  = (obj->coords.x2 - obj->coords.x1 - margin * (child_num + 1)) / child_num;
+        child_xs = obj->coords.x1 + margin;
+
+        sgl_obj_for_each_child(child, obj) {
+            child->coords.x1 = child_xs;
+            child->coords.x2 = child->coords.x1 + child_w;
+            child_xs += (child_w + margin);
+
+            child->coords.y1 = obj->coords.y1 + margin;
+            child->coords.y2 = obj->coords.y2 - margin;
+        }
+        break;
+
+    case SGL_LAYOUT_VERTICAL:
+        child_h  = (obj->coords.y2 - obj->coords.y1 - margin * (child_num + 1)) / child_num;
+        child_ys = obj->coords.y1 + margin;
+
+        sgl_obj_for_each_child(child, obj) {
+            child->coords.y1 = child_ys;
+            child->coords.y2 = child->coords.y1 + child_h;
+            child_ys += (child_h + margin);
+
+            child->coords.x1 = obj->coords.x1 + margin;
+            child->coords.x2 = obj->coords.x2 - margin;
+        }
+        break;
+
+    case SGL_LAYOUT_GRID:
+        // TODO: set grid layout
+        break;
     }
-}
-
-
-/**
- * @brief Set object vertical layout
- * @param obj point to object
- * @return none
- */
-void sgl_obj_set_vertical_layout(sgl_obj_t *obj)
-{
-    SGL_ASSERT(obj != NULL);
-    obj->layout = SGL_LAYOUT_VERTICAL;
-    if(! sgl_obj_has_child(obj)) {
-        return;
-    }
-
-    sgl_obj_t *child = NULL;
-    size_t child_num = sgl_obj_get_child_count(obj);
-    int16_t margin = obj->margin;
-    int16_t child_h = (obj->coords.y2 - obj->coords.y1 - margin * (child_num + 1)) / child_num;
-    int16_t child_ys = obj->coords.y1 + margin;
-
-    sgl_obj_for_each_child(child, obj) {
-        child->coords.y1 = child_ys;
-        child->coords.y2 = child->coords.y1 + child_h;
-        child_ys += (child_h + margin);
-
-        child->coords.x1 = obj->coords.x1 + margin;
-        child->coords.x2 = obj->coords.x2 - margin;
-    }
-}
-
-
-/**
- * @brief set object grid layout
- * @param obj point to object
- * @return none
- */
-void sgl_obj_set_grid_layout(sgl_obj_t *obj)
-{
-    SGL_ASSERT(obj != NULL);
-    obj->layout = SGL_LAYOUT_GRID;
-    /* TODO: set grid layout */
 }
 
 
@@ -1161,15 +1063,8 @@ int sgl_obj_init(sgl_obj_t *obj, sgl_obj_t *parent)
 
     obj_slot_init(parent, obj);
 
-    if(parent->layout == SGL_LAYOUT_HORIZONTAL) {
-        sgl_obj_set_vertical_layout(parent);
-    }
-    else if(parent->layout == SGL_LAYOUT_VERTICAL) {
-        sgl_obj_set_horizontal_layout(parent);
-    }
-    else if(parent->layout == SGL_LAYOUT_GRID) {
-        sgl_obj_set_grid_layout(parent);
-    }
+    /* set layout to parent layout flag */
+    sgl_obj_set_layout(parent, (sgl_layout_type_t)parent->layout);
 
     return 0;
 }
@@ -1227,16 +1122,19 @@ uint32_t sgl_utf8_to_unicode(const char *utf8_str, uint32_t *p_unicode_buffer)
     if (((uint8_t)(*utf8_str)) < 0x80) { // 1-byte/7-bit ASCII
         bytes = 1;
         *p_unicode_buffer = utf8_str[0];
-    } else if ((((uint8_t)(*utf8_str)) & 0xE0) == 0xC0) { // 2-byte
+    }
+    else if ((((uint8_t)(*utf8_str)) & 0xE0) == 0xC0) { // 2-byte
         bytes = 2;
         *p_unicode_buffer = (utf8_str[0] & 0x1F) << 6;
         *p_unicode_buffer |= (utf8_str[1] & 0x3F);
-    } else if ((((uint8_t)(*utf8_str)) & 0xF0) == 0xE0) { // 3-byte
+    }
+    else if ((((uint8_t)(*utf8_str)) & 0xF0) == 0xE0) { // 3-byte
         bytes = 3;
         *p_unicode_buffer = (utf8_str[0] & 0x0F) << 12;
         *p_unicode_buffer |= (utf8_str[1] & 0x3F) << 6;
         *p_unicode_buffer |= (utf8_str[2] & 0x3F);        
-    } else if ((((uint8_t)(*utf8_str)) & 0xF8) == 0xF0) { // 4-byte
+    }
+    else if ((((uint8_t)(*utf8_str)) & 0xF8) == 0xF0) { // 4-byte
         bytes = 4;
         *p_unicode_buffer = (utf8_str[0] & 0x07) << 18;
         *p_unicode_buffer |= (utf8_str[2] & 0x3F) << 6;
@@ -1480,13 +1378,17 @@ void sgl_task_handle(void)
         /* clear flag */
         current_ctx.started = true;
 
-#if (CONFIG_SGL_DEBUG && CONFIG_SGL_USE_OBJ_ID)
+        #if (CONFIG_SGL_DEBUG && CONFIG_SGL_USE_OBJ_ID)
         sgl_obj_print_all_task_id();
-#endif
+        #endif
     };
 
     /* event task */
     sgl_event_task();
+
+    #if (CONFIG_SGL_ANIMATION)
+    sgl_anim_task();
+    #endif // !CONFIG_SGL_ANIMATION
 
     /* draw task  */
     sgl_draw_frame(current_ctx.page, &current_ctx.dirty);

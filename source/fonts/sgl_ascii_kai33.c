@@ -2402,7 +2402,7 @@ static const sgl_font_table_t glyph_dsc[] = {
     {.bitmap_index = 17855,	.box_h = 28, .box_w = 34, .ofs_x = 0, .ofs_y = 3},/*(试)*/
 };
 
-#ifdef CONFIG_SGL_TEXT_UTF8
+#if (CONFIG_SGL_TEXT_UTF8)
 static const uint16_t unicode_list_1[] = {
     0x0020,	/*( )*/
     0x0021,	/*(!)*/
@@ -2513,7 +2513,7 @@ sgl_font_t kai33 = {
     .table = glyph_dsc,
     .font_height = 33,
     .bpp = 4,
-#ifdef CONFIG_SGL_TEXT_UTF8
+#if (CONFIG_SGL_TEXT_UTF8)
     .unicode_list = unicode_list_1,
     .unicode_list_len = sizeof(unicode_list_1) / sizeof(unicode_list_1[0])
 #endif

@@ -37,7 +37,7 @@ Place the [sgl_ascii_kai33.c](file://c:\Users\lsw\Desktop\sgl\source\fonts\sgl_a
         .table = sgl_ascii_xxx_tab,
         .font_height = xx,
         .bpp = xx,
-    #ifdef SGL_CONFIG_TEXT_UTF8
+    #ifdef CONFIG_SGL_TEXT_UTF8
         .unicode_list = unicode_list_1,
         .unicode_list_len = sizeof(unicode_list_1) / sizeof(unicode_list_1[0])
     #endif        
@@ -50,7 +50,7 @@ Place the [sgl_ascii_kai33.c](file://c:\Users\lsw\Desktop\sgl\source\fonts\sgl_a
         .table = glyph_dsc,
         .font_height = 33,
         .bpp = 4,
-    #ifdef SGL_CONFIG_TEXT_UTF8
+    #ifdef CONFIG_SGL_TEXT_UTF8
         .unicode_list = unicode_list_1,
         .unicode_list_len = sizeof(unicode_list_1) / sizeof(unicode_list_1[0])
     #endif        

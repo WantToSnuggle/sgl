@@ -1,9 +1,9 @@
-#include <assert.h>
 #include <limits.h>
 #include <stddef.h>
 #include "lm_log.h"
 #include <string.h>
 #include "heap_tlsf.h"
+#include <stdio.h>
 
 
 #define __x86_64__  1
@@ -258,6 +258,14 @@ enum tlsf_private
 #define tlsf_cast(t, exp)	((t) (exp))
 #define tlsf_min(a, b)		((a) < (b) ? (a) : (b))
 #define tlsf_max(a, b)		((a) > (b) ? (a) : (b))
+
+
+#define tlsf_assert(condition)           do {                                                          \
+                                            if(!(condition)) {                                        \
+                                                printf("[ASSERT]%s: %s, %d", __FILE__, __FUNCTION__, __LINE__); \
+                                            }                                                         \
+                                        } while(0)
+
 
 /*
 ** Set assert macro, if it has not been provided by the user.

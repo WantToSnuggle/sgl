@@ -29,6 +29,12 @@
 
 #include <sgl_core.h>
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 /* text draw mode */
 #define  SGL_DRAW_TEXT_NORMAL                  (0)
 #define  SGL_DRAW_TEXT_ROLL                    (1)
@@ -217,6 +223,19 @@ typedef struct sgl_draw_arc {
 }sgl_draw_arc_t;
 
 
+typedef struct sgl_draw_matrix {
+    int16_t          margin;
+    int16_t          w;
+    int16_t          h;
+    sgl_color_t      color;
+    uint8_t          alpha;
+    uint8_t          radius;
+    uint8_t          row;
+    uint8_t          column;
+
+}sgl_draw_matrix_t;
+
+
 /**
  * @brief set pixel on surface
  * @param surf: pointer of surface
@@ -391,5 +410,9 @@ void sgl_draw_icon(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_dra
  */
 void sgl_draw_arc(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_arc_t *desc);
 
+
+#ifdef __cplusplus
+} /*extern "C"*/
+#endif
 
 #endif

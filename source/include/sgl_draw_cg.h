@@ -33,6 +33,11 @@
 #include <stdio.h>
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 /**
  * @brief draw a horizontal line
  * @param surf surface
@@ -636,5 +641,9 @@ void sgl_draw_fill_arc(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_arc_t *desc)
  */
 void sgl_draw_fill_arc_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_arc_t *desc);
 
+
+#ifdef __cplusplus
+} /*extern "C"*/
+#endif
 
 #endif // !__SGL_DRAW_CG_H__

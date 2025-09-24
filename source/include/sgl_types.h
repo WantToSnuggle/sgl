@@ -29,7 +29,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include <sgl_config.h>
+#include <sgl_cfgfix.h>
 
 
 #ifdef __cplusplus
@@ -75,10 +75,10 @@ extern "C" {
 #define SGL_POS_MIN                             (-8192)
 
 
-#define SFL_WIDTH_INVALID                       (-1)
+#define SGL_WIDTH_INVALID                       (-1)
 #define SGL_WIDTH_MAX                           (8192)
 #define SGL_WIDTH_MIN                           (0)
-#define SFL_HEIGHT_INVALID                      (-1)
+#define SGL_HEIGHT_INVALID                      (-1)
 #define SGL_HEIGHT_MAX                          (8192)
 #define SGL_HEIGHT_MIN                          (0)
 
@@ -101,25 +101,26 @@ extern "C" {
 #define SGL_COLOR_ARGB8888                      (32)
 
 
-#ifdef __GNUC__   /* gcc compiler      */
+#ifdef __GNUC__            /* gcc compiler   */
 #define likely(x)                               __builtin_expect(!!(x), 1)
 #define unlikely(x)                             __builtin_expect(!!(x), 0)
-#elif __clang__   /* clang compiler    */
+#elif defined(__clang__)   /* clang compiler */
 #define likely(x)                               __builtin_expect(!!(x), 1)
 #define unlikely(x)                             __builtin_expect(!!(x), 0)
-#elif __CC_ARM    /* RealView compiler */
+#elif defined(__CC_ARM)    /* RealView compiler (Keil ARMCC) */
 #define likely(x)                               __builtin_expect(!!(x), 1)
 #define unlikely(x)                             __builtin_expect(!!(x), 0)
-#elif __ICCARM__  /* IAR compiler      */
+#elif defined(__ICCARM__)  /* IAR compiler    */
+#define likely(x)                               __iar_builtin_expect(!!(x), 1)
+#define unlikely(x)                             __iar_builtin_expect(!!(x), 0)
+#elif defined(_MSC_VER)    /* MSVC compiler   */
+// NOTICE: MSVC is not support  __builtin_expect！
+#define likely(x)                               (x)
+#define unlikely(x)                             (x)
+#elif defined(__MINGW32__) /* MinGW compiler  */
 #define likely(x)                               __builtin_expect(!!(x), 1)
 #define unlikely(x)                             __builtin_expect(!!(x), 0)
-#elif _MSC_VER    /* MSVC compiler     */
-#define likely(x)                               __builtin_expect(!!(x), 1)
-#define unlikely(x)                             __builtin_expect(!!(x), 0)
-#elif __MINGW32__ /* MinGW compiler    */
-#define likely(x)                               __builtin_expect(!!(x), 1)
-#define unlikely(x)                             __builtin_expect(!!(x), 0)
-#else             /* others compiler   */
+#else                      /* others compiler */
 #define likely(x)                               (x)
 #define unlikely(x)                             (x)
 #endif

@@ -28,7 +28,7 @@
 #define __SGL_FONT_H__
 
 
-#include <sgl_config.h>
+#include <sgl_cfgfix.h>
 #include <stddef.h>
 #include <sgl_list.h>
 #include <sgl_types.h>

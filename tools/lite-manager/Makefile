@@ -13,7 +13,7 @@ C_SOURCE := lm_macro.c lm_mem.c lm_parser.c lm_string.c lm_array.c lm_log.c lm_g
 
 C_PATH := -I.
 
-C_FLAG := -O2 -std=c99
+C_FLAG := -O2 -Wl,-Bstatic -ffunction-sections -fdata-sections -nostdlib -ffreestanding -Wunused-function -Wall -Wextra -Werror -std=c99
 
 
 # toolchain

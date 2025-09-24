@@ -60,3 +60,4 @@ example/platform/stm32f676/OBJ/*
 #tool
 tools/LvglFontTool/*.ini
 
+push.sh

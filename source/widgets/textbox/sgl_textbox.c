@@ -28,7 +28,7 @@
 #include <sgl_math.h>
 #include <sgl_log.h>
 #include <sgl_mm.h>
-#include <sgl_config.h>
+#include <sgl_cfgfix.h>
 #include <string.h>
 #include "sgl_textbox.h"
 
@@ -318,8 +318,6 @@ sgl_obj_t* sgl_textbox_create(sgl_obj_t* parent)
     textbox->desc.mode = SGL_DRAW_TEXT_LINES;
     textbox->desc.text = "textbox";
     textbox->desc.margin = 2;
-
-
 
     return obj;
 }
