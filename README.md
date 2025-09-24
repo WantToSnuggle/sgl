@@ -1,5 +1,6 @@
 # SGL (Small Graphics Library)
-# 中文
+# [中文](https://github.com/LiShanwenGit/sgl/blob/main/README_CN.md)
+
 ![SGL_LOGO](SGL_logo.png)
 
 #### Minimum hardware requirements
