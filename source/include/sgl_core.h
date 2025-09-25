@@ -2,10 +2,10 @@
  *
  * MIT License
  *
- * Copyright(c) 2023-present All contributors of SGL  
+ * Copyright(c) 2023-present All contributors of SGL
  * Li, Shanwen  (1477153217@qq.com)
  * Document reference link: docs directory
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -60,7 +60,7 @@ extern "C" {
 
 
 /**
-* @brief This enumeration type defines the alignment of controls in sgl, 
+* @brief This enumeration type defines the alignment of controls in sgl,
 *        i.e. coordinate positions
 */
 typedef enum sgl_align_type {
@@ -78,7 +78,7 @@ typedef enum sgl_align_type {
 
 
 /**
-* @brief This enumeration type defines the layout of controls in sgl, 
+* @brief This enumeration type defines the layout of controls in sgl,
 *        i.e. coordinate positions
 */
 typedef enum sgl_layout_type {
@@ -91,8 +91,8 @@ typedef enum sgl_layout_type {
 
 
 /**
-* @brief This structure is a structure that describes the position of the control, 
-*        where x represents the position of the x coordinate, which is the row coordinate position, 
+* @brief This structure is a structure that describes the position of the control,
+*        where x represents the position of the x coordinate, which is the row coordinate position,
 *        and y represents the position of the y coordinate, which is the column coordinate position
 *
 * @x: x coordinate
@@ -106,7 +106,7 @@ typedef struct sgl_pos {
 
 /**
 * @brief This structure describes the size of the object, including width and height, in pixels
-* 
+*
 * @w: width
 * @h: height
 */
@@ -117,10 +117,10 @@ typedef struct sgl_size {
 
 
 /**
-* @brief This structure describes a rectangular region, where x1 and y1 represent the coordinates 
-*        of the upper left corner of the rectangle, and x2 and y2 represent the coordinates of the 
+* @brief This structure describes a rectangular region, where x1 and y1 represent the coordinates
+*        of the upper left corner of the rectangle, and x2 and y2 represent the coordinates of the
 *        lower right corner of the rectangle
-*  
+*
 * @x1: x position left corner of the rectangle
 * @y1: y position left corner of the rectangle
 * @x2: x position right corner of the rectangle
@@ -175,7 +175,7 @@ typedef union {
 
 /**
 * @brief This structure defines a 16 bit color bit field
-* 
+*
 * @blue: Blue color component
 * @green: Green color component
 * @red: Red color component
@@ -250,13 +250,13 @@ typedef struct sgl_surf {
 
 
 /**
-* @brief This structure defines an image, with a bitmap pointing to the 
+* @brief This structure defines an image, with a bitmap pointing to the
 *        bitmap of the image, while specifying the width and height of the image
 *
 * @bitmap: point to image bitmap
 * @width: pixmap width
 * @height: pixmap height
-* @format: bitmap format 0: no compression, 1: 
+* @format: bitmap format 0: no compression, 1:
 */
 typedef struct sgl_pixmap {
     const uint8_t *bitmap;
@@ -267,7 +267,7 @@ typedef struct sgl_pixmap {
 
 
 /**
- * @brief This structure defines an icon, with a bitmap pointing to the 
+ * @brief This structure defines an icon, with a bitmap pointing to the
  * @bitmap: point to icon bitmap
  * @width: pixmap width
  * @height: pixmap height
@@ -282,7 +282,7 @@ typedef struct sgl_icon_pixmap {
 
 
 /**
-* @brief Font index table structure, used to describe the bitmap index positions of 
+* @brief Font index table structure, used to describe the bitmap index positions of
 *        all characters in a font, accelerating the search process
 *
 * @bitmap_index: point to bitmap index of font
@@ -302,7 +302,7 @@ typedef struct sgl_font_table {
 
 
 /**
-* @brief A structure used to describe information about a font, Defining a font set requires 
+* @brief A structure used to describe information about a font, Defining a font set requires
 *        the use of this structure to describe relevant information
 *
 * @bitmap: point to bitmap of font
@@ -429,7 +429,7 @@ typedef struct sgl_page {
 
 /**
  * @brief sgl framebuffer device struct
- * @framebuffer: framebuffer, this specify the memory address of the framebuffer 
+ * @framebuffer: framebuffer, this specify the memory address of the framebuffer
  * @framebuffer_size: framebuffer size
  * @xres: x resolution
  * @yres: y resolution
@@ -451,7 +451,7 @@ typedef struct sgl_device_fb {
 /**
  * @brief internal frame buffer device info
  * @brief sgl framebuffer device struct
- * @framebuffer: framebuffer, this specify the memory address of the framebuffer 
+ * @framebuffer: framebuffer, this specify the memory address of the framebuffer
  * @framebuffer_size: framebuffer size
  * @xres: x resolution
  * @yres: y resolution
@@ -526,7 +526,7 @@ static inline void sgl_panel_flush_area(int16_t x, int16_t y, int16_t w, int16_t
  */
 static inline int16_t sgl_panel_resolution_width(void)
 {
-    return sgl_device_fb.xres; 
+    return sgl_device_fb.xres;
 }
 
 
@@ -537,7 +537,7 @@ static inline int16_t sgl_panel_resolution_width(void)
  */
 static inline int16_t sgl_panel_resolution_height(void)
 {
-    return sgl_device_fb.yres; 
+    return sgl_device_fb.yres;
 }
 
 
@@ -578,7 +578,7 @@ static inline void sgl_log_stdout(const char *str)
 
 /**
 * @brief converts the color value of an integer into a color structure
-* @param: color value 
+* @param: color value
 * @return: sgl_color_t
 */
 static inline sgl_color_t sgl_int2color(uint32_t color)
@@ -629,7 +629,7 @@ static inline uint32_t sgl_color2int(sgl_color_t color)
 
 /**
 * @brief Inline function that converts the color value of an (r,g,b) into a color structure
-* @param: red    Red color component  
+* @param: red    Red color component
 * @param: green  Green color component
 * @param: blue   Blue color component
 * @return: sgl_color_t
@@ -797,7 +797,7 @@ static inline size_t sgl_obj_get_child_count(sgl_obj_t *obj)
 
 
 /**
- * @brief  Set the object to be destroyed 
+ * @brief  Set the object to be destroyed
  * @param  obj: the object to set
  * @retval None
  * @note this function is used to set the destroyed flag of the object, then next draw cycle, the object will be removed
@@ -834,7 +834,7 @@ void sgl_obj_set_dirty(sgl_obj_t *obj);
 static inline void sgl_obj_clear_dirty(sgl_obj_t *obj)
 {
     SGL_ASSERT(obj != NULL);
-    obj->dirty = 0; 
+    obj->dirty = 0;
 }
 
 
@@ -1884,6 +1884,18 @@ static inline sgl_color_t sgl_obj_get_border_color(sgl_obj_t *obj)
 static inline void sgl_obj_set_font(sgl_obj_t *obj, sgl_font_t *font)
 {
     sgl_obj_set_style(obj, SGL_STYLE_FONT, (size_t)font);
+}
+
+
+/**
+ * @brief set object text
+ * @param obj The object to set the text
+ * @param text The text to set.
+ * @return None.
+ */
+static inline void sgl_obj_set_text(sgl_obj_t *obj, const char *text)
+{
+    sgl_obj_set_style(obj, SGL_STYLE_TEXT, SGL_TEXT(text));
 }
 
 
