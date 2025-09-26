@@ -33,57 +33,150 @@ sgl_pixmap_t test_pixmap = {
 
 sgl_obj_t *rect43 = NULL;
 
-char buf[16] = {0};
-
-void slider_callback(sgl_event_t *event)
+void msgbox_callback(sgl_event_t *event)
 {
-    sgl_obj_t *label = (sgl_obj_t *)event->param;
-    sprintf(buf, "H:%lld%%", sgl_obj_get_style(event->obj, SGL_STYLE_VALUE));
-    sgl_obj_set_style(label, SGL_STYLE_TEXT, SGL_TEXT(buf));
+    if(event->type == SGL_EVENT_PRESSED) {
+        //sgl_obj_set_destroyed(rect43);
+    }
 }
 
-
-char arcbuf[10];
-
-
-sgl_obj_t * test_alloc(void)
+static const uint8_t default_icon_pixmap[] =
 {
-    sgl_obj_t *msgbox = sgl_msgbox_create(NULL);
-    sgl_obj_set_pos(msgbox, 20, 20);
-    sgl_obj_set_size(msgbox, 300, 200);
-    sgl_obj_set_style(msgbox, SGL_STYLE_FONT, SGL_FONT(consolas23));
-    sgl_obj_set_style(msgbox, SGL_STYLE_MSGBOX_TITLE, SGL_TEXT("Message Box"));
-    sgl_obj_set_style(msgbox, SGL_STYLE_MSGBOX_TEXT, SGL_TEXT("SGL (Small Graphics Library) is a lightweight and fast graphics library"));
-    sgl_obj_set_style(msgbox, SGL_STYLE_RADIUS, 10);
-    sgl_obj_set_style(msgbox, SGL_STYLE_MSGBOX_APPLY_TEXT, SGL_TEXT("OK"));
-    sgl_obj_set_style(msgbox, SGL_STYLE_MSGBOX_CLOSE_TEXT, SGL_TEXT("NO"));
-    sgl_obj_set_style(msgbox, SGL_STYLE_BORDER_WIDTH, 2);
-    sgl_obj_set_style(msgbox, SGL_STYLE_BORDER_COLOR, SGL_COLOR(SGL_LIGHT_GRAY));
+0x00,0x00,0x00,0x03,0x33,0x33,0x33,0x00,0x00,0x00,0x00,  //.....................
+0x00,0x00,0x00,0xae,0xff,0xff,0xff,0xc0,0x00,0x00,0x00,  //......%@@@@@@@%......
+0x00,0x00,0x05,0xef,0xec,0xcc,0xcf,0xe8,0x00,0x00,0x00,  //.....+@@@%%%%@@+.....
+0x00,0x00,0x0a,0xfe,0x00,0x00,0x0c,0xfe,0x00,0x00,0x00,  //.....%@@.....%@@.....
+0x56,0x66,0x6e,0xfc,0x66,0x66,0x6a,0xee,0x86,0x66,0x60,  //+++++@@%+++++%@@+++++
+0xef,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xe0,  //@@@@@@@@@@@@@@@@@@@@@
+0xac,0xee,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xae,0xfc,0xa0,  //%%@@%%%%%%%%%%%%%@@%%
+0x05,0xee,0x30,0x00,0x00,0x00,0x00,0x00,0x0e,0xfa,0x00,  //.+@@.............@@%.
+0x05,0xee,0x30,0x00,0x00,0x00,0x00,0x00,0x0e,0xfa,0x00,  //.+@@.............@@%.
+0x05,0xee,0x35,0xaa,0x05,0xa8,0x08,0xa5,0x0e,0xfa,0x00,  //.+@@.+%%.+%+.+%+.@@%.
+0x05,0xee,0x38,0xee,0x0a,0xfc,0x0c,0xfc,0x0e,0xfa,0x00,  //.+@@.+@@.%@%.%@%.@@%.
+0x05,0xee,0x38,0xee,0x0a,0xfc,0x0c,0xfc,0x0e,0xfa,0x00,  //.+@@.+@@.%@%.%@%.@@%.
+0x05,0xee,0x38,0xee,0x0a,0xfc,0x0c,0xfc,0x0e,0xfa,0x00,  //.+@@.+@@.%@%.%@%.@@%.
+0x05,0xee,0x38,0xee,0x0a,0xfc,0x0c,0xfc,0x0e,0xfa,0x00,  //.+@@.+@@.%@%.%@%.@@%.
+0x05,0xee,0x38,0xee,0x0a,0xfc,0x0c,0xfc,0x0e,0xfa,0x00,  //.+@@.+@@.%@%.%@%.@@%.
+0x05,0xee,0x38,0xee,0x0a,0xfc,0x0c,0xfc,0x0e,0xfa,0x00,  //.+@@.+@@.%@%.%@%.@@%.
+0x05,0xee,0x38,0xee,0x0a,0xfc,0x0c,0xfc,0x0e,0xfa,0x00,  //.+@@.+@@.%@%.%@%.@@%.
+0x05,0xee,0x38,0xee,0x0a,0xfc,0x0c,0xfc,0x0e,0xfa,0x00,  //.+@@.+@@.%@%.%@%.@@%.
+0x05,0xee,0x38,0xee,0x0a,0xfc,0x0c,0xfc,0x0e,0xfa,0x00,  //.+@@.+@@.%@%.%@%.@@%.
+0x05,0xee,0x30,0x30,0x00,0x30,0x00,0x30,0x0e,0xfa,0x00,  //.+@@.............@@%.
+0x05,0xee,0x30,0x00,0x00,0x00,0x00,0x00,0x0e,0xfa,0x00,  //.+@@.............@@%.
+0x05,0xee,0x50,0x00,0x00,0x00,0x00,0x00,0x3e,0xe8,0x00,  //.+@@+............@@+.
+0x00,0xef,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xe3,0x00,  //..@@@@@@@@@@@@@@@@@..
+0x00,0x3e,0xff,0xff,0xff,0xff,0xff,0xff,0xfe,0x80,0x00,  //...@@@@@@@@@@@@@@@+..
+};
 
-    return msgbox;
-}
+
+static sgl_icon_pixmap_t delete_icon = {
+    .bitmap = default_icon_pixmap,
+    .bpp = 4,
+    .height = 24,
+    .width = 22,
+};
 
 
-void sgl_anim_path(struct sgl_anim *anim, int32_t value)
+static const uint8_t ok_icon_pixmap[] = {
+0x3a,0xcc,0xcc,0xc8,0x00,0x00,0x00,0x00,0x00,0x00,0x00,  //.%%%%%%+.............
+0xef,0xff,0xff,0xfe,0x80,0x00,0x00,0x00,0x00,0x00,0x00,  //@@@@@@@@+............
+0xef,0xff,0xff,0xff,0xc0,0x00,0x00,0x00,0x00,0x00,0x00,  //@@@@@@@@%............
+0xef,0xff,0xff,0xff,0xec,0xcc,0xcc,0xcc,0x50,0x00,0x00,  //@@@@@@@@@%%%%%%%+....
+0xef,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xe3,0x00,0x00,  //@@@@@@@@@@@@@@@@@....
+0xef,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xe8,0x00,0x00,  //@@@@@@@@@@@@@@@@@+...
+0xef,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xe8,0x00,0x00,  //@@@@@@@@@@@@@@@@@+...
+0xef,0xff,0xff,0xc8,0x66,0x66,0x66,0x66,0x63,0x00,0x00,  //@@@@@@%++++++++++....
+0xef,0xff,0xc3,0x03,0x33,0x33,0x33,0x33,0x33,0x33,0x00,  //@@@@%................
+0xef,0xfe,0x08,0xef,0xff,0xff,0xff,0xff,0xff,0xff,0xe0,  //@@@@.+@@@@@@@@@@@@@@@
+0xef,0xe3,0xaf,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xa0,  //@@@.%@@@@@@@@@@@@@@@%
+0xee,0x58,0xef,0xff,0xff,0xff,0xff,0xff,0xff,0xfc,0x00,  //@@++@@@@@@@@@@@@@@@%.
+0xc8,0x5e,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xe0,0x00,  //%++@@@@@@@@@@@@@@@@..
+0x53,0xef,0xff,0xff,0xff,0xff,0xff,0xff,0xfe,0x30,0x00,  //+.@@@@@@@@@@@@@@@@...
+0x0e,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xe5,0x00,0x00,  //.@@@@@@@@@@@@@@@@+...
+0x8e,0xff,0xff,0xff,0xff,0xff,0xff,0xfc,0x30,0x00,0x00,  //+@@@@@@@@@@@@@@%.....
+};
+
+
+static sgl_icon_pixmap_t ok_icon = {
+    .bitmap = ok_icon_pixmap,
+    .bpp = 4,
+    .height = 16,
+    .width = 22,
+};
+
+
+static const uint8_t cancel_icon_pixmap[] = {
+0x00,0x8e,0xe3,0x00,0x00,0x8e,0xe3,0x00,  //..+@@.....+@@...
+0x08,0xef,0xfe,0x30,0x08,0xef,0xfe,0x30,  //.+@@@@...+@@@@..
+0x3e,0xff,0xff,0xe3,0x8e,0xff,0xff,0xc0,  //.@@@@@@.+@@@@@%.
+0x0a,0xef,0xff,0xfe,0xef,0xff,0xfe,0x50,  //.%@@@@@@@@@@@@+.
+0x00,0xae,0xff,0xff,0xff,0xff,0xe5,0x00,  //..%@@@@@@@@@@+..
+0x00,0x0a,0xef,0xff,0xff,0xfe,0x50,0x00,  //...%@@@@@@@@+...
+0x00,0x00,0xcf,0xff,0xff,0xe8,0x00,0x00,  //....%@@@@@@+....
+0x00,0x08,0xef,0xff,0xff,0xfe,0x30,0x00,  //...+@@@@@@@@....
+0x00,0x8e,0xff,0xff,0xff,0xff,0xe3,0x00,  //..+@@@@@@@@@@...
+0x08,0xef,0xff,0xfe,0xef,0xff,0xfe,0x30,  //.+@@@@@@@@@@@@..
+0x3e,0xff,0xff,0xe5,0xae,0xff,0xff,0xc0,  //.@@@@@@+%@@@@@%.
+0x0a,0xff,0xfe,0x50,0x0a,0xef,0xfe,0x50,  //.%@@@@+..%@@@@+.
+0x00,0xaf,0xe5,0x00,0x00,0xae,0xe5,0x00,  //..%@@+....%@@+..
+0x00,0x03,0x00,0x00,0x00,0x03,0x00,0x00,  //................
+};
+
+
+static sgl_icon_pixmap_t cancel_icon = {
+    .bitmap = cancel_icon_pixmap,
+    .bpp = 4,
+    .height = 14,
+    .width = 16,
+};
+
+
+static int x_ps = 0, y_ps = 0;
+static int msgbox_inx = 0;
+sgl_obj_t* msgbox[20];
+
+void button_callback(sgl_event_t *event) 
 {
-    sgl_obj_set_pos_x(anim->obj, value);
-}
+    if(event->type == SGL_EVENT_PRESSED) {
+        SGL_LOG_INFO("Button long pressed");
+        msgbox[msgbox_inx] = sgl_msgbox_create(NULL);
+        sgl_obj_set_pos(msgbox[msgbox_inx], 150 + x_ps, 140 + y_ps);
+        sgl_obj_set_size(msgbox[msgbox_inx], 300, 200);
+        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_FONT, SGL_FONT(consolas23));
+        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_TITLE, SGL_TEXT("FBI WARNING"));
+        sgl_obj_set_border_color(msgbox[msgbox_inx], SGL_RED);
+        sgl_obj_set_border_width(msgbox[msgbox_inx], 2);
+        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_TEXT, SGL_TEXT("The Federal Bureau of Investigation (FBI) has seized this domain because it is involved in facilitating the illegal distribution of copyrighted materials, including movies, music, software, and games. Engaging in the unauthorized reproduction, distribution, or exhibition of copyrighted material is a violation of federal law."));
+        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_TEXT_COLOR, SGL_COLOR(SGL_BLUE));
+        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_TITLE_COLOR, SGL_COLOR(SGL_BLUE));
+        sgl_obj_set_bg_color(msgbox[msgbox_inx], SGL_BLACK);
+        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_APPLY_TEXT, SGL_TEXT("GOT"));
+        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_CLOSE_TEXT, SGL_TEXT("CANCEL"));
+        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_BUTTON_COLOR, SGL_COLOR(SGL_RED));
+        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_CLOSE_TEXT_COLOR, SGL_COLOR(SGL_BLACK));
+        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_APPLY_TEXT_COLOR, SGL_COLOR(SGL_BLACK));
+        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_TITLE_COLOR, SGL_COLOR(SGL_RED));
+        sgl_obj_set_alpha(msgbox[msgbox_inx], 255);
+        sgl_obj_set_radius(msgbox[msgbox_inx], 8);
 
+        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_APPLY_ICON, SGL_ICON(ok_icon));
+        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_CLOSE_ICON, SGL_ICON(cancel_icon));
+        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_TITLE_ICON, SGL_ICON(cancel_icon));
+        x_ps += 20;
+        y_ps += 20;
 
-#include <math.h>
-
-int32_t sgl_anim_path_algo(uint32_t elaps, uint32_t duration, int16_t start, int16_t end)
-{
-    float t = (float)elaps / duration;
-    float angle = t * 2 * 3.1415926;  // 0 到 2π
-    float eased = (1.0f - cosf(angle * 0.5f)) * 0.5f;  // 半周期正弦
-
-    return start + ((end - start) * eased);
+        msgbox_inx++;
+    }
+    else if(event->type == SGL_EVENT_RELEASED) {
+        //sgl_obj_set_destroyed(rect43);
+    }
 }
 
 
 int main(int argc, char *argv[])
 {
+
+
     SGL_UNUSED(argc);
     SGL_UNUSED(argv);
 
@@ -96,160 +189,184 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    sgl_obj_set_pixmap(sgl_screen_act(), &test_pixmap);
+    //sgl_obj_set_pixmap(sgl_screen_act(), &test_pixmap);
 
-    // sgl_obj_t *msgbox = sgl_msgbox_create(NULL);
-    // sgl_obj_set_pos(msgbox, 420, 220);
-    // sgl_obj_set_size(msgbox, 300, 200);
-    // sgl_obj_set_style(msgbox, SGL_STYLE_FONT, SGL_FONT(consolas23));
-    // sgl_obj_set_style(msgbox, SGL_STYLE_MSGBOX_TITLE, SGL_TEXT("M"));
-    // sgl_obj_set_style(msgbox, SGL_STYLE_MSGBOX_TEXT, SGL_TEXT("S"));
-    // sgl_obj_set_style(msgbox, SGL_STYLE_RADIUS, 10);
-    // sgl_obj_set_style(msgbox, SGL_STYLE_MSGBOX_APPLY_TEXT, SGL_TEXT("OK"));
-    // sgl_obj_set_style(msgbox, SGL_STYLE_MSGBOX_CLOSE_TEXT, SGL_TEXT("NO"));
-    // sgl_obj_set_style(msgbox, SGL_STYLE_BORDER_WIDTH, 2);
-    // sgl_obj_set_style(msgbox, SGL_STYLE_BORDER_COLOR, SGL_COLOR(SGL_LIGHT_GRAY));
+    // sgl_obj_t *rect = sgl_rect_create(NULL);
+    // sgl_obj_set_style(rect, SGL_STYLE_POS_X, 20);
+    // sgl_obj_set_style(rect, SGL_STYLE_POS_Y, 20);
+    // sgl_obj_set_style(rect, SGL_STYLE_SIZE_W, 480);
+    // sgl_obj_set_style(rect, SGL_STYLE_SIZE_H, 200);
+    // sgl_obj_set_clickable(rect);
+    // sgl_obj_set_alpha(rect, 128);
+
+    sgl_obj_t *checkbox = sgl_checkbox_create(NULL);
+    sgl_obj_set_pos_x(checkbox, 110);
+    sgl_obj_set_pos_y(checkbox, 220);
+    sgl_obj_set_style(checkbox, SGL_STYLE_FONT, SGL_FONT(song23));
+    sgl_obj_set_style(checkbox, SGL_STYLE_TEXT, SGL_TEXT("Checkbox"));
+
+
+    // sgl_obj_t *rect2 = sgl_rect_create(rect);
+    // sgl_obj_set_pos(rect2, 20, 20);
+    // sgl_obj_set_size(rect2, 300, 200);
+    // sgl_obj_set_color(rect2, SGL_BLUE);
+    // sgl_obj_set_clickable(rect2);
+    // sgl_obj_set_radius(rect2, 20);
+    // sgl_obj_set_alpha(rect2, 128);
+    // sgl_obj_set_border_width(rect2, 4);
+    // sgl_obj_set_border_color(rect2, SGL_RED);
+
+    // sgl_obj_t *rect3 = sgl_rect_create(rect2);
+    // sgl_obj_set_pos(rect3, 20, 128);
+    // sgl_obj_set_size(rect3, 20, 100);
+    // sgl_obj_set_clickable(rect3);
+    // sgl_obj_set_alpha(rect3, 128);
+    // sgl_obj_set_color(rect3, SGL_GRAY);
+
+    // sgl_obj_t *label = sgl_label_create(rect);
+    // sgl_obj_set_font(label, &song23);
+    // sgl_obj_set_color(label, SGL_RED);
+    // sgl_obj_set_radius(label, 10);
+    // sgl_obj_set_style(label, SGL_STYLE_TEXT, SGL_TEXT("Hello World!"));
+    // sgl_obj_set_style(label, SGL_STYLE_ICON, SGL_ICON(ok_icon));
+    // //sgl_obj_set_style(label, SGL_STYLE_ALIGN, SGL_ALIGN_TOP_LEFT);
 
     // sgl_obj_t *button = sgl_button_create(NULL);
-    // sgl_obj_set_pos(button, 20, 20);
+    // sgl_obj_set_pos(button, 499, 300);
     // sgl_obj_set_size(button, 200, 100);
-    // sgl_obj_set_style(button, SGL_STYLE_RADIUS, 50);
-    // sgl_obj_set_style(button, SGL_STYLE_BORDER_WIDTH, 2);
-    // sgl_obj_set_style(button, SGL_STYLE_BORDER_COLOR, SGL_COLOR(SGL_BLACK));
     // sgl_obj_set_font(button, &song23);
-    // sgl_obj_set_style(button, SGL_STYLE_TEXT, SGL_TEXT("01345648648"));
-
-    sgl_obj_t *rect = sgl_rect_create(NULL);
-    sgl_obj_set_pos(rect, 20, 20);
-    sgl_obj_set_size(rect, 400, 300);
-    sgl_obj_set_margin(rect, 5);
-    sgl_obj_set_color(rect, SGL_GRAY);
-
-    sgl_obj_set_horizontal_layout(rect);
-
-    sgl_obj_t *rect2 = sgl_button_create(rect);
-    sgl_obj_set_color(rect2, SGL_RED);
-    sgl_obj_set_pixmap(rect2, &bg_pixmap);
-
-    sgl_obj_t *button2 = sgl_button_create(rect);
-    sgl_obj_set_color(button2, SGL_RED);
-    sgl_obj_set_pixmap(button2, &bg_pixmap);
-
-    sgl_obj_t *rect4 = sgl_rect_create(rect);
-    sgl_obj_set_color(rect4, SGL_RED);
-
-    sgl_obj_t *rect5 = sgl_rect_create(rect);
-    sgl_obj_set_color(rect5, SGL_RED);
-
-
-    //sgl_obj_set_style(rect, SGL_STYLE_BORDER_COLOR, SGL_COLOR(SGL_GREEN));
-    //sgl_obj_set_style(rect, SGL_STYLE_BORDER_WIDTH, 5);
-    //sgl_obj_set_radius(rect, 20);
-    //sgl_obj_set_unflexible(button);
-    //sgl_obj_set_style(button, SGL_STYLE_PIXMAP, SGL_PIXMAP(bg_pixmap));
+    // sgl_obj_set_radius(button, 60);
+    // sgl_obj_set_border_width(button, 0);
+    // sgl_obj_set_style(button, SGL_STYLE_TEXT_COLOR, 0x5de);
+    // sgl_obj_set_style(button, SGL_STYLE_TEXT, SGL_TEXT("Delete"));
+    // sgl_obj_set_style(button, SGL_STYLE_TEXT, SGL_TEXT("012454"));
+    // sgl_obj_set_alpha(button, 255);
+    // sgl_obj_set_style(button, SGL_STYLE_ICON, SGL_ICON(delete_icon));
 
     // sgl_obj_t *circle = sgl_circle_create(NULL);
-    // sgl_obj_set_pos(circle, 20, 150);
-    // sgl_obj_set_size(circle, 100, 200);
-    // sgl_obj_set_style(circle, SGL_STYLE_RADIUS, 100);
-    // sgl_obj_set_style(circle, SGL_STYLE_CENTER_X_OFFSET, 50);
-    // sgl_obj_set_style(circle, SGL_STYLE_CENTER_Y_OFFSET, 50);
-    // sgl_obj_set_style(circle, SGL_STYLE_PIXMAP, SGL_PIXMAP(bg_pixmap));
-    // sgl_obj_set_clickable(circle);
+    // sgl_obj_set_pos(circle, 100, 100);
+    // sgl_obj_set_size(circle, 100, 100);
+    // sgl_obj_set_border_width(circle, 0);
+    // sgl_obj_set_radius(circle, 49);
+    // sgl_obj_set_pixmap(circle, &test_pixmap);
+
+    // sgl_obj_t *switch_obj = sgl_switch_create(NULL);
+    // sgl_obj_set_pos(switch_obj, 250, 100);
+    // sgl_obj_set_size(switch_obj, 100, 40);
+    // sgl_obj_set_radius(switch_obj, 20);
+    // sgl_obj_set_alpha(switch_obj, 255);
+    // sgl_obj_set_color(switch_obj, SGL_LIGHT_GRAY);
+    // sgl_obj_set_bg_color(switch_obj, SGL_BLACK);
+    // sgl_obj_set_style(switch_obj, SGL_STYLE_KNOB_COLOR, SGL_COLOR(SGL_GREEN));
+    // sgl_obj_set_border_width(switch_obj, 2);
+    // sgl_obj_set_border_color(switch_obj, SGL_BLUE);
+
+    // sgl_obj_t *switch_obj2 = sgl_switch_create(rect);
+    // sgl_obj_set_pos(switch_obj2, 150, 380);
+    // sgl_obj_set_size(switch_obj2, 100, 40);
+    // sgl_obj_set_radius(switch_obj2, 20);
+    // sgl_obj_set_alpha(switch_obj2, 255);
+    // sgl_obj_set_color(switch_obj2, SGL_LIGHT_GRAY);
+    // sgl_obj_set_bg_color(switch_obj2, SGL_BLACK);
+    // sgl_obj_set_style(switch_obj2, SGL_STYLE_KNOB_COLOR, SGL_COLOR(SGL_GREEN));
+    // sgl_obj_set_border_width(switch_obj2, 2);
+    // sgl_obj_set_border_color(switch_obj2, SGL_BLUE);
+
+    // sgl_obj_t *ring = sgl_ring_create(NULL);
+    // sgl_obj_set_pos(ring, 200, 100);
+    // sgl_obj_set_size(ring, 100, 100);
+
+    // sgl_obj_set_radius(ring, 49);
+    // sgl_obj_set_style(ring, SGL_STYLE_RING_WIDTH, 5);
+    // sgl_obj_set_color(ring, SGL_LIGHT_GRAY);
+    // sgl_obj_set_alpha(ring, 128);
 
     // sgl_obj_t *slider = sgl_slider_create(NULL);
-    // sgl_obj_set_pos(slider, 20, 20);
-    // sgl_obj_set_size(slider, 200, 50);
-    // sgl_obj_set_style(slider, SGL_STYLE_BG_COLOR, SGL_COLOR(SGL_GREEN));
-    // sgl_obj_set_style(slider, SGL_STYLE_COLOR, SGL_COLOR(SGL_GRAY));
+    // sgl_obj_set_pos(slider, 300, 250);
+    // sgl_obj_set_size(slider, 50, 200);
+    // sgl_obj_set_style(slider, SGL_STYLE_DIRECTION, SGL_DIRECT_VERTICAL);
+    // sgl_obj_set_color(slider, SGL_RED);
+    // sgl_obj_set_bg_color(slider, SGL_GRAY);
+    // sgl_obj_set_alpha(slider, 255);
+    // sgl_obj_set_border_width(slider, 2);
 
-    // sgl_obj_t *label = sgl_label_create(slider);
-    // sgl_obj_set_style(label, SGL_STYLE_FONT, SGL_FONT(song23));
-    // sgl_obj_set_style(label, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_RED));
-    // sgl_obj_set_style(label, SGL_STYLE_TEXT, SGL_TEXT("H:0%"));
+    // sgl_obj_t *label2 = sgl_label_create(slider);
+    // sgl_obj_set_font(label2, &consolas23);
+    // sgl_label_set_text(label2, "10%");
 
-    // sgl_obj_set_event_cb(slider, slider_callback, (size_t)label);
+    // sgl_obj_t *textline = sgl_textline_create(NULL);
+    // sgl_obj_set_pos(textline, 400, 100);
+    // sgl_obj_set_size(textline, 200, 200);
+    // sgl_obj_set_radius(textline, 10);
+    // sgl_obj_set_style(textline, SGL_STYLE_TEXT, SGL_TEXT("012345784785754"));
+    // sgl_obj_set_style(textline, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_BLUE));
+    // sgl_obj_set_font(textline, &consolas23);
+    // sgl_obj_set_border_width(textline, 2);
+    // sgl_obj_set_border_color(textline, SGL_LIGHT_GRAY);
+    //sgl_textline_set_text(textline, "Text Line dhekdhefkjehfkjqhfjkqehfkejqfheqkjlfqbekjfbqjklfbqejkfbnqejkfbqjkfnqejkfqefjk");
+    //sgl_obj_set_clickable(textline);
 
-    sgl_obj_t *arc = sgl_arc_create(NULL);
-    sgl_obj_set_pos(arc, 100, 100);
-    sgl_obj_set_size(arc, 200, 200);
-    sgl_obj_set_style(arc, SGL_STYLE_RADIUS, 100);
-    sgl_obj_set_style(arc, SGL_STYLE_ARC_START_ANGLE, 30);
-    sgl_obj_set_style(arc, SGL_STYLE_ARC_END_ANGLE, 330);
-    sgl_obj_set_style(arc, SGL_STYLE_ARC_WIDTH, 40);
-    sgl_obj_set_style(arc, SGL_STYLE_ARC_MODE, SGL_DRAW_ARC_RING_SMOOTH);
-    sgl_obj_set_style(arc, SGL_STYLE_BG_COLOR, SGL_COLOR(SGL_BLUE));
+    // rect43 = sgl_rect_create(NULL);
+    // sgl_obj_set_pos(rect43, 0, 0);
+    // sgl_obj_set_size(rect43, 800, 480);
+    // sgl_obj_set_clickable(rect43);
+    // sgl_obj_set_alpha(rect43, 128);
 
-    sgl_obj_set_alpha(arc, 255);
-    sgl_obj_set_style(arc, SGL_STYLE_COLOR, SGL_COLOR(SGL_RED));
-    sgl_obj_set_style(arc, SGL_STYLE_BG_COLOR, SGL_COLOR(SGL_GREEN));
-    sgl_obj_set_style(arc, SGL_STYLE_RADIUS, 100);
-    sgl_obj_set_style(arc, SGL_STYLE_ARC_WIDTH, 40);
-    sgl_obj_set_style(arc, SGL_STYLE_ARC_START_ANGLE, 0);
-    sgl_obj_set_style(arc, SGL_STYLE_ARC_END_ANGLE, 0);
-    sgl_obj_set_style(arc, SGL_STYLE_ARC_MODE, SGL_DRAW_ARC_RING_SMOOTH);
+    //sgl_obj_set_event_cb(button, button_callback, (size_t)rect43);
 
-    // sgl_obj_set_style(arc, SGL_STYLE_CENTER_X_OFFSET, 300);
-    // sgl_obj_set_style(arc, SGL_STYLE_CENTER_Y_OFFSET, 180);
+    // sgl_obj_t *checkbox = sgl_checkbox_create(NULL);
+    // sgl_obj_set_pos(checkbox, 200, 350);
+    // sgl_obj_set_size(checkbox, 200, 23);
+    // sgl_obj_set_font(checkbox, &song23);
+    // sgl_obj_set_radius(checkbox, 5);
+    // sgl_obj_set_style(checkbox, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_BLUE));
+    // sgl_obj_set_style(checkbox, SGL_STYLE_TEXT, SGL_TEXT("Check Box Test"));
+    // sgl_obj_set_color(checkbox, SGL_RED);
+    //sgl_obj_set_color(checkbox, SGL_LIGHT_GRAY);
 
-    sgl_obj_set_align(arc, SGL_ALIGN_CENTER);
-
-    sgl_obj_t *label2 = sgl_label_create(arc);
-    // sgl_obj_set_pos(label2, 300, 200);
-    // sgl_obj_set_size(label2, 200, 200);
-    sgl_obj_set_style(label2, SGL_STYLE_FONT, SGL_FONT(song23));
-    sgl_obj_set_style(label2, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_BLUE));
-    sgl_obj_set_style(label2, SGL_STYLE_TEXT, SGL_TEXT(arcbuf));
-
-
-    // sgl_obj_t *textbox = sgl_textline_create(NULL);
-    // sgl_obj_set_pos(textbox, 20, 100);
-    // sgl_obj_set_size(textbox, 200, 300);
-    // sgl_obj_set_style(textbox, SGL_STYLE_BG_COLOR, SGL_COLOR(SGL_GRAY));
-    // sgl_obj_set_style(textbox, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_BLUE));
-    // sgl_obj_set_style(textbox, SGL_STYLE_FONT, SGL_FONT(consolas23));
-    // sgl_obj_set_style(textbox, SGL_STYLE_TEXT_MARGIN, 10);
-    // sgl_obj_set_style(textbox, SGL_STYLE_RADIUS, 10);
-    // sgl_obj_set_style(textbox, SGL_STYLE_TEXT, SGL_TEXT(""));
-
-    // sgl_obj_t *textbox = sgl_textbox_create(NULL);
-    // sgl_obj_set_pos(textbox, 20, 120);
-    // sgl_obj_set_size(textbox, 200, 300);
-
-    // sgl_obj_set_style(textbox, SGL_STYLE_FONT, SGL_FONT(song23));
-    // sgl_obj_set_style(textbox, SGL_STYLE_TEXT, SGL_TEXT("SGL (Small Graphics Library) is a lightweight and a beautiful and lightweight GUI (Graphics User Interface) for MCU-level processors.SGL (Small Graphics Library) is a lightweight and a beautiful and lightweight GUI (Graphics User Interface) for MCU-level processors."));
-    // sgl_obj_set_style(textbox, SGL_STYLE_BG_COLOR, SGL_COLOR(SGL_GREEN));
-    // sgl_obj_set_style(textbox, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_RED));
-    // sgl_obj_set_style(textbox, SGL_STYLE_RADIUS, 10);
-    // sgl_obj_set_style(textbox, SGL_STYLE_BG_TRANSPARENT, 1);
-    // sgl_obj_set_style(textbox, SGL_STYLE_PIXMAP, SGL_PIXMAP(bg_pixmap));
+    //sgl_obj_set_align(msgbox, SGL_ALIGN_CENTER);
+    // sgl_obj_set_event_cb(msgbox, msgbox_callback, (size_t)rect43);
 
     // sgl_obj_t *icon = sgl_icon_create(NULL);
-    // sgl_obj_set_pos(icon, 10, 10);
-    // sgl_obj_set_size(icon, 60, 60);
-    // sgl_obj_set_style(icon, SGL_STYLE_ICON, SGL_ICON(icon_pixmap));
+    // sgl_obj_set_pos(icon, 100, 300);
+    // sgl_obj_set_size(icon, 100, 100);
+    // sgl_obj_set_alpha(icon, 255);
 
-    sgl_obj_t *test_rect = sgl_rect_create(NULL);
-    sgl_obj_set_pos(test_rect, 20, 20);
-    sgl_obj_set_size(test_rect, 60, 60);
-    sgl_obj_set_radius(test_rect, 5);
 
-    sgl_anim_t *anim = sgl_anim_create();
-    sgl_anim_set_obj(anim, test_rect);
-    sgl_anim_set_act_delay(anim, 100);
-    sgl_anim_set_act_duration(anim, 1000);
-    sgl_anim_set_repeat_cnt(anim, -1);
-    sgl_anim_set_start_value(anim, 0);
-    sgl_anim_set_end_value(anim, 700);
-    sgl_anim_set_path(anim, sgl_anim_path);
-    sgl_anim_set_path_algo(anim, SGL_ANIM_PATH_LINEAR);
-    sgl_anim_start(anim);
+    // sgl_obj_t *listview = sgl_listview_create(NULL);
+    // sgl_obj_set_pos(listview, 50, 100);
+    // sgl_obj_set_size(listview, 200, 290);
+    // sgl_obj_set_font(listview, &song23);
+    // sgl_obj_set_color(listview, SGL_WHITE);
+    // //sgl_obj_set_style(listview, SGL_STYLE_BORDER_WIDTH, 3);
+    // //sgl_obj_set_style(listview, SGL_STYLE_BORDER_COLOR, SGL_COLOR(SGL_GRAY));
 
-    uint16_t x = 20;
+    // sgl_listview_add_item(listview, &ok_icon, "Item 1");
+    // sgl_listview_add_item(listview, &ok_icon, "Item 2");
+    // sgl_listview_add_item(listview, &ok_icon, "Item 3");
+    // sgl_listview_add_item(listview, &ok_icon, "Item 4");
+    // sgl_listview_add_item(listview, &ok_icon, "Item 5");
+    // sgl_listview_add_item(listview, &ok_icon, "Item 6");
+    // sgl_listview_add_item(listview, &ok_icon, "Item 7");
+    // sgl_listview_add_item(listview, &ok_icon, "Item 8");
+    // sgl_listview_add_item(listview, &ok_icon, "Item 9");
+    // sgl_listview_add_item(listview, &ok_icon, "Item 10");
+    // sgl_listview_add_item(listview, &ok_icon, "Item 11");
+    // sgl_listview_add_item(listview, &ok_icon, "Item 12");
+    // sgl_listview_add_item(listview, &ok_icon, "Item 13");
+
+    // sgl_obj_set_pixmap(listview, &bg_pixmap);
+
+    // sgl_listview_set_child_style(listview, SGL_STYLE_RADIUS, 6);
+    // sgl_listview_set_child_style(listview, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_GREEN));
+    // sgl_listview_set_child_style(listview, SGL_STYLE_ALPHA, 150);
+    // sgl_listview_set_child_style(listview, SGL_STYLE_TEXT_ALPHA, 255);
+
+    // sgl_listview_set_offset(listview, -10);
+
+    uint64_t x = 0;
     while (!quit) {
-
-        sgl_task_handle();
-
+        //SDL_Delay(10);
         SDL_PollEvent(&MouseEvent);
         switch (MouseEvent.type) {
         case SDL_QUIT:
@@ -257,17 +374,16 @@ int main(int argc, char *argv[])
             break;
         }
 
-        sgl_obj_set_style(arc, SGL_STYLE_ARC_END_ANGLE, x * 360 / 100 );
-        sprintf(arcbuf, "H:%d%%", x);
+        // if(x == 10) {
+        //     sgl_obj_set_destroyed(listview);
+        // }
 
-        if(x == 500) {
-            x = 0;
-        }
+        sgl_task_handle();
 
-        //sgl_task_handle();
-
-        //sgl_obj_set_dirty(sgl_screen_act());
-        x += 1;
+        //sgl_obj_set_dirty(sgl_src_act());
+        x++;
+        // sgl_obj_set_pos(rect, x, x);
+        // sgl_obj_set_dirty(rect);
 
         sgl_port_sdl2_increase_frame_count(sdl2_dev);
     }

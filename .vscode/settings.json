@@ -95,7 +95,8 @@
         "vector": "c",
         "iterator": "c",
         "sgl_icon.h": "c",
-        "bit": "c"
+        "bit": "c",
+        "sgl_cfgfix.h": "c"
     },
     "esbonio.sphinx.confDir": "",
     "iis.configDir": ""

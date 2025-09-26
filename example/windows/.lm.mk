@@ -30,7 +30,7 @@ C_SOURCE := main.c sgl_port_sdl2.c ../../source/core/sgl_core.c ../../source/cor
 
 C_PATH := -Isdl/include/SDL2 -I../../source -I../../source/include
 
-C_FLAG :=  -O2 -Wl,-Bstatic -ffunction-sections -fdata-sections -nostdlib -ffreestanding -Wunused-function -Wall -Wextra -Werror -std=c99  -g
+C_FLAG :=  -O2 -Wl,-Bstatic -ffunction-sections -fdata-sections -nostdlib   -g
 
 LIB_NAME := -lmingw32 -lSDL2main -lSDL2.dll
 
