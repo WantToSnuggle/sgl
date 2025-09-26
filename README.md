@@ -26,7 +26,7 @@ Download `gcc` from this address (https://github.com/niXman/mingw-builds-binarie
 Then extract to any directory and add to environment variables
 
 ## 2. Pull `sgl` Source Code
-git clone https://gitee.com/li-shan-asked/sgl.git
+git clone https://github.com/sgl-org/sgl.git
 
 ## 3. Configure Project
 Switch to `example/windows` directory, then execute `make config` command
