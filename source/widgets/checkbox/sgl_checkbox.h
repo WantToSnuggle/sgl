@@ -37,12 +37,7 @@
 
 typedef struct sgl_checkbox {
     sgl_obj_t          obj;
-    sgl_draw_rect_t    select;
-    sgl_rect_t         select_coords;
-    sgl_draw_rect_t    select_bg;
-    sgl_rect_t         select_bg_coords;
-    sgl_draw_text_t    text_desc;
-    sgl_rect_t         text_coords;
+    sgl_draw_text_t    text;
     bool               status;
 }sgl_checkbox_t;
 

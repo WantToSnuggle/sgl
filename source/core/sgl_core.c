@@ -1387,7 +1387,6 @@ void sgl_task_handle(void)
     /* event task */
     sgl_event_task();
 
-    /* FIX ME */
     sgl_area_init(&current_ctx.dirty);
 
     #if (CONFIG_SGL_ANIMATION)

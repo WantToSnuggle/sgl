@@ -29,6 +29,7 @@
 #include <sgl_log.h>
 #include <sgl_mm.h>
 #include <sgl_cfgfix.h>
+#include <sgl_theme.h>
 #include <string.h>
 #include "sgl_button.h"
 
@@ -279,9 +280,9 @@ sgl_obj_t* sgl_button_create(sgl_obj_t* parent)
     obj->get_style = sgl_button_get_style;
 #endif
     button->desc.alpha = SGL_ALPHA_MAX;
-    button->desc.color = SGL_WHITE;
-    button->desc.border = 0;
-    button->desc.border_color = SGL_BLACK;
+    button->desc.color = SGL_THEME_COLOR;
+    button->desc.border = SGL_THEME_BORDER_WIDTH;
+    button->desc.border_color = SGL_THEME_BORDER_COLOR;
     button->desc.pixmap = NULL;
     button->desc.radius = 0;
 

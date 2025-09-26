@@ -107,6 +107,17 @@ static bool draw_calculate_dirty_area(sgl_page_t *page, sgl_area_t *dirty)
             continue;
         }
 
+        /* check child need init coords */
+        if(unlikely(sgl_obj_is_needinit(obj))) {
+            sgl_event_t evt = {
+                .type = SGL_EVENT_DRAW_INIT,
+            };
+
+            obj->construct_fn(NULL, obj, &evt);
+            /* maybe no need to clear flag */
+            sgl_obj_clear_needinit(obj);
+        }
+
         /* check child dirty and merge all dirty area */
         if(sgl_obj_is_dirty(obj)){
 
@@ -126,17 +137,6 @@ static bool draw_calculate_dirty_area(sgl_page_t *page, sgl_area_t *dirty)
 
             /* clear dirty flag */
             sgl_obj_clear_dirty(obj);
-        }
-
-        /* check child need init coords */
-        if(unlikely(sgl_obj_is_needinit(obj))) {
-            sgl_event_t evt = {
-                .type = SGL_EVENT_DRAW_INIT,
-            };
-
-            obj->construct_fn(NULL, obj, &evt);
-            /* maybe no need to clear flag */
-            sgl_obj_clear_needinit(obj);
         }
     }
 
