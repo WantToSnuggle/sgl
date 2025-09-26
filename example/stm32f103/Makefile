@@ -1,6 +1,6 @@
 TARGET    := stm32demo
 BUILD_DIR := build
-LM = ../../tools/lite-manager/lm.exe
+LM = ../../lite-manager/lm.exe
 
 # include configuration file for makefile
 .PHONY: check_lmmk

@@ -90,7 +90,7 @@ $(BUILD_DIR):
 
 
 run: $(BUILD_DIR)/$(TARGET).exe
-	@$(LM) --cp sdl/bin/SDL2.dll $(BUILD_DIR)/
+	@cp sdl/bin/SDL2.dll $(BUILD_DIR)/
 	@$(BUILD_DIR)/$(TARGET).exe
 
 

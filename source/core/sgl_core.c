@@ -1055,7 +1055,9 @@ int sgl_obj_init(sgl_obj_t *obj, sgl_obj_t *parent)
 #endif
     obj->dirty = 1;
     obj->clickable = 0;
-    obj->area = parent->area;
+
+    /* init object area to invalid */
+    sgl_area_init(&obj->area);
 
 #if CONFIG_SGL_USE_OBJ_ID
     obj->id = obj_global_id;
@@ -1387,12 +1389,13 @@ void sgl_task_handle(void)
     /* event task */
     sgl_event_task();
 
-    sgl_area_init(&current_ctx.dirty);
-
     #if (CONFIG_SGL_ANIMATION)
     sgl_anim_task();
     #endif // !CONFIG_SGL_ANIMATION
 
     /* draw task  */
     sgl_draw_frame(current_ctx.page, &current_ctx.dirty);
+
+    /* clear dirty area */
+    sgl_area_init(&current_ctx.dirty);
 }
