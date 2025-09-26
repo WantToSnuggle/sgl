@@ -31,6 +31,7 @@
 #include <string.h>
 #include <sgl_draw.h>
 #include <sgl_font.h>
+#include <sgl_theme.h>
 #include <sgl_draw_cg.h>
 
 
@@ -626,7 +627,7 @@ static sgl_page_t* sgl_page_create(void)
     page->surf.w = sgl_device_fb.xres;
     page->surf.h = sgl_device_fb.framebuffer_size / sgl_device_fb.xres;
     page->surf.size = sgl_device_fb.framebuffer_size;
-    page->color = SGL_WHITE;
+    page->color = SGL_THEME_DESKTOP;
 
     obj->parent = obj;
     obj->clickable = 1;
@@ -1386,13 +1387,13 @@ void sgl_task_handle(void)
     /* event task */
     sgl_event_task();
 
+    /* FIX ME */
+    sgl_area_init(&current_ctx.dirty);
+
     #if (CONFIG_SGL_ANIMATION)
     sgl_anim_task();
     #endif // !CONFIG_SGL_ANIMATION
 
     /* draw task  */
     sgl_draw_frame(current_ctx.page, &current_ctx.dirty);
-
-    /* initialize dirty area */
-    sgl_area_init(&current_ctx.dirty);
 }

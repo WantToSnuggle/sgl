@@ -659,7 +659,6 @@ static inline sgl_color_t sgl_rgb2color(uint8_t red, uint8_t green, uint8_t blue
 #define SGL_ICON(x)                                               (size_t)(&(x))
 
 
-
 #if (CONFIG_SGL_OBJ_SLOT_DYNAMIC)
 /**
  * @brief for each all slot of page
@@ -1888,6 +1887,18 @@ static inline void sgl_obj_set_font(sgl_obj_t *obj, sgl_font_t *font)
 
 
 /**
+ * @brief get object font
+ * @param obj The object to get the font
+ * @return The font of the object.
+ */
+static inline sgl_font_t* sgl_obj_get_font(sgl_obj_t *obj)
+{
+    size_t font = sgl_obj_get_style(obj, SGL_STYLE_FONT);
+    return (sgl_font_t*)font;
+}
+
+
+/**
  * @brief set object text
  * @param obj The object to set the text
  * @param text The text to set.
@@ -1898,17 +1909,6 @@ static inline void sgl_obj_set_text(sgl_obj_t *obj, const char *text)
     sgl_obj_set_style(obj, SGL_STYLE_TEXT, SGL_TEXT(text));
 }
 
-
-/**
- * @brief get object font
- * @param obj The object to get the font
- * @return The font of the object.
- */
-static inline sgl_font_t* sgl_obj_get_font(sgl_obj_t *obj)
-{
-    size_t font = sgl_obj_get_style(obj, SGL_STYLE_FONT);
-    return (sgl_font_t*)font;
-}
 
 #endif // CONFIG_SGL_USE_STYLE_UNIFIED_API
 
