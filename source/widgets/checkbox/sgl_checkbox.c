@@ -28,6 +28,7 @@
 #include <sgl_math.h>
 #include <sgl_log.h>
 #include <sgl_mm.h>
+#include <sgl_theme.h>
 #include <sgl_cfgfix.h>
 #include <string.h>
 #include "sgl_checkbox.h"
@@ -293,7 +294,7 @@ sgl_obj_t* sgl_checkbox_create(sgl_obj_t* parent)
 
     checkbox->status = false;
     checkbox->text.alpha = SGL_ALPHA_MAX;
-    checkbox->text.color = SGL_BLACK;
+    checkbox->text.color = SGL_THEME_TEXT_COLOR;
     checkbox->text.icon = &unchecked_icon;
     checkbox->text.align = SGL_ALIGN_LEFT_MID;
     checkbox->text.x_offset = 0;

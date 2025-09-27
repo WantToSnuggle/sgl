@@ -28,6 +28,7 @@
 #include <sgl_math.h>
 #include <sgl_log.h>
 #include <sgl_mm.h>
+#include <sgl_theme.h>
 #include <sgl_cfgfix.h>
 #include <string.h>
 #include "sgl_ring.h"
@@ -206,7 +207,8 @@ sgl_obj_t* sgl_ring_create(sgl_obj_t* parent)
     ring->desc.radius_out = -1;
     ring->desc.cx = -1;
     ring->desc.cy = -1;
-    ring->desc.alpha = SGL_ALPHA_MAX;
+    ring->desc.alpha = SGL_THEME_ALPHA;
+    ring->desc.color = SGL_THEME_COLOR;
 
     return obj;
 }

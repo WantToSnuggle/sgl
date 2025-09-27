@@ -28,6 +28,7 @@
 #include <sgl_math.h>
 #include <sgl_log.h>
 #include <sgl_mm.h>
+#include <sgl_theme.h>
 #include <sgl_cfgfix.h>
 #include <string.h>
 #include "sgl_slider.h"
@@ -234,10 +235,11 @@ sgl_obj_t* sgl_slider_create(sgl_obj_t* parent)
     obj->needinit = 1;
 
     slider->desc.direct = SGL_DIRECT_HORIZONTAL;
-    slider->desc.alpha = SGL_ALPHA_MAX;
-    slider->desc.color = SGL_BLUE;
-    slider->desc.bg_color = SGL_WHITE;
-    slider->desc.border = 0;
+    slider->desc.alpha = SGL_THEME_ALPHA;
+    slider->desc.color = SGL_THEME_COLOR;
+    slider->desc.bg_color = SGL_THEME_BG_COLOR;
+    slider->desc.border = SGL_THEME_BORDER_WIDTH;
+    slider->desc.border_color = SGL_THEME_BORDER_COLOR;
 
     return obj;
 }

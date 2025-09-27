@@ -28,6 +28,7 @@
 #include <sgl_math.h>
 #include <sgl_log.h>
 #include <sgl_mm.h>
+#include <sgl_theme.h>
 #include <sgl_cfgfix.h>
 #include <string.h>
 #include "sgl_rectangle.h"
@@ -210,7 +211,10 @@ sgl_obj_t* sgl_rect_create(sgl_obj_t* parent)
     obj->set_style = sgl_rect_set_style;
     obj->get_style = sgl_rect_get_style;
 #endif
-    rect->desc.alpha = SGL_ALPHA_MAX;
+    rect->desc.alpha = SGL_THEME_ALPHA;
+    rect->desc.color = SGL_THEME_COLOR;
+    rect->desc.border = SGL_THEME_BORDER_WIDTH;
+    rect->desc.border_color = SGL_THEME_BORDER_COLOR;
     rect->desc.pixmap = NULL;
 
     return obj;

@@ -776,7 +776,6 @@ void sgl_draw_rect(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_dra
             else {
                 sgl_draw_fill_round_rect_pixmap_with_alpha(surf, area, rect, desc->radius, desc->pixmap, alpha);
             }
-
         }
         else {
             return;

@@ -175,12 +175,6 @@ extern "C" {
 #endif
 
 
-#ifndef CONFIG_SGL_THEME_DEFAULT
-#define CONFIG_SGL_THEME_DEFAULT                   1
-#endif
-
-
-
 #ifdef __cplusplus
 }
 #endif

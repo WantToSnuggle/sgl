@@ -24,6 +24,7 @@
  */
 
 #include <sgl.h>
+#include <sgl_theme.h>
 
 
 /**
@@ -314,38 +315,41 @@ sgl_obj_t* sgl_msgbox_create(sgl_obj_t* parent)
     obj->get_style = sgl_msgbox_get_style;
 #endif
 
-    msgbox->body_desc.alpha = SGL_ALPHA_MAX;
-    msgbox->body_desc.color = SGL_GRAY;
-    msgbox->body_desc.radius = 0;
-    msgbox->body_desc.border = 0;
+    msgbox->body_desc.alpha = SGL_THEME_ALPHA;
+    msgbox->body_desc.color = SGL_THEME_COLOR;
+    msgbox->body_desc.radius = SGL_THEME_RADIUS;
+    msgbox->body_desc.border = SGL_THEME_BORDER_WIDTH;
+    msgbox->body_desc.border_color = SGL_THEME_BORDER_COLOR;
     msgbox->body_desc.pixmap = NULL;
 
-
     msgbox->title_desc.text = "Message Box";
-    msgbox->title_desc.alpha = SGL_ALPHA_MAX;
-    msgbox->title_desc.color = SGL_BLACK;
+    msgbox->title_desc.alpha = SGL_THEME_ALPHA;
+    msgbox->title_desc.color = SGL_THEME_TEXT_COLOR;
     msgbox->title_desc.bg_flag = 0;
 
     msgbox->text_desc.text = "You have not set the text yet.";
-    msgbox->text_desc.alpha = SGL_ALPHA_MAX;
-    msgbox->text_desc.color = SGL_BLACK;
+    msgbox->text_desc.alpha = SGL_THEME_ALPHA;
+    msgbox->text_desc.color = SGL_THEME_TEXT_COLOR;
     msgbox->text_desc.bg_flag = 0;
     msgbox->text_desc.mode = SGL_DRAW_TEXT_LINES;
     msgbox->text_desc.line_space = 2;
     msgbox->text_desc.margin = 3;
-    msgbox->text_desc.radius = 0;
+    msgbox->text_desc.radius = SGL_THEME_RADIUS;
 
-    msgbox->title_line_desc.alpha = SGL_ALPHA_MAX;
-    msgbox->title_line_desc.color = SGL_BLACK;
+    msgbox->title_line_desc.alpha = SGL_THEME_ALPHA;
+    msgbox->title_line_desc.color = SGL_THEME_COLOR;
 
-    msgbox->apply_text.alpha = SGL_ALPHA_MAX;
+    msgbox->apply_text.alpha = SGL_THEME_ALPHA;
     msgbox->apply_text.bg_flag = 1;
     msgbox->apply_text.text = "Apply";
-    msgbox->apply_text.color = SGL_WHITE;
-    msgbox->close_text.alpha = SGL_ALPHA_MAX;
+    msgbox->apply_text.color = SGL_THEME_TEXT_COLOR;
+    msgbox->close_text.alpha = SGL_THEME_ALPHA;
     msgbox->close_text.bg_flag = 1;
     msgbox->close_text.text = "Close";
-    msgbox->close_text.color = SGL_WHITE;
+    msgbox->close_text.color = SGL_THEME_TEXT_COLOR;
+
+    msgbox->apply_text.bg_color = sgl_color_mixer(SGL_THEME_COLOR, SGL_THEME_TEXT_COLOR, 150);
+    msgbox->close_text.bg_color = sgl_color_mixer(SGL_THEME_COLOR, SGL_THEME_TEXT_COLOR, 150);
 
     sgl_obj_set_clickable(obj);
 
