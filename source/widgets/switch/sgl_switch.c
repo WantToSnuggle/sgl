@@ -235,7 +235,7 @@ sgl_obj_t* sgl_switch_create(sgl_obj_t* parent)
     p_switch->bg_desc.radius = -1;
 
     p_switch->knob_desc.alpha = SGL_THEME_ALPHA;
-    p_switch->knob_desc.color = SGL_THEME_COLOR;
+    p_switch->knob_desc.color = sgl_color_mixer(SGL_THEME_COLOR, SGL_THEME_BG_COLOR, 128);
     p_switch->knob_desc.border = 0;
 
     p_switch->status = false;
