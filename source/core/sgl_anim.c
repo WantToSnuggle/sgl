@@ -201,7 +201,9 @@ void sgl_anim_task(void)
             anim->path(anim, value);
 
             if (elaps_time > anim->act_duration) {
-                anim->repeat_cnt --;
+                if(anim->repeat_cnt != -1) {
+                    anim->repeat_cnt--;
+                }
 
                 if(anim->finish_cb) {
                     anim->finish_cb(anim);
@@ -213,9 +215,6 @@ void sgl_anim_task(void)
                 /* remove anim object if repeat count is 0 */
                 if(anim->repeat_cnt == 0) {
                     sgl_anim_stop(anim);
-                }
-                else if(anim->repeat_cnt != -1) {
-                    anim->repeat_cnt--;
                 }
             }
         }
