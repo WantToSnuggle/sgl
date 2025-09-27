@@ -81,6 +81,10 @@ typedef struct sgl_anim_ctx {
 }sgl_anim_ctx_t;
 
 
+#define  sgl_anim_for_each(anim, head)                 for ((anim) = (head)->anim_list_head; (anim) != NULL; (anim) = (anim)->next)
+#define  sgl_anim_for_each_safe(anim, n, head)         for (anim = (head)->anim_list_head, n = (anim) ? (anim)->next : NULL; anim != NULL; anim = n, n = (anim) ? (anim)->next : NULL)
+
+
 /* define default animation tick ms */
 #define SGL_ANIMATION_TICK_MS   CONFIG_SGL_ANIMATION_TICK_MS
 

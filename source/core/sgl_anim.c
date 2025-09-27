@@ -176,7 +176,7 @@ void sgl_anim_task(void)
 {
     int32_t value = 0;
     uint32_t elaps_time = 0;
-    sgl_anim_t *anim = anim_ctx.anim_list_head;
+    sgl_anim_t *anim = NULL;
 
     if(anim_ctx.tick_ms < SGL_ANIMATION_TICK_MS) {
         return;
@@ -187,8 +187,10 @@ void sgl_anim_task(void)
         return;
     }
 
-    /* for each anim object list */
-    for(; anim != NULL; anim = anim->next) {
+    /** for each anim object list
+     * @note  this loop is safe, because we can't modify anim list that will be removed in anim task
+    */
+    sgl_anim_for_each(anim, &anim_ctx) {
         anim->act_time += anim_ctx.tick_ms;
 
         if(anim->act_time >= anim->act_delay) {
