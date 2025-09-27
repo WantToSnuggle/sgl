@@ -195,9 +195,11 @@ static void sgl_switch_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
         p_switch->color = bg_desc->color;
         knob_rect->y1 = obj->coords.y1 + bg_desc->border;
         knob_rect->y2 = obj->coords.y2 - bg_desc->border;
-        p_switch->bg_desc.radius = sgl_obj_fix_radius(obj, (obj->coords.y2 - obj->coords.y1) / 2);
 
-        knob_desc->radius = bg_desc->radius - bg_desc->border - 1;
+        if(p_switch->bg_desc.radius == -1) {
+            p_switch->bg_desc.radius = sgl_obj_fix_radius(obj, (obj->coords.y2 - obj->coords.y1) / 2);
+            knob_desc->radius = bg_desc->radius - bg_desc->border - 1;
+        }
     }
 }
 
@@ -230,6 +232,7 @@ sgl_obj_t* sgl_switch_create(sgl_obj_t* parent)
     p_switch->bg_desc.color = SGL_THEME_COLOR;
     p_switch->bg_desc.border_color = SGL_THEME_BORDER_COLOR;
     p_switch->bg_desc.border = SGL_THEME_BORDER_WIDTH;
+    p_switch->bg_desc.radius = -1;
 
     p_switch->knob_desc.alpha = SGL_THEME_ALPHA;
     p_switch->knob_desc.color = SGL_THEME_COLOR;
