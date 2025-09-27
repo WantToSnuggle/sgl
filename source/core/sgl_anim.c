@@ -2,10 +2,10 @@
  *
  * MIT License
  *
- * Copyright(c) 2023-present All contributors of SGL  
+ * Copyright(c) 2023-present All contributors of SGL
  * Li, Shanwen  (1477153217@qq.com)
  * Document reference link: docs directory
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -182,9 +182,6 @@ void sgl_anim_task(void)
         return;
     }
 
-    /* reset tick ms */
-    anim_ctx.tick_ms = 0;
-
     /* if no anim object, do nothing */
     if(unlikely(anim_ctx.anim_cnt == 0)) {
         return;
@@ -192,18 +189,18 @@ void sgl_anim_task(void)
 
     /* for each anim object list */
     for(; anim != NULL; anim = anim->next) {
-        anim->act_time += SGL_ANIMATION_TICK_MS;
+        anim->act_time += anim_ctx.tick_ms;
 
         if(anim->act_time >= anim->act_delay) {
             elaps_time = anim->act_time - anim->act_delay;
-            if(elaps_time <= anim->act_duration) {
-                /* check callback function for debug */
-                SGL_ASSERT(anim->path != NULL);
-                SGL_ASSERT(anim->path_algo != NULL);
-                value = anim->path_algo(elaps_time, anim->act_duration, anim->start_value, anim->end_value);
-                anim->path(anim, value);
-            }
-            else {
+
+            /* check callback function for debug */
+            SGL_ASSERT(anim->path != NULL);
+            SGL_ASSERT(anim->path_algo != NULL);
+            value = anim->path_algo(sgl_min(elaps_time, anim->act_duration), anim->act_duration, anim->start_value, anim->end_value);
+            anim->path(anim, value);
+
+            if (elaps_time > anim->act_duration) {
                 anim->repeat_cnt --;
 
                 if(anim->finish_cb) {
@@ -223,22 +220,25 @@ void sgl_anim_task(void)
             }
         }
     }
+
+    /* reset tick ms */
+    anim_ctx.tick_ms = 0;
 }
 
 
 /**
  * Linear animation path calculation function
- * 
+ *
  * Calculates the current interpolated value based on elapsed time and total duration
  * using linear interpolation.
- * 
+ *
  * @param elaps     Elapsed time in milliseconds
  * @param duration  Total animation duration in milliseconds
  * @param start     Start value
  * @param end       End value
- * 
+ *
  * @return          The interpolated value for the current time
- * 
+ *
  * @note            Returns 'end' if elaps >= duration (animation finished)
  *                  Returns 'start' if elaps == 0 (animation just started)
  *                  Uses 32-bit integer arithmetic to avoid floating-point operations
@@ -261,7 +261,7 @@ int32_t sgl_anim_path_linear(uint32_t elaps, uint32_t duration, int16_t start, i
     // Calculate progress (elaps / duration) as a fixed-point number with 16 fractional bits
     // Use 64-bit intermediate to prevent overflow during multiplication
     progress_fixed = ((uint64_t)elaps << 16) / duration;
-    
+
     // Calculate the difference between end and start
     delta = (int32_t)end - (int32_t)start;
 
