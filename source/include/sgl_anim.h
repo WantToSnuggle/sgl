@@ -135,7 +135,7 @@ void sgl_anim_stop(sgl_anim_t *anim);
  * @param  obj object
  * @return none
  */
-static inline void sgl_anim_set_obj(sgl_anim_t *anim, sgl_obj_t *obj)
+static inline void sgl_anim_set_obj(sgl_anim_t *anim, struct sgl_obj *obj)
 {
     SGL_ASSERT(anim != NULL);
     anim->obj = obj;
