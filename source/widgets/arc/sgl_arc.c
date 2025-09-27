@@ -28,6 +28,7 @@
 #include <sgl_math.h>
 #include <sgl_log.h>
 #include <sgl_mm.h>
+#include <sgl_theme.h>
 #include <sgl_cfgfix.h>
 #include <string.h>
 #include "sgl_arc.h"
@@ -205,11 +206,11 @@ static void sgl_arc_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *
             arc->desc.cy = (obj->coords.y2 + obj->coords.y1) / 2;
         }
 
-        if(arc->desc.radius_out == 0) {
+        if(arc->desc.radius_out < 0) {
             arc->desc.radius_out = (obj->coords.x2 - obj->coords.x1) / 2;
         }
 
-        if(arc->desc.radius_in == 0) {
+        if(arc->desc.radius_in < 0) {
             arc->desc.radius_in = arc->desc.radius_out - 2;
         }
     }
@@ -236,14 +237,14 @@ sgl_obj_t* sgl_arc_create(sgl_obj_t* parent)
     sgl_obj_init(&arc->obj, parent);
     obj->needinit = 1;
 
-    arc->desc.alpha = SGL_ALPHA_MAX;
+    arc->desc.alpha = SGL_THEME_ALPHA;
     arc->desc.mode = SGL_DRAW_ARC_NORMAL;
-    arc->desc.color = SGL_BLACK;
-    arc->desc.bg_color = SGL_WHITE;
+    arc->desc.color = SGL_THEME_BG_COLOR;
+    arc->desc.bg_color = SGL_THEME_COLOR;
     arc->desc.start_angle = 0;
     arc->desc.end_angle = 360;
-    arc->desc.radius_out = 0;
-    arc->desc.radius_in = 0;
+    arc->desc.radius_out = -1;
+    arc->desc.radius_in = -1;
     arc->desc.cx = -1;
     arc->desc.cy = -1;
 

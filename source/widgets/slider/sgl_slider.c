@@ -236,8 +236,8 @@ sgl_obj_t* sgl_slider_create(sgl_obj_t* parent)
 
     slider->desc.direct = SGL_DIRECT_HORIZONTAL;
     slider->desc.alpha = SGL_THEME_ALPHA;
-    slider->desc.color = SGL_THEME_COLOR;
-    slider->desc.bg_color = SGL_THEME_BG_COLOR;
+    slider->desc.color = sgl_color_mixer(SGL_THEME_BG_COLOR, SGL_THEME_COLOR, 128);
+    slider->desc.bg_color = SGL_THEME_COLOR;
     slider->desc.border = SGL_THEME_BORDER_WIDTH;
     slider->desc.border_color = SGL_THEME_BORDER_COLOR;
 

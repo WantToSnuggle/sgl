@@ -967,6 +967,7 @@ static inline void sgl_obj_set_clickable(sgl_obj_t *obj)
 {
     SGL_ASSERT(obj != NULL);
     obj->clickable = 1;
+    obj->flexible  = 1;
 }
 
 
@@ -980,6 +981,7 @@ static inline void sgl_obj_set_unclickable(sgl_obj_t *obj)
 {
     SGL_ASSERT(obj != NULL);
     obj->clickable = 0;
+    obj->flexible  = 0;
 }
 
 

@@ -37,7 +37,7 @@ extern "C" {
 #define SGL_THEME_DESKTOP                    sgl_rgb(255,255,255)
 /* button theme style */
 #define SGL_THEME_COLOR                      sgl_rgb(255,255,255)
-#define SGL_THEME_BG_COLOR                   sgl_rgb(50,50,50)
+#define SGL_THEME_BG_COLOR                   sgl_rgb(0,0,0)
 #define SGL_THEME_BORDER_WIDTH               2
 #define SGL_THEME_BORDER_COLOR               sgl_rgb(0,0,0)
 #define SGL_THEME_ALPHA                      255

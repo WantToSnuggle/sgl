@@ -28,6 +28,7 @@
 #include <sgl_math.h>
 #include <sgl_log.h>
 #include <sgl_mm.h>
+#include <sgl_theme.h>
 #include <sgl_cfgfix.h>
 #include <string.h>
 #include "sgl_circle.h"
@@ -181,6 +182,10 @@ static void sgl_circle_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
         if(circle->desc.cy == -1) {
             circle->desc.cy = (circle->obj.coords.y1 + circle->obj.coords.y2) / 2;
         }
+
+        if(circle->desc.radius == -1) {
+            circle->desc.radius = (circle->obj.coords.y2 - circle->obj.coords.y1) / 2;
+        }
     }
 
     if(obj->event_fn) {
@@ -215,12 +220,13 @@ sgl_obj_t* sgl_circle_create(sgl_obj_t* parent)
     obj->needinit = 1;
 
     circle->desc.alpha = SGL_ALPHA_MAX;
-    circle->desc.color = SGL_WHITE;
+    circle->desc.color = SGL_THEME_COLOR;
     circle->desc.pixmap = NULL;
-    circle->desc.border = 0;
-    circle->desc.border_color = SGL_BLACK;
+    circle->desc.border = SGL_THEME_BORDER_WIDTH;
+    circle->desc.border_color = SGL_THEME_BORDER_COLOR;
     circle->desc.cx = -1;
     circle->desc.cy = -1;
+    circle->desc.radius = -1;
 
     return obj;
 }
