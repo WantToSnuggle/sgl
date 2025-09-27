@@ -204,6 +204,8 @@ void sgl_anim_task(void)
                 anim->path(anim, value);
             }
             else {
+                anim->repeat_cnt --;
+
                 if(anim->finish_cb) {
                     anim->finish_cb(anim);
                 }
