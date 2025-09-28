@@ -35,7 +35,6 @@ extern "C" {
 
 #if (CONFIG_SGL_THEME_DEFAULT)
 #define SGL_THEME_DESKTOP                    sgl_rgb(255,255,255)
-/* button theme style */
 #define SGL_THEME_COLOR                      sgl_rgb(255,255,255)
 #define SGL_THEME_BG_COLOR                   sgl_rgb(0,0,0)
 #define SGL_THEME_BORDER_WIDTH               2
@@ -47,7 +46,6 @@ extern "C" {
 
 #elif (CONFIG_SGL_THEME_DARK)
 #define SGL_THEME_DESKTOP                    sgl_rgb(20,20,20)
-/* button theme style */
 #define SGL_THEME_COLOR                      sgl_rgb(50,50,50)
 #define SGL_THEME_BG_COLOR                   sgl_rgb(10,10,10)
 #define SGL_THEME_BORDER_WIDTH               2
@@ -58,7 +56,6 @@ extern "C" {
 
 
 #elif (CONFIG_SGL_THEME_LIGHT)
-/* button theme style */
 #define SGL_THEME_COLOR                      SGL_GRAY
 #define SGL_THEME_BG_COLOR                   sgl_rgb(255,255,255)
 #define SGL_THEME_BORDER_WIDTH               2
