@@ -113,6 +113,8 @@ static bool draw_calculate_dirty_area(sgl_page_t *page, sgl_area_t *dirty)
                 .type = SGL_EVENT_DRAW_INIT,
             };
 
+            /* check construct function */
+            SGL_ASSERT(obj->construct_fn != NULL);
             obj->construct_fn(NULL, obj, &evt);
             /* maybe no need to clear flag */
             sgl_obj_clear_needinit(obj);
