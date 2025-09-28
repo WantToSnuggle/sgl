@@ -97,6 +97,7 @@
     #define    CONFIG_SGL_FONT_SONG23             1
     #define    CONFIG_SGL_FONT_CONSOLAS23         0
     #define    CONFIG_SGL_FONT_KAI33              0
+    #define  CONFIG_SGL_THEME_DEFAULT             1    
     ```
 ## 配置编译选项
 1. 打开`Options for Target`窗口，然后找到`Target`选项:             
