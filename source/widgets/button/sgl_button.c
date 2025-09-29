@@ -279,17 +279,17 @@ sgl_obj_t* sgl_button_create(sgl_obj_t* parent)
     obj->set_style = sgl_button_set_style;
     obj->get_style = sgl_button_get_style;
 #endif
-    button->desc.alpha = SGL_ALPHA_MAX;
+    button->desc.alpha = SGL_THEME_ALPHA;
     button->desc.color = SGL_THEME_COLOR;
     button->desc.border = SGL_THEME_BORDER_WIDTH;
     button->desc.border_color = SGL_THEME_BORDER_COLOR;
     button->desc.pixmap = NULL;
     button->desc.radius = 0;
 
-    button->text_desc.alpha = SGL_ALPHA_MAX;
+    button->text_desc.alpha = SGL_THEME_ALPHA;
     button->text_desc.bg_flag = 0;
-    button->text_desc.bg_color = SGL_BLACK;
-    button->text_desc.color = SGL_BLACK;
+    button->text_desc.bg_color = SGL_THEME_BG_COLOR;
+    button->text_desc.color = SGL_THEME_TEXT_COLOR;
     button->text_desc.text = NULL;
     button->text_desc.radius = 0;
     button->text_desc.font = NULL;
