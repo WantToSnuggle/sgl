@@ -193,7 +193,7 @@ static sgl_obj_t* touch_detect_object(sgl_page_t *page, sgl_event_pos_t *pos)
         }
 
         /* it will skip page object but its workaround */
-        if(obj == &page->obj) {
+        if(unlikely(obj == &page->obj)) {
             continue;
         }
 
@@ -224,7 +224,7 @@ static sgl_obj_t* motion_detect_object(sgl_page_t *page, sgl_event_pos_t *pos)
         }
 
         /* it will skip page object but its workaround */
-        if(obj == &page->obj) {
+        if(unlikely(obj == &page->obj)) {
             continue;
         }
 
