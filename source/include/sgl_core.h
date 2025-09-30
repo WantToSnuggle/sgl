@@ -182,20 +182,11 @@ typedef union {
 * @alpha: Color transparency
 */
 typedef union {
-#if CONFIG_SGL_COLOR16_SWAP
-    struct {
-        uint16_t green_h : 3;
-        uint16_t red : 5;
-        uint16_t blue : 5;
-        uint16_t green_l : 3;
-    } ch;
-#else
     struct {
         uint16_t blue : 5;
         uint16_t green : 6;
         uint16_t red : 5;
     } ch;
-#endif
     uint16_t full;
 }sgl_color16_t;
 
@@ -515,6 +506,13 @@ int sgl_device_fb_register(sgl_device_fb_t *fb_dev);
  */
 static inline void sgl_panel_flush_area(int16_t x, int16_t y, int16_t w, int16_t h, sgl_color_t *src)
 {
+#if CONFIG_SGL_COLOR16_SWAP
+    uint32_t *dst = (uint32_t *)src;
+    for(int i = 0; i < ((w * h) * sizeof(sgl_color_t) / 4); i++) {
+        *dst = ((*dst << 8) & 0xFF00FF00) | ((*dst >> 8) & 0x00FF00FF);
+        dst++;
+    }
+#endif
     sgl_device_fb.flush_area(x, y, w, h, src);
 }
 
@@ -591,16 +589,9 @@ static inline sgl_color_t sgl_int2color(uint32_t color)
     c.ch.green   = (uint8_t)((color >> 8) & 0xff);
     c.ch.red     = (uint8_t)((color >> 16) & 0xff);
 #elif (CONFIG_SGL_PANEL_PIXEL_DEPTH == 16)
-    #if CONFIG_SGL_COLOR16_SWAP
-    c.ch.green_h = (uint8_t)((color >> 13) & 0x07);
-    c.ch.red     = (uint8_t)((color >> 8) & 0x1f);
-    c.ch.blue    = (uint8_t)((color >> 3) & 0x1f);
-    c.ch.green_l = (uint8_t)((color) & 0x07);
-    #else
     c.ch.blue    = (uint8_t)(color & 0x1f);
     c.ch.green   = (uint8_t)((color >> 5) & 0x3f);
     c.ch.red     = (uint8_t)((color >> 11) & 0x1f);
-    #endif
 #elif (CONFIG_SGL_PANEL_PIXEL_DEPTH == 8)
     c.ch.blue    = (uint8_t)(color & 0x3);
     c.ch.green   = (uint8_t)((color >> 2) & 0x7);
@@ -637,16 +628,9 @@ static inline uint32_t sgl_color2int(sgl_color_t color)
 static inline sgl_color_t sgl_rgb2color(uint8_t red, uint8_t green, uint8_t blue)
 {
     sgl_color_t color;
-#if CONFIG_SGL_COLOR16_SWAP
-    color.ch.green_h = (uint16_t)((green>>3) & 0x7);
-    color.ch.red = red;
-    color.ch.blue = blue;
-    color.ch.green_l = (uint16_t)(green & 0x7);
-#else
     color.ch.blue = blue;
     color.ch.green = green;
     color.ch.red = red;
-#endif
     return color;
 }
 

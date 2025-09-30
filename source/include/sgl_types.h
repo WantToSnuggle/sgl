@@ -149,16 +149,9 @@ extern "C" {
                                                                .ch.green   = (g),              \
                                                                .ch.red     = (r),}
 #elif (CONFIG_SGL_PANEL_PIXEL_DEPTH == SGL_COLOR_RGB565)
-#if CONFIG_SGL_COLOR16_SWAP                   
-#define sgl_rgb(r,g,b)                          (sgl_color_t){ .ch.green_h = (g >>2) >> 3,     \
-                                                               .ch.red     = (r) >> 3,         \
-                                                               .ch.blue    = (b) >> 3,         \
-                                                               .ch.green_l = (g >>2) & 0x7,}
-#else
 #define sgl_rgb(r,g,b)                          (sgl_color_t){ .ch.blue    = (b) >> 3,         \
                                                                .ch.green   = (g) >> 2,         \
                                                                .ch.red     = (r) >> 3,}
-#endif
 #elif (CONFIG_SGL_PANEL_PIXEL_DEPTH == SGL_COLOR_RGB233)
 #define sgl_rgb(r,g,b)                          (sgl_color_t){ .ch.blue    = (b >> 6),         \
                                                                .ch.green   = (g >> 5),         \

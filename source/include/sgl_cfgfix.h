@@ -108,12 +108,14 @@ extern "C" {
 #endif
 
 #ifndef CONFIG_SGL_OBJ_SLOT_DYNAMIC
-    #ifndef CONFIG_SGL_OBJ_NUM_MAX
-        #define CONFIG_SGL_OBJ_SLOT_DYNAMIC        1
-    #else
-        #define CONFIG_SGL_OBJ_SLOT_DYNAMIC        0
-        #define CONFIG_SGL_OBJ_NUM_MAX             128
-    #endif
+#   ifndef CONFIG_SGL_OBJ_NUM_MAX
+#       define CONFIG_SGL_OBJ_SLOT_DYNAMIC         1
+#   else
+#       define CONFIG_SGL_OBJ_SLOT_DYNAMIC         0
+#       ifndef CONFIG_SGL_OBJ_NUM_MAX
+#           define CONFIG_SGL_OBJ_NUM_MAX          128
+#       endif
+#   endif
 #endif
 
 #ifndef CONFIG_SGL_DRAW_USE_DMA
@@ -123,20 +125,20 @@ extern "C" {
 #ifndef CONFIG_SGL_ANIMATION
 #define CONFIG_SGL_ANIMATION                       0
 #elif(CONFIG_SGL_ANIMATION == 1)
-    #ifndef CONFIG_SGL_ANIMATION_TICK_MS
-    #define CONFIG_SGL_ANIMATION_TICK_MS           5
-    #endif
+#   ifndef CONFIG_SGL_ANIMATION_TICK_MS
+#       define CONFIG_SGL_ANIMATION_TICK_MS        5
+#   endif
 #endif
 
 #ifndef CONFIG_SGL_DEBUG
-    #define CONFIG_SGL_DEBUG                       0
+#   define CONFIG_SGL_DEBUG                        0
 #elif (CONFIG_SGL_DEBUG == 1)
-    #ifndef CONFIG_SGL_LOG_COLOR
-    #define CONFIG_SGL_LOG_COLOR                   0
-    #endif
-    #ifndef CONFIG_SGL_LOG_LEVEL
-    #define CONFIG_SGL_LOG_LEVEL                   1
-    #endif
+#   ifndef CONFIG_SGL_LOG_COLOR
+#       define CONFIG_SGL_LOG_COLOR                0
+#   endif
+#   ifndef CONFIG_SGL_LOG_LEVEL
+#       define CONFIG_SGL_LOG_LEVEL                1
+#   endif
 #endif
 
 #ifndef CONFIG_SGL_TEXT_UTF8
@@ -156,10 +158,10 @@ extern "C" {
 #endif
 
 #ifndef CONFIG_SGL_HEAP_MEMORY_SIZE
-    #define CONFIG_SGL_HEAP_MEMORY_SIZE            10240
-    #ifndef CONFIG_SGL_FL_INDEX_MAX
-    #define CONFIG_SGL_FL_INDEX_MAX                20
-    #endif
+#   define CONFIG_SGL_HEAP_MEMORY_SIZE             10240
+#   ifndef CONFIG_SGL_FL_INDEX_MAX
+#       define CONFIG_SGL_FL_INDEX_MAX             20
+#   endif
 #endif
 
 #ifndef CONFIG_SGL_FONT_SONG23
