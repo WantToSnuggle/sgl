@@ -40,6 +40,10 @@ static size_t obj_global_id = 0;
 #endif
 
 
+/* the maximum depth of object*/
+#define  SGL_OBJ_DEPTH_MAX     64
+
+
 /* current context, page pointer, and dirty area and started flag */
 current_ctx_t current_ctx;
 
@@ -400,13 +404,18 @@ void sgl_obj_remove(sgl_obj_t *obj)
 void sgl_obj_set_destroyed(sgl_obj_t *obj)
 {
     SGL_ASSERT(obj != NULL);
-    obj->destroyed = 1;
+    sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX];
+    int top = 0;
     sgl_obj_t *child = NULL;
+    sgl_obj_t *current = NULL;
+    stack[top++] = obj;
 
-    sgl_obj_for_each_child(child, obj) {
-        child->destroyed = 1;
-        if(sgl_obj_has_child(child)) {
-            sgl_obj_set_destroyed(child);
+    while (top > 0) {
+        current = stack[--top];
+        current->destroyed = 1;
+
+        sgl_obj_for_each_child(child, current) {
+            stack[top++] = child;
         }
     }
 }
@@ -421,15 +430,18 @@ void sgl_obj_set_destroyed(sgl_obj_t *obj)
 void sgl_obj_set_dirty(sgl_obj_t *obj)
 {
     SGL_ASSERT(obj != NULL);
-    obj->dirty = 1;
-
+    sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX];
+    int top = 0;
     sgl_obj_t *child = NULL;
-    sgl_obj_for_each_child(child, obj) {
-        /* set child to dirty */
-        child->dirty = 1;
-        /* if child has child, set child's child to dirty */
-        if(sgl_obj_has_child(child)) {
-            sgl_obj_set_dirty(child);
+    sgl_obj_t *current = NULL;
+    stack[top++] = obj;
+
+    while (top > 0) {
+        current = stack[--top];
+        current->dirty = 1;
+
+        sgl_obj_for_each_child(child, current) {
+            stack[top++] = child;
         }
     }
 }
@@ -445,16 +457,23 @@ void sgl_obj_set_dirty(sgl_obj_t *obj)
 static void sgl_obj_move_pos(sgl_obj_t *obj, int16_t x, int16_t y)
 {
     SGL_ASSERT(obj != NULL);
+    sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX];
+    int top = 0;
     sgl_obj_t *child = NULL;
-    obj->needinit = 1;
+    sgl_obj_t *current = NULL;
+    stack[top++] = obj;
 
-    obj->coords.x1 += x;
-    obj->coords.x2 += x;
-    obj->coords.y1 += y;
-    obj->coords.y2 += y;
+    while (top > 0) {
+        current = stack[--top];
+        current->needinit = 1;
+        current->coords.x1 += x;
+        current->coords.x2 += x;
+        current->coords.y1 += y;
+        current->coords.y2 += y;
 
-    sgl_obj_for_each_child(child, obj) {
-        sgl_obj_move_pos(child, x, y);
+        sgl_obj_for_each_child(child, current) {
+            stack[top++] = child;
+        }
     }
 }
 
