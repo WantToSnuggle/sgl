@@ -177,19 +177,23 @@ static inline void sgl_page_slot_init(sgl_page_t *page)
 static void add_obj_to_page_slot(sgl_obj_t *head)
 {
     SGL_ASSERT(head != NULL);
+    sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX];
+    int top = 0;
     sgl_obj_t *child = NULL;
+    sgl_obj_t *current = NULL;
+    stack[top++] = head;
 
-    sgl_obj_for_each_child(child, head) {
-        /* update child's area */
-        if(!sgl_area_clip(&child->parent->area, &child->coords, &child->area)) {
-            sgl_obj_set_invalid(child);
-        }
+    while (top > 0) {
+        current = stack[--top];
 
-        sgl_obj_add_to_task(current_ctx.page, child);
+        sgl_obj_for_each_child(child, current) {
+            /* update child's area */
+            if(!sgl_area_clip(&current->parent->area, &current->coords, &current->area)) {
+                sgl_obj_set_invalid(current);
+            }
+            sgl_obj_add_to_task(current_ctx.page, child);
 
-        /* if the object has child, add them to task list too */
-        if(sgl_obj_has_child(child)) {
-            add_obj_to_page_slot(child);
+            stack[top++] = child;
         }
     }
 }
@@ -303,24 +307,29 @@ static inline uint32_t sgl_page_get_slot_count(sgl_page_t *page)
 static void add_obj_to_page_slot(sgl_obj_t *head)
 {
     SGL_ASSERT(head != NULL);
+    sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX];
+    int top = 0;
     sgl_obj_t *child = NULL;
+    sgl_obj_t *current = NULL;
+    stack[top++] = head;
 
-    sgl_obj_for_each_child(child, head) {
-        /* update child's area */
-        if(!sgl_area_clip(&child->parent->area, &child->coords, &child->area)) {
-            sgl_obj_set_invalid(child);
-        }
+    while (top > 0) {
+        current = stack[--top];
 
-        sgl_obj_add_to_slot(current_ctx.page, child);
+        sgl_obj_for_each_child(child, current) {
+            /* update child's area */
+            if(!sgl_area_clip(&current->parent->area, &current->coords, &current->area)) {
+                sgl_obj_set_invalid(current);
+            }
 
-        if(current_ctx.page->slot_count > SGL_OBJ_SLOT_SIZE) {
-            SGL_LOG_ERROR("too many objects in one page, max is %d", sgl_page_get_slot_count(current_ctx.page));
-            return;
-        }
+            sgl_obj_add_to_slot(current_ctx.page, child);
 
-        /* if the object has child, add them to task list too */
-        if(sgl_obj_has_child(child)) {
-            add_obj_to_page_slot(child);
+            if(current_ctx.page->slot_count > SGL_OBJ_SLOT_SIZE) {
+                SGL_LOG_ERROR("too many objects in one page, max is %d", sgl_page_get_slot_count(current_ctx.page));
+                return;
+            }
+
+            stack[top++] = child;
         }
     }
 }
