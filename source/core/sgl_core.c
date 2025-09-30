@@ -474,6 +474,7 @@ static void sgl_obj_move_pos(sgl_obj_t *obj, int16_t x, int16_t y)
 
     while (top > 0) {
         current = stack[--top];
+        current->dirty = 1;
         current->needinit = 1;
         current->coords.x1 += x;
         current->coords.x2 += x;
@@ -498,6 +499,7 @@ void sgl_obj_set_pos(sgl_obj_t *obj, int16_t x, int16_t y)
 {
     SGL_ASSERT(obj != NULL);
     obj->needinit = 1;
+    obj->dirty = 1;
 
     int16_t x_inc = x - obj->coords.x1;
     int16_t y_inc = y - obj->coords.y1;
@@ -520,8 +522,6 @@ void sgl_obj_set_pos(sgl_obj_t *obj, int16_t x, int16_t y)
     sgl_obj_for_each_child(child, obj) {
         sgl_obj_move_pos(child, x_inc, y_inc);
     }
-
-    sgl_obj_set_dirty(obj);
 }
 
 
