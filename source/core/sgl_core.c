@@ -80,7 +80,7 @@ int sgl_device_fb_register(sgl_device_fb_t *fb_dev)
     sgl_ctx.fb_dev.framebuffer_size = fb_dev->framebuffer_size / 2;
     sgl_ctx.fb_dev.framebuffer[1]   = ((sgl_color_t*)fb_dev->framebuffer) + sgl_ctx.fb_dev.framebuffer_size;
 
-    if(((int16_t)sgl_ctx.fb_dev.framebuffer_size) < fb_dev->xres) {
+    if((sgl_ctx.fb_dev.framebuffer_size) < (size_t)fb_dev->xres) {
         SGL_LOG_ERROR("framebuffer size is too small");
         return -1;
     }
@@ -149,31 +149,6 @@ void sgl_obj_remove(sgl_obj_t *obj)
     }
 
     obj->sibling = NULL;
-}
-
-
-/**
- * @brief Set object to dirty
- * @param obj point to object
- * @return none
- * @note this function will set object to dirty, include its children
- */
-void sgl_obj_set_dirty(sgl_obj_t *obj)
-{
-    SGL_ASSERT(obj != NULL);
-    sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX];
-    int top = 0;
-    sgl_obj_t *child = NULL;
-    stack[top++] = obj;
-
-    while (top > 0) {
-        obj = stack[--top];
-        obj->dirty = 1;
-
-        sgl_obj_for_each_child(child, obj) {
-            stack[top++] = child;
-        }
-    }
 }
 
 

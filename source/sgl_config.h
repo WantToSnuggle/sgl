@@ -9,12 +9,8 @@
 
 #define    CONFIG_SGL_PANEL_PIXEL_DEPTH       32
 #define    CONFIG_SGL_EVENT_QUEUE_SIZE        16
-#define    CONFIG_SGL_DRAW_USE_DMA            1
 #define    CONFIG_SGL_ANIMATION               1
 #define    CONFIG_SGL_ANIMATION_TICK_MS       1
-#define    CONFIG_SGL_DEBUG                   1
-#define    CONFIG_SGL_LOG_COLOR               1
-#define    CONFIG_SGL_LOG_LEVEL               0
 #define    CONFIG_SGL_OBJ_USE_NAME            1
 #define    CONFIG_SGL_USE_STYLE_UNIFIED_API     1
 #define    CONFIG_SGL_THEME_DEFAULT           1

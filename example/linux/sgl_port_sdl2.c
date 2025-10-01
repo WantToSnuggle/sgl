@@ -41,6 +41,7 @@ static SDL_Renderer * m_renderer = NULL;
 typedef struct sgl_port_sdl2 {
     SDL_Window    *m_window;
     SDL_TimerID   systick;
+    SDL_TimerID   anim_systick;
     size_t        frame_count;
 } sgl_port_sdl2_t;
 
@@ -94,12 +95,21 @@ static uint32_t system_tick(uint32_t interval, void *param)
     sgl_mm_monitor_t mm = sgl_mm_get_monitor();
     sgl_port_sdl2_t *sdl2_dev = (sgl_port_sdl2_t*)param;
     SGL_UNUSED(mm);
-    SGL_LOG_INFO("SGL SDL2 Frame = %d", sdl2_dev->frame_count);
+    printf("SGL SDL2 Frame = %lld\n", sdl2_dev->frame_count);
 
-    SGL_LOG_INFO("Memory: total: %lld used: %lld, free = %lld", mm.total_size, mm.used_size, mm.free_size);
+    printf("Memory: total: %lld used: %lld, free = %lld\n", mm.total_size, mm.used_size, mm.free_size);
     sdl2_dev->frame_count = 0;
 	return interval;
 }
+
+
+static uint32_t anim_systick(uint32_t interval, void *param)
+{
+    SGL_UNUSED(param);
+    sgl_anim_tick_inc(1);
+    return interval;
+}
+
 
 static bool mouse_press = false;
 
@@ -178,8 +188,8 @@ sgl_port_sdl2_t* sgl_port_sdl2_init(void)
         .framebuffer_size = SGL_ARRAY_SIZE(panel_buffer),
     };
 
-    sgl_device_fb_register(&fb_dev);
     sgl_device_log_register(log_stdout);
+    sgl_device_fb_register(&fb_dev);
 
     /* init sgl */
     sgl_init();
@@ -203,6 +213,7 @@ sgl_port_sdl2_t* sgl_port_sdl2_init(void)
     }
 
     sdl2_dev->systick = SDL_AddTimer(1000, system_tick, sdl2_dev);
+    sdl2_dev->anim_systick = SDL_AddTimer(1, anim_systick, sdl2_dev);
     sdl2_dev->frame_count = 0;
 
     SDL_AddEventWatch(mouse_event_interrupt, NULL);
@@ -226,7 +237,7 @@ void sgl_port_sdl2_increase_frame_count(sgl_port_sdl2_t* sdl2_dev)
 void sgl_port_sdl2_deinit(sgl_port_sdl2_t* sdl2_dev)
 {
     SDL_RemoveTimer(sdl2_dev->systick);
-
+    SDL_RemoveTimer(sdl2_dev->anim_systick);
     SDL_DestroyWindow(sdl2_dev->m_window);
     SDL_DestroyRenderer(m_renderer);
 }

@@ -95,9 +95,9 @@ static uint32_t system_tick(uint32_t interval, void *param)
     sgl_mm_monitor_t mm = sgl_mm_get_monitor();
     sgl_port_sdl2_t *sdl2_dev = (sgl_port_sdl2_t*)param;
     SGL_UNUSED(mm);
-    SGL_LOG_INFO("SGL SDL2 Frame = %d", sdl2_dev->frame_count);
+    printf("SGL SDL2 Frame = %lld\n", sdl2_dev->frame_count);
 
-    SGL_LOG_INFO("Memory: total: %lld used: %lld, free = %lld", mm.total_size, mm.used_size, mm.free_size);
+    printf("Memory: total: %lld used: %lld, free = %lld\n", mm.total_size, mm.used_size, mm.free_size);
     sdl2_dev->frame_count = 0;
 	return interval;
 }
@@ -188,8 +188,8 @@ sgl_port_sdl2_t* sgl_port_sdl2_init(void)
         .framebuffer_size = SGL_ARRAY_SIZE(panel_buffer),
     };
 
-    sgl_device_fb_register(&fb_dev);
     sgl_device_log_register(log_stdout);
+    sgl_device_fb_register(&fb_dev);
 
     /* init sgl */
     sgl_init();
