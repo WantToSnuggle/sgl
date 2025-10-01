@@ -239,6 +239,7 @@ void sgl_obj_move_up(sgl_obj_t *obj)
         return;
     }
     else if(parent->child->sibling == obj) {
+        parent->child->sibling = obj->sibling;
         obj->sibling = parent->child;
         parent->child = obj;
         /* mark object as dirty */
@@ -246,7 +247,7 @@ void sgl_obj_move_up(sgl_obj_t *obj)
         return;
     }
 
-    /* swap the object with its previous sibling */
+    /* move the object to its prev sibling */
     sgl_obj_for_each_child(gprev, parent) {
         prev = gprev->sibling;
 
@@ -287,7 +288,7 @@ void sgl_obj_move_down(sgl_obj_t *obj)
         return;
     }
 
-    /* swap the object with its next sibling */
+    /* move the object to its next sibling */
     sgl_obj_for_each_child(prev, parent) {
         if(prev->sibling == obj) {
             next = obj->sibling;

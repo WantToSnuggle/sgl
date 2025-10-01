@@ -63,6 +63,7 @@ typedef struct sgl_anim {
     void                 (*finish_cb)(struct sgl_anim *anim);
     uint8_t               gapless : 1;
     uint8_t               disable : 1;
+    uint8_t               auto_free : 1;
 }sgl_anim_t;
 
 
@@ -247,6 +248,18 @@ static inline void sgl_anim_set_repeat_cnt(sgl_anim_t *anim, int32_t repeat_cnt)
 static inline void sgl_anim_tick_inc(uint32_t tick_ms)
 {
     anim_ctx.tick_ms += tick_ms;
+}
+
+
+/**
+ * @brief set auto free flag for animation
+ * @param  anim animation
+ * @return none
+ */
+static inline void sgl_anim_set_auto_free(sgl_anim_t *anim)
+{
+    SGL_ASSERT(anim != NULL);
+    anim->auto_free = 1;
 }
 
 

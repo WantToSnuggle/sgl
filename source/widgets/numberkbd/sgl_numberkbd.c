@@ -252,7 +252,7 @@ sgl_obj_t* sgl_numberkbd_create(sgl_obj_t* parent)
     obj->clickable = 1;
     
     numberkbd->body_desc.alpha = SGL_THEME_ALPHA;
-    numberkbd->body_desc.color = SGL_THEME_COLOR;
+    numberkbd->body_desc.color = SGL_THEME_BG_COLOR;
     numberkbd->body_desc.radius = SGL_THEME_RADIUS;
     numberkbd->body_desc.border = SGL_THEME_BORDER_WIDTH;
     numberkbd->body_desc.border_color = SGL_THEME_BORDER_COLOR;
@@ -266,6 +266,8 @@ sgl_obj_t* sgl_numberkbd_create(sgl_obj_t* parent)
     numberkbd->btn_desc.border = 0;
     numberkbd->btn_desc.border_color = SGL_THEME_BORDER_COLOR;
     numberkbd->btn_desc.pixmap = NULL;
+
+    numberkbd->opcode = 0;
 
     return obj;
 }

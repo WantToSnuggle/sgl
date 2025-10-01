@@ -46,7 +46,8 @@ typedef struct sgl_numberkbd {
     sgl_draw_rect_t  btn_desc;
     sgl_font_t       *font;
     sgl_color_t      text_color;
-    int16_t          margin;
+    uint8_t          margin;
+    uint8_t          opcode;
 }sgl_numberkbd_t;
 
 

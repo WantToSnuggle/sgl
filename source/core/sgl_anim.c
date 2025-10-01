@@ -163,6 +163,10 @@ void sgl_anim_stop(sgl_anim_t *anim)
 {
     anim->disable = 1;
     sgl_anim_remove(anim);
+    /* if animation is auto free, free it */
+    if(anim->auto_free) {
+        sgl_free(anim);
+    }
 }
 
 

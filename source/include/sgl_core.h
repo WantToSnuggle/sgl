@@ -617,7 +617,7 @@ static inline sgl_color_t sgl_rgb2color(uint8_t red, uint8_t green, uint8_t blue
 }
 
 
-#define SGL_RADIUS(x)                                             (x)
+#define SGL_RADIUS(x)                                             (size_t)(x)
 #define SGL_TEXT(x)                                               (size_t)(x)
 #define SGL_COLOR(x)                                              (sgl_color2int((x)))
 #define SGL_PIXMAP(x)                                             (size_t)(&(x))
