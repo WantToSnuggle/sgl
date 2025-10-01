@@ -29,19 +29,21 @@
 
 /**
  * @brief draw widget slice completely
- * @param page it should point to active page object
+ * @param obj it should point to active root object
  * @param surf surface that draw to
  * @param dirty_h dirty height
  * @return none
  */
-static inline void draw_widget_slice(sgl_page_t *page, sgl_surf_t *surf, int16_t dirty_h)
+static inline void draw_widget_slice(sgl_obj_t *obj, sgl_surf_t *surf, int16_t dirty_h)
 {
-    sgl_obj_t *obj = NULL;
-    bool dirty_flag = false;
     sgl_event_t evt;
+    sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX], *child = NULL;
+    int top = 0;
 
-    /* for each all obj to update draw from draw list that is page task list */
-    sgl_page_for_each_slot(obj, page) {
+    stack[top++] = obj;
+
+    while (top > 0) {
+        obj = stack[--top];
 
         /* if obj is hide or invalid, skip it, of course it' obj also hide */
         if(unlikely(sgl_obj_is_invalid(obj))) {
@@ -54,35 +56,36 @@ static inline void draw_widget_slice(sgl_page_t *page, sgl_surf_t *surf, int16_t
         /* if surface is overlap with obj ares, call construct function to execute draw event */
         if(sgl_surf_area_is_overlap(surf, &obj->area)) {
             SGL_ASSERT(obj->construct_fn != NULL);
-
             obj->construct_fn(surf, obj, &evt);
-            /* set dirty flag to true */
-            dirty_flag = true;
+
+            sgl_obj_for_each_child(child, obj) {
+                stack[top++] = child;
+            }
         }
     }
 
-    /* if there is have dirty area, start flush to display */
-    if(dirty_flag) {
-        /* flush dirty area into screen */
-        sgl_panel_flush_area(surf->x, surf->y, surf->w, dirty_h, surf->buffer);
-    }
+    /* flush dirty area into screen */
+    sgl_panel_flush_area(surf->x, surf->y, surf->w, dirty_h, surf->buffer);
 }
 
 
 /**
  * @brief calculate dirty area by for each all object that is dirty and visible
- * @param page it should point to active page object
+ * @param obj it should point to active root object
  * @param dirty the dirty area that need to upate
  * @return true if there is dirty area, otherwise false
  * @note if there is no dirty area, the dirty area will remain unchanged
  */
-static bool draw_calculate_dirty_area(sgl_page_t *page, sgl_area_t *dirty)
+static bool draw_calculate_dirty_area(sgl_obj_t *obj, sgl_area_t *dirty)
 {
     bool need_draw = false;
-    sgl_obj_t *obj = NULL, *n = NULL;
+    sgl_obj_t *child = NULL, *stack[SGL_OBJ_DEPTH_MAX];
+    int top = 0;
+    stack[top++] = obj;
 
     /* for each all object from the first task of page */
-    sgl_page_for_each_slot_safe(obj, n, page) {
+    while (top > 0) {
+        obj = stack[--top];
 
         if(unlikely(sgl_obj_is_hidden(obj))) {
             continue;
@@ -93,11 +96,11 @@ static bool draw_calculate_dirty_area(sgl_page_t *page, sgl_area_t *dirty)
             /* merge destroy area */
             sgl_area_selfmerge(dirty, &obj->area);
 
-            /* remove obj from parent */
-            sgl_obj_remove(obj);
-
             /* free obj resource */
             sgl_obj_free(obj);
+
+            /* remove obj from parent */
+            sgl_obj_remove(obj);
 
             /* update parent layout */
             sgl_obj_set_layout(obj->parent, (sgl_layout_type_t)obj->parent->layout);
@@ -140,6 +143,10 @@ static bool draw_calculate_dirty_area(sgl_page_t *page, sgl_area_t *dirty)
             /* clear dirty flag */
             sgl_obj_clear_dirty(obj);
         }
+
+        sgl_obj_for_each_child(child, obj) {
+            stack[top++] = child;
+        }
     }
 
     return need_draw;
@@ -159,7 +166,7 @@ void sgl_draw_frame(sgl_page_t *page, sgl_area_t *dirty)
     sgl_obj_t *head = &page->obj;
 
     /* calculate dirty area, if no dirty area, return directly */
-    if(! draw_calculate_dirty_area(page, dirty)) {
+    if(! draw_calculate_dirty_area(head, dirty)) {
         return;
     }
 
@@ -177,7 +184,7 @@ void sgl_draw_frame(sgl_page_t *page, sgl_area_t *dirty)
 
     while(surf->y < dirty->y2) {
         /* cycle draw widget slice until the end of dirty area */
-        draw_widget_slice(page, surf, sgl_min(dirty->y2 - surf->y, surf->h));
+        draw_widget_slice(head, surf, sgl_min(dirty->y2 - surf->y, surf->h));
         surf->y += surf->h;
 
         /* swap buffer for dma operation, but it depends on double buffer */

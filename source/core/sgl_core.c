@@ -35,15 +35,6 @@
 #include <sgl_draw_cg.h>
 
 
-#if CONFIG_SGL_USE_OBJ_ID
-static size_t obj_global_id = 0;
-#endif
-
-
-/* the maximum depth of object*/
-#define  SGL_OBJ_DEPTH_MAX     64
-
-
 /* current context, page pointer, and dirty area and started flag */
 current_ctx_t current_ctx;
 
@@ -120,256 +111,16 @@ void sgl_obj_add_child(sgl_obj_t *parent, sgl_obj_t *obj)
 {
     SGL_ASSERT(parent != NULL && obj != NULL);
 
-    sgl_obj_t *tail = NULL;
-
     if(parent->child) {
-        tail = parent->child;
-        while(tail->sibling) {
-            tail = tail->sibling;
-        }
-        tail->sibling = obj;
+        obj->sibling = parent->child;
     }
     else {
-        parent->child = obj;
+        obj->sibling = NULL;
     }
 
+    parent->child = obj;
     obj->parent = parent;
-    obj->sibling = NULL;
 }
-
-
-#if (CONFIG_SGL_OBJ_SLOT_DYNAMIC)
-
-/**
- * @brief add object to task list
- * @param page: pointer of page
- * @param obj: pointer of object
- * @return none
- */
-static inline void sgl_obj_add_to_task(sgl_page_t *page, sgl_obj_t *obj)
-{
-    SGL_ASSERT(obj != NULL && obj != NULL);
-    sgl_list_add_node_at_tail(&page->head, &obj->slot);
-}
-
-
-/**
- * @brief init page slot
- * @param page: pointer of page
- * @return none
- * @note this function only initialize the count to 0 and add obj of page to page slot
- */
-static inline void sgl_page_slot_init(sgl_page_t *page)
-{
-    SGL_ASSERT(page != NULL);
-    /* init draw task list  */
-    sgl_list_init(&page->head);
-    /* add obj of page to page slot */
-    sgl_obj_add_to_task(page, &page->obj);
-}
-
-
-/**
- * @brief Add an object to the event task
- * @param head The head of the object list
- * @return none
- */
-static void add_obj_to_page_slot(sgl_obj_t *head)
-{
-    SGL_ASSERT(head != NULL);
-    sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX];
-    int top = 0;
-    sgl_obj_t *child = NULL;
-    sgl_obj_t *current = NULL;
-    stack[top++] = head;
-
-    while (top > 0) {
-        current = stack[--top];
-
-        sgl_obj_for_each_child(child, current) {
-            /* update child's area */
-            if(!sgl_area_clip(&current->parent->area, &current->coords, &current->area)) {
-                sgl_obj_set_invalid(current);
-            }
-            sgl_obj_add_to_task(current_ctx.page, child);
-
-            stack[top++] = child;
-        }
-    }
-}
-
-
-/**
- * @brief free object slot
- * @param obj: pointer of object
- * @return none
- */
-static inline void obj_free_slot(sgl_obj_t *obj)
-{
-    sgl_list_del_node(&obj->slot);
-    sgl_free(obj);
-}
-
-
-/**
- * @brief get last child of an object
- * @param obj object
- * @return last child
- */
-static inline sgl_obj_t* sgl_obj_get_last_child(sgl_obj_t *obj)
-{
-    SGL_ASSERT(obj != NULL);
-    sgl_obj_t *child = NULL;
-
-    sgl_obj_for_each_child(child, obj) {
-        if(child->sibling == NULL) {
-            return child;
-        }
-    }
-
-    return NULL;
-}
-
-
-/**
- * @brief init object slot
- * @param parent: pointer of parent object
- * @param obj: pointer of object
- * @return none
- */
-static inline void obj_slot_init(sgl_obj_t *parent, sgl_obj_t *obj)
-{
-    /* construct object tree */
-    sgl_obj_node_init(obj);
-
-    /* if first add object, find the last task and add object to the end of task list */
-    if(current_ctx.started) {
-        sgl_obj_t *sibling = sgl_obj_get_last_child(parent);
-        if(sibling != NULL) {
-            sgl_list_add_node_at_after(&sibling->slot, &obj->slot);
-        }
-        else {
-            sgl_list_add_node_at_after(&parent->slot, &obj->slot);
-        }
-    }
-
-    /* add object to parent's child list */
-    sgl_obj_add_child(parent, obj);
-}
-
-#else // !CONFIG_SGL_OBJ_SLOT_DYNAMIC
-/**
- * @brief add object to page slot
- * @param page: pointer of page
- * @param obj: pointer of object
- * @return none
- */
-static inline void sgl_obj_add_to_slot(sgl_page_t *page, sgl_obj_t *obj)
-{
-    SGL_ASSERT(page != NULL && obj != NULL);
-    page->slot[page->slot_count] = obj;
-    page->slot_count ++;
-}
-
-
-/**
- * @brief init page slot
- * @param page: pointer of page
- * @return none
- * @note this function only initialize the count to 0 and add obj of page to page slot
- */
-static inline void sgl_page_slot_init(sgl_page_t *page)
-{
-    SGL_ASSERT(page != NULL);
-    page->slot_count = 0;
-    /* init draw task list  */
-    sgl_obj_add_to_slot(page, &page->obj);
-}
-
-
-/**
- * @brief get page slot count
- * @param page: page
- * @return slot count
- */
-static inline uint32_t sgl_page_get_slot_count(sgl_page_t *page)
-{
-    SGL_ASSERT(page != NULL);
-    return page->slot_count;
-}
-
-
-/**
- * @brief Add all objects to the page slot
- * @param head The head of the object list
- * @return none
- */
-static void add_obj_to_page_slot(sgl_obj_t *head)
-{
-    SGL_ASSERT(head != NULL);
-    sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX];
-    int top = 0;
-    sgl_obj_t *child = NULL;
-    sgl_obj_t *current = NULL;
-    stack[top++] = head;
-
-    while (top > 0) {
-        current = stack[--top];
-
-        sgl_obj_for_each_child(child, current) {
-            /* update child's area */
-            if(!sgl_area_clip(&current->parent->area, &current->coords, &current->area)) {
-                sgl_obj_set_invalid(current);
-            }
-
-            sgl_obj_add_to_slot(current_ctx.page, child);
-
-            if(current_ctx.page->slot_count > SGL_OBJ_SLOT_SIZE) {
-                SGL_LOG_ERROR("too many objects in one page, max is %d", sgl_page_get_slot_count(current_ctx.page));
-                return;
-            }
-
-            stack[top++] = child;
-        }
-    }
-}
-
-
-/**
- * @brief free object slot
- * @param obj: pointer of object
- * @return none
- */
-static inline void obj_free_slot(sgl_obj_t *obj)
-{
-    /* free object */
-    sgl_free(obj);
-
-    /* clear page slot */
-    sgl_page_slot_init(current_ctx.page);
-    /* add all object to page slot */
-    add_obj_to_page_slot(&current_ctx.page->obj);
-}
-
-
-/**
- * @brief to init object slot
- * @param parent: parent object
- * @param obj: object
- * @return none
- */
-static inline void obj_slot_init(sgl_obj_t *parent, sgl_obj_t *obj)
-{
-    /* add object to parent's child list */
-    sgl_obj_add_child(parent, obj);
-
-    /* if first add object, find the last task and add object to the end of task list */
-    if(current_ctx.started) {
-        current_ctx.page->slot_count = 1;
-        add_obj_to_page_slot(&current_ctx.page->obj);
-    }
-}
-#endif // !CONFIG_SGL_OBJ_SLOT_DYNAMIC
 
 
 /**
@@ -405,32 +156,6 @@ void sgl_obj_remove(sgl_obj_t *obj)
 
 
 /**
- * @brief  Set the object to be destroyed 
- * @param  obj: the object to set
- * @retval None
- * @note this function is used to set the destroyed flag of the object, then next draw cycle, the object will be removed
- */
-void sgl_obj_set_destroyed(sgl_obj_t *obj)
-{
-    SGL_ASSERT(obj != NULL);
-    sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX];
-    int top = 0;
-    sgl_obj_t *child = NULL;
-    sgl_obj_t *current = NULL;
-    stack[top++] = obj;
-
-    while (top > 0) {
-        current = stack[--top];
-        current->destroyed = 1;
-
-        sgl_obj_for_each_child(child, current) {
-            stack[top++] = child;
-        }
-    }
-}
-
-
-/**
  * @brief Set object to dirty
  * @param obj point to object
  * @return none
@@ -442,14 +167,13 @@ void sgl_obj_set_dirty(sgl_obj_t *obj)
     sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX];
     int top = 0;
     sgl_obj_t *child = NULL;
-    sgl_obj_t *current = NULL;
     stack[top++] = obj;
 
     while (top > 0) {
-        current = stack[--top];
-        current->dirty = 1;
+        obj = stack[--top];
+        obj->dirty = 1;
 
-        sgl_obj_for_each_child(child, current) {
+        sgl_obj_for_each_child(child, obj) {
             stack[top++] = child;
         }
     }
@@ -674,16 +398,8 @@ static sgl_page_t* sgl_page_create(void)
 
     obj->area = obj->coords;
 
-#if CONFIG_SGL_USE_OBJ_ID
-    obj->id = obj_global_id;
-    obj_global_id ++;
-#endif
-
     /* init child list */
     sgl_obj_node_init(&page->obj);
-
-    /* init slot list */
-    sgl_page_slot_init(page);
 
     if(current_ctx.page == NULL) {
         current_ctx.page = page;
@@ -1076,12 +792,8 @@ int sgl_obj_init(sgl_obj_t *obj, sgl_obj_t *parent)
     /* init object area to invalid */
     sgl_area_init(&obj->area);
 
-#if CONFIG_SGL_USE_OBJ_ID
-    obj->id = obj_global_id;
-    obj_global_id ++;
-#endif
-
-    obj_slot_init(parent, obj);
+    /* add the child into parent's child list */
+    sgl_obj_add_child(parent, obj);
 
     /* set layout to parent layout flag */
     sgl_obj_set_layout(parent, (sgl_layout_type_t)parent->layout);
@@ -1099,33 +811,27 @@ int sgl_obj_init(sgl_obj_t *obj, sgl_obj_t *parent)
 void sgl_obj_free(sgl_obj_t *obj)
 {
     SGL_ASSERT(obj != NULL);
+    sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX], *child = NULL;
+    int top = 0;
+
+    stack[top++] = obj;
+
     /* if the object is active, do nothing */
     if(obj == sgl_screen_act()) {
         /* clear destroyed flag */
         obj->destroyed = 0;
         return;
     }
-    
-    obj_free_slot(obj);
-}
 
+    while (top > 0) {
+        obj = stack[--top];
 
-#if (CONFIG_SGL_USE_OBJ_ID && CONFIG_SGL_DEBUG)
-/**
- * @brief Print all task id of draw task list
- * @param  none
- * @return none
- */
-static inline void sgl_obj_print_all_task_id(void)
-{
-    sgl_obj_t *pos = NULL;
-    sgl_page_t *page = current_ctx.page;
-
-    sgl_page_for_each_slot(pos, page) {
-        SGL_LOG_INFO("DRAW TASK  ID:  %d", pos->id);
+        sgl_obj_for_each_child(child, obj) {
+            stack[top++] = child;
+        }
+        sgl_free(obj);
     }
 }
-#endif
 
 
 #if(CONFIG_SGL_TEXT_UTF8 == 1)
@@ -1390,19 +1096,6 @@ void sgl_obj_set_align(sgl_obj_t *obj, sgl_align_type_t type)
  */
 void sgl_task_handle(void)
 {
-    /* only run once that add all object to draw list */
-    if(unlikely(current_ctx.started == false)){
-        /* add all child object of current page to draw list */
-        add_obj_to_page_slot(&current_ctx.page->obj);
-
-        /* clear flag */
-        current_ctx.started = true;
-
-        #if (CONFIG_SGL_DEBUG && CONFIG_SGL_USE_OBJ_ID)
-        sgl_obj_print_all_task_id();
-        #endif
-    };
-
     /* event task */
     sgl_event_task();
 
