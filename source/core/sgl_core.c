@@ -36,22 +36,19 @@
 
 
 /* current context, page pointer, and dirty area and started flag */
-current_ctx_t current_ctx;
-
-
-/* the frame buffer device, its necessary */
-sgl_device_fb_info_t sgl_device_fb = {
-    .xres = 0,
-    .yres = 0,
-    .xres_virtual = 0,
-    .yres_virtual = 0,
-    .framebuffer_size = 0,
-};
-
-
-/* the log output device for debug, its optional */
-sgl_device_log_t sgl_device_log = {
-    .log_puts = NULL,
+sgl_context_t sgl_ctx = {
+    .fb_dev = {
+        .xres = 0,
+        .yres = 0,
+        .xres_virtual = 0,
+        .yres_virtual = 0,
+        .framebuffer_size = 0,
+    },
+    .log_dev = {
+        .log_puts = NULL,
+    },
+    .page = NULL,
+    .started = false,
 };
 
 
@@ -75,27 +72,27 @@ int sgl_device_fb_register(sgl_device_fb_t *fb_dev)
         return -1;
     }
 
-    sgl_device_fb.framebuffer[0]   = fb_dev->framebuffer;
+    sgl_ctx.fb_dev.framebuffer[0]   = fb_dev->framebuffer;
 
     /* double buffer for dma mode */
     #if (CONFIG_SGL_DRAW_USE_DMA)
-    current_ctx.fb_swap = 0;
-    sgl_device_fb.framebuffer_size = fb_dev->framebuffer_size / 2;
-    sgl_device_fb.framebuffer[1]   = ((sgl_color_t*)fb_dev->framebuffer) + sgl_device_fb.framebuffer_size;
+    sgl_ctx.fb_swap = 0;
+    sgl_ctx.fb_dev.framebuffer_size = fb_dev->framebuffer_size / 2;
+    sgl_ctx.fb_dev.framebuffer[1]   = ((sgl_color_t*)fb_dev->framebuffer) + sgl_ctx.fb_dev.framebuffer_size;
 
-    if(((int16_t)sgl_device_fb.framebuffer_size) < fb_dev->xres) {
+    if(((int16_t)sgl_ctx.fb_dev.framebuffer_size) < fb_dev->xres) {
         SGL_LOG_ERROR("framebuffer size is too small");
         return -1;
     }
 
     #else
-    sgl_device_fb.framebuffer_size = fb_dev->framebuffer_size;
+    sgl_ctx.fb_dev.framebuffer_size = fb_dev->framebuffer_size;
     #endif
-    sgl_device_fb.xres             = fb_dev->xres;
-    sgl_device_fb.yres             = fb_dev->yres;
-    sgl_device_fb.xres_virtual     = fb_dev->xres_virtual;
-    sgl_device_fb.yres_virtual     = fb_dev->yres_virtual;
-    sgl_device_fb.flush_area       = fb_dev->flush_area;
+    sgl_ctx.fb_dev.xres             = fb_dev->xres;
+    sgl_ctx.fb_dev.yres             = fb_dev->yres;
+    sgl_ctx.fb_dev.xres_virtual     = fb_dev->xres_virtual;
+    sgl_ctx.fb_dev.yres_virtual     = fb_dev->yres_virtual;
+    sgl_ctx.fb_dev.flush_area       = fb_dev->flush_area;
 
     return 0;
 }
@@ -367,18 +364,18 @@ static sgl_page_t* sgl_page_create(void)
 
     sgl_obj_t *obj = &page->obj;
 
-    if(sgl_device_fb.framebuffer[0] == NULL)  {
+    if(sgl_ctx.fb_dev.framebuffer[0] == NULL)  {
         SGL_LOG_ERROR("sgl_page_create: framebuffer is NULL");
         sgl_free(page);
         return NULL;
     }
 
-    page->surf.buffer = (sgl_color_t*)sgl_device_fb.framebuffer[0];
+    page->surf.buffer = (sgl_color_t*)sgl_ctx.fb_dev.framebuffer[0];
     page->surf.x = 0;
     page->surf.y = 0;
-    page->surf.w = sgl_device_fb.xres;
-    page->surf.h = sgl_device_fb.framebuffer_size / sgl_device_fb.xres;
-    page->surf.size = sgl_device_fb.framebuffer_size;
+    page->surf.w = sgl_ctx.fb_dev.xres;
+    page->surf.h = sgl_ctx.fb_dev.framebuffer_size / sgl_ctx.fb_dev.xres;
+    page->surf.size = sgl_ctx.fb_dev.framebuffer_size;
     page->color = SGL_THEME_DESKTOP;
 
     obj->parent = obj;
@@ -392,8 +389,8 @@ static sgl_page_t* sgl_page_create(void)
     obj->coords = (sgl_area_t){
         .x1 = 0,
         .y1 = 0,
-        .x2 = sgl_device_fb.xres,
-        .y2 = sgl_device_fb.yres,
+        .x2 = sgl_ctx.fb_dev.xres,
+        .y2 = sgl_ctx.fb_dev.yres,
     };
 
     obj->area = obj->coords;
@@ -401,8 +398,8 @@ static sgl_page_t* sgl_page_create(void)
     /* init child list */
     sgl_obj_node_init(&page->obj);
 
-    if(current_ctx.page == NULL) {
-        current_ctx.page = page;
+    if(sgl_ctx.page == NULL) {
+        sgl_ctx.page = page;
     }
 
     return page;
@@ -461,16 +458,16 @@ sgl_obj_t* sgl_obj_create(sgl_obj_t *parent)
 void sgl_screen_load(sgl_obj_t *obj)
 {
     SGL_ASSERT(obj != NULL);
-    current_ctx.page = (sgl_page_t*)obj;
-    current_ctx.started = false;
+    sgl_ctx.page = (sgl_page_t*)obj;
+    sgl_ctx.started = false;
 
     /* initilize framebuffer swap */
     #if (CONFIG_SGL_DRAW_USE_DMA)
-    current_ctx.fb_swap = 0;
+    sgl_ctx.fb_swap = 0;
     #endif
 
     /* initialize dirty area */
-    sgl_area_init(&current_ctx.dirty);
+    sgl_area_init(&sgl_ctx.dirty);
 }
 
 
@@ -672,7 +669,7 @@ void sgl_area_selfmerge(sgl_area_t *merge, sgl_area_t *area)
 void sgl_obj_dirty_merge(sgl_obj_t *obj)
 {
     SGL_ASSERT(obj != NULL);
-    sgl_area_selfmerge(&current_ctx.dirty, &obj->area);
+    sgl_area_selfmerge(&sgl_ctx.dirty, &obj->area);
 }
 
 
@@ -688,9 +685,9 @@ void sgl_init(void)
     sgl_mm_init(sgl_mem_pool, sizeof(sgl_mem_pool));
 
     /* initialize current context */
-    current_ctx.page = NULL;
-    current_ctx.started = false;
-    sgl_area_init(&current_ctx.dirty);
+    sgl_ctx.page = NULL;
+    sgl_ctx.started = false;
+    sgl_area_init(&sgl_ctx.dirty);
 
     /* create a screen object for drawing */
     sgl_obj_create(NULL);
@@ -1061,8 +1058,8 @@ void sgl_obj_set_align(sgl_obj_t *obj, sgl_align_type_t type)
 
     if(obj->parent == NULL) {
         p_size = (sgl_size_t){
-            .w = sgl_device_fb.xres,
-            .h = sgl_device_fb.yres,
+            .w = sgl_ctx.fb_dev.xres,
+            .h = sgl_ctx.fb_dev.yres,
         };
         p_pos = (sgl_pos_t){
             .x = 0,
@@ -1104,8 +1101,8 @@ void sgl_task_handle(void)
     #endif // !CONFIG_SGL_ANIMATION
 
     /* draw task  */
-    sgl_draw_frame(current_ctx.page, &current_ctx.dirty);
+    sgl_draw_frame(sgl_ctx.page, &sgl_ctx.dirty);
 
     /* clear dirty area */
-    sgl_area_init(&current_ctx.dirty);
+    sgl_area_init(&sgl_ctx.dirty);
 }

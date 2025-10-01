@@ -453,20 +453,20 @@ typedef struct sgl_device_log {
 
 
 /* current context, page pointer, and dirty area and started flag */
-typedef struct current_ctx {
-    sgl_page_t *page;
-    bool       started;
+typedef struct sgl_context {
+    sgl_page_t           *page;
+    sgl_device_fb_info_t fb_dev;
+    sgl_device_log_t     log_dev;
+    bool                 started;
 #if (CONFIG_SGL_DRAW_USE_DMA)
-    uint8_t    fb_swap;
+    uint8_t              fb_swap;
 #endif
-    sgl_area_t dirty;
-}current_ctx_t;
+    sgl_area_t           dirty;
+}sgl_context_t;
 
 
 /* dont to use this variable, it is used internally by sgl library */
-extern sgl_device_fb_info_t sgl_device_fb;
-extern sgl_device_log_t sgl_device_log;
-extern current_ctx_t current_ctx;
+extern sgl_context_t sgl_ctx;
 
 
 /**
@@ -495,7 +495,7 @@ static inline void sgl_panel_flush_area(int16_t x, int16_t y, int16_t w, int16_t
         dst++;
     }
 #endif
-    sgl_device_fb.flush_area(x, y, w, h, src);
+    sgl_ctx.fb_dev.flush_area(x, y, w, h, src);
 }
 
 
@@ -506,7 +506,7 @@ static inline void sgl_panel_flush_area(int16_t x, int16_t y, int16_t w, int16_t
  */
 static inline int16_t sgl_panel_resolution_width(void)
 {
-    return sgl_device_fb.xres;
+    return sgl_ctx.fb_dev.xres;
 }
 
 
@@ -517,7 +517,7 @@ static inline int16_t sgl_panel_resolution_width(void)
  */
 static inline int16_t sgl_panel_resolution_height(void)
 {
-    return sgl_device_fb.yres;
+    return sgl_ctx.fb_dev.yres;
 }
 
 
@@ -528,7 +528,7 @@ static inline int16_t sgl_panel_resolution_height(void)
  */
 static inline void* sgl_panel_buffer_address(void)
 {
-    return sgl_device_fb.framebuffer[0];
+    return sgl_ctx.fb_dev.framebuffer[0];
 }
 
 
@@ -539,7 +539,7 @@ static inline void* sgl_panel_buffer_address(void)
  */
 static inline void sgl_device_log_register(void (*log_puts)(const char *str))
 {
-    sgl_device_log.log_puts = log_puts;
+    sgl_ctx.log_dev.log_puts = log_puts;
 }
 
 
@@ -550,8 +550,8 @@ static inline void sgl_device_log_register(void (*log_puts)(const char *str))
  */
 static inline void sgl_log_stdout(const char *str)
 {
-    if(sgl_device_log.log_puts) {
-        sgl_device_log.log_puts(str);
+    if(sgl_ctx.log_dev.log_puts) {
+        sgl_ctx.log_dev.log_puts(str);
     }
 }
 
@@ -1278,7 +1278,7 @@ void sgl_screen_load(sgl_obj_t *obj);
  */
 static inline sgl_obj_t* sgl_screen_act(void)
 {
-    return &current_ctx.page->obj;
+    return &sgl_ctx.page->obj;
 }
 
 
@@ -1289,7 +1289,7 @@ static inline sgl_obj_t* sgl_screen_act(void)
  */
 static inline sgl_page_t* sgl_page_get_active(void)
 {
-    return current_ctx.page;
+    return sgl_ctx.page;
 }
 
 
