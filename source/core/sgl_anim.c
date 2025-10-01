@@ -91,7 +91,7 @@ sgl_anim_t* sgl_anim_create(void)
 */
 static void sgl_anim_add(sgl_anim_t *anim)
 {
-    if(anim_ctx.anim_list_head != anim_ctx.anim_list_tail) {
+    if(anim_ctx.anim_list_tail != NULL) {
         anim_ctx.anim_list_tail->next = anim;
         anim_ctx.anim_list_tail = anim;
     }
