@@ -222,6 +222,139 @@ void sgl_obj_set_pos(sgl_obj_t *obj, int16_t x, int16_t y)
 
 
 /**
+ * @brief move object up a level layout
+ * @param obj point to object
+ * @return none
+ * @note Only move among sibling objects
+ */
+void sgl_obj_move_up(sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL);
+    sgl_obj_t *parent = obj->parent;
+    sgl_obj_t *prev = NULL;
+    sgl_obj_t *gprev = NULL;
+
+    /* if the object is the first child, do not move it */
+    if(parent->child == obj) {
+        return;
+    }
+    else if(parent->child->sibling == obj) {
+        obj->sibling = parent->child;
+        parent->child = obj;
+        return;
+    }
+
+    /* swap the object with its previous sibling */
+    sgl_obj_for_each_child(gprev, parent) {
+        prev = gprev->sibling;
+
+        if(prev->sibling == obj) {
+            prev->sibling = obj->sibling;
+            gprev->sibling = obj;
+            obj->sibling = prev;
+            return;
+        }
+    }
+}
+
+
+/**
+ * @brief move object down a level layout
+ * @param obj point to object
+ * @return none
+ * @note Only move among sibling objects
+ */
+void sgl_obj_move_down(sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL);
+    sgl_obj_t *parent = obj->parent;
+    sgl_obj_t *prev = NULL;
+    sgl_obj_t *next = NULL;
+
+    /* if the object is the last child, do not move it */
+    if(obj->sibling == NULL) {
+        return;
+    }
+    else if(parent->child == obj) {
+        parent->child = obj->sibling;
+        obj->sibling = obj->sibling->sibling;
+        return;
+    }
+
+    /* swap the object with its next sibling */
+    sgl_obj_for_each_child(prev, parent) {
+        if(prev->sibling == obj) {
+            next = obj->sibling;
+            obj->sibling = next->sibling;
+            prev->sibling = next;
+            next->sibling = obj;
+            return;
+        }
+    }
+}
+
+
+/**
+ * @brief move object top level layout
+ * @param obj point to object
+ * @return none
+ * @note Only move among sibling objects
+ */
+void sgl_obj_move_foreground(sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL);
+    sgl_obj_t *parent = obj->parent;
+    sgl_obj_t *prev = NULL;
+
+    /* if the object is the first child, do not move it */
+    if(parent->child == obj) {
+        return;
+    }
+
+    sgl_obj_for_each_child(prev, parent) {
+        if(prev->sibling == obj) {
+            break;
+        }
+    }
+
+    prev->sibling = obj->sibling;
+    obj->sibling = parent->child;
+    parent->child = obj;
+}
+
+
+/**
+ * @brief move object bottom level layout
+ * @param obj point to object
+ * @return none
+ * @note Only move among sibling objects
+ */
+void sgl_obj_move_background(sgl_obj_t *obj)
+{
+   SGL_ASSERT(obj != NULL);
+    sgl_obj_t *parent = obj->parent;
+    SGL_ASSERT(parent != NULL);  // 确保 obj 有父对象
+    sgl_obj_t *last = NULL;
+    sgl_obj_t *prev = NULL;
+
+    /* if the object is the last child, do not move it */
+    if (obj->sibling == NULL) {
+        return;
+    }
+
+    sgl_obj_for_each_child(last, parent) {
+        if(last->sibling == obj) {
+            prev = last;
+        }
+    }
+
+    prev->sibling = obj->sibling;
+    obj->sibling  = last->sibling;
+    last->sibling = obj;
+}
+
+
+/**
  * @brief get fix radius of object
  * @param obj object
  * @return fix radius

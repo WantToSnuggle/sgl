@@ -1004,6 +1004,42 @@ void sgl_obj_set_pos(sgl_obj_t *obj, int16_t x, int16_t y);
 
 
 /**
+ * @brief move object up a level layout
+ * @param obj point to object
+ * @return none
+ * @note Only move among sibling objects
+ */
+void sgl_obj_move_up(sgl_obj_t *obj);
+
+
+/**
+ * @brief move object down a level layout
+ * @param obj point to object
+ * @return none
+ * @note Only move among sibling objects
+ */
+void sgl_obj_move_down(sgl_obj_t *obj);
+
+
+/**
+ * @brief move object top level layout
+ * @param obj point to object
+ * @return none
+ * @note Only move among sibling objects
+ */
+void sgl_obj_move_foreground(sgl_obj_t *obj);
+
+
+/**
+ * @brief move object bottom level layout
+ * @param obj point to object
+ * @return none
+ * @note Only move among sibling objects
+ */
+void sgl_obj_move_background(sgl_obj_t *obj);
+
+
+/**
  * @brief Get object position
  * @param obj point to object
  * @return sgl_pos_t: position of object
