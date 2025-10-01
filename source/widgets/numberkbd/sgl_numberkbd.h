@@ -1,4 +1,4 @@
-/* source/draw/sgl_draw_line.c
+/* source/widgets/sgl_numberkbd.h
  *
  * MIT License
  *
@@ -23,3 +23,58 @@
  * SOFTWARE.
  */
 
+#ifndef __SGL_NUMBERKBD_H__
+#define __SGL_NUMBERKBD_H__
+
+#include <sgl_core.h>
+#include <sgl_draw.h>
+#include <sgl_math.h>
+#include <sgl_log.h>
+#include <sgl_mm.h>
+#include <sgl_cfgfix.h>
+#include <string.h>
+
+
+/**
+ * @brief sgl number keyboard struct
+ * @obj: sgl general object
+ * @body_desc: pointer to sgl_draw_rect_t descriptor
+ */
+typedef struct sgl_numberkbd {
+    sgl_obj_t        obj;
+    sgl_draw_rect_t  body_desc;
+    sgl_draw_rect_t  btn_desc;
+    sgl_font_t       *font;
+    sgl_color_t      text_color;
+    int16_t          margin;
+}sgl_numberkbd_t;
+
+
+/**
+ * @brief create numberkbd object
+ * @param parent parent of object
+ * @return numberkbd object
+ */
+sgl_obj_t* sgl_numberkbd_create(sgl_obj_t* parent);
+
+
+/**
+ * @brief Set style of numberkbd
+ * @param obj numberkbd object
+ * @param type style type
+ * @param value style value
+ * @return none
+ */
+void sgl_numberkbd_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value);
+
+
+/**
+ * @brief Get style of numberkbd
+ * @param obj numberkbd object
+ * @param type style type
+ * @return style value
+ */
+size_t sgl_numberkbd_get_style(sgl_obj_t *obj, sgl_style_type_t type);
+
+
+#endif // !__SGL_NUMBERKBD_H__

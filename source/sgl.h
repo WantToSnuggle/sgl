@@ -46,6 +46,7 @@
 #include "widgets/checkbox/sgl_checkbox.h"
 #include "widgets/icon/sgl_icon.h"
 #include "widgets/listview/sgl_listview.h"
+#include "widgets/numberkbd/sgl_numberkbd.h"
 
 
 #endif // __SGL_H__
