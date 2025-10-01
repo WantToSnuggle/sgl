@@ -177,30 +177,18 @@ static bool pos_is_focus_on_obj(sgl_event_pos_t *pos, sgl_rect_t *rect, int16_t 
 
 
 /**
- * @brief check whether the position is clicked on the object
- * @param head The head of the object list
- * @param pos The position to be clicked
+ * @brief check whether the object is clickable or movable
+ * @param obj The object to be checked
  * @param type The type of the event
- * @return The object that is clicked on, NULL if no object is clicked
+ * @return The object that is clickable or movable, NULL if no object is clickable or movable
  */
-static sgl_obj_t* touch_detect_object(sgl_page_t *page, sgl_event_pos_t *pos)
+static inline sgl_obj_t* touch_act_is_valid(sgl_obj_t *obj, sgl_event_type_t type)
 {
-    sgl_obj_t *obj = NULL;
-
-    sgl_page_for_each_slot_reverse(obj, page) {
-        if(sgl_obj_is_hidden(obj) || (!sgl_obj_is_clickable(obj))) {
-            continue;
-        }
-
-        /* it will skip page object but its workaround */
-        if(unlikely(obj == &page->obj)) {
-            continue;
-        }
-
-        /* FIXME: if use area, radius will be ignored */
-        if(pos_is_focus_on_obj(pos, &obj->coords, obj->radius)) {
-            return obj;
-        }
+    if(type == SGL_EVENT_NORMAL) {
+        return sgl_obj_is_clickable(obj) ? obj : NULL;
+    }
+    else if(type == SGL_EVENT_MOTION) {
+        return sgl_obj_is_movable(obj) ? obj : NULL;
     }
 
     return NULL;
@@ -209,28 +197,40 @@ static sgl_obj_t* touch_detect_object(sgl_page_t *page, sgl_event_pos_t *pos)
 
 /**
  * @brief check whether the position is clicked on the object
- * @param head The head of the object list
  * @param pos The position to be clicked
  * @param type The type of the event
  * @return The object that is clicked on, NULL if no object is clicked
  */
-static sgl_obj_t* motion_detect_object(sgl_page_t *page, sgl_event_pos_t *pos)
+static sgl_obj_t* touch_detect_object(sgl_event_pos_t *pos, sgl_event_type_t type)
 {
-    sgl_obj_t *obj = NULL;
+    sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX];
+    int top = 0; bool find = false;
+    sgl_obj_t *child = NULL, *obj = NULL;
 
-    sgl_page_for_each_slot_reverse(obj, page) {
-        if(sgl_obj_is_hidden(obj) || (!sgl_obj_is_movable(obj))) {
-            continue;
-        }
+    sgl_obj_for_each_child(child, sgl_screen_act()) {
+        stack[top++] = child;
+    }
 
-        /* it will skip page object but its workaround */
-        if(unlikely(obj == &page->obj)) {
-            continue;
-        }
+    for(int i = 0; i < top; i++) {
+        obj = stack[i];
 
-        /* FIXME: if use area, radius will be ignored */
         if(pos_is_focus_on_obj(pos, &obj->coords, obj->radius)) {
-            return obj;
+            if(sgl_obj_has_child(obj)) {
+                find = true;
+                /* reset the stack */
+                i = -1, top = 0;
+                /* for each child, push it into the stack */
+                sgl_obj_for_each_child(child, obj) {
+                    stack[top++] = child;
+                }
+                continue;
+            }
+            return touch_act_is_valid(obj, type);
+        }
+        else {
+            if(find) {
+                return touch_act_is_valid(obj->parent, type);
+            }
         }
     }
 
@@ -315,10 +315,10 @@ void sgl_event_task(void)
         if(evt.obj == NULL) {
             /* if event type is not motion, use pos to detect object */
             if(evt.type != SGL_EVENT_MOTION) {
-                obj = touch_detect_object(sgl_page_get_active(), &evt.pos);
+                obj = touch_detect_object(&evt.pos, SGL_EVENT_NORMAL);
             }
             else {
-                obj = motion_detect_object(sgl_page_get_active(), &evt.pos);
+                obj = touch_detect_object(&evt.pos, SGL_EVENT_MOTION);
                 sgl_get_move_info(&evt);
             }
         }

@@ -40,16 +40,8 @@ extern "C" {
 #endif
 
 
-/**
- * @brief This macro defines the size of the object slot
- */
-#if (!CONFIG_SGL_OBJ_SLOT_DYNAMIC)
-    #ifndef CONFIG_SGL_OBJ_NUM_MAX
-    #define SGL_OBJ_SLOT_SIZE  128
-    #else
-    #define SGL_OBJ_SLOT_SIZE  CONFIG_SGL_OBJ_NUM_MAX
-    #endif
-#endif
+/* the maximum depth of object*/
+#define  SGL_OBJ_DEPTH_MAX        64
 
 
 #if (CONFIG_SGL_DRAW_USE_DMA)
@@ -363,10 +355,6 @@ typedef struct sgl_obj {
     void               (*set_style)(struct sgl_obj *obj, sgl_style_type_t type, size_t value);
     size_t             (*get_style)(struct sgl_obj *obj, sgl_style_type_t type);
 #endif
-
-#if (CONFIG_SGL_OBJ_SLOT_DYNAMIC)
-    sgl_list_node_t    slot;
-#endif
     uint8_t            destroyed : 1;
     uint8_t            dirty : 1;
     uint8_t            hide : 1;
@@ -380,8 +368,8 @@ typedef struct sgl_obj {
     uint16_t           pressed : 1;
     uint16_t           reserved : 1;
     uint16_t           radius : 12;
-#if CONFIG_SGL_USE_OBJ_ID
-    size_t             id;
+#if CONFIG_SGL_OBJ_USE_NAME
+    const char         *name;
 #endif
 }sgl_obj_t;
 
@@ -407,12 +395,6 @@ typedef struct sgl_obj {
 typedef struct sgl_page {
     sgl_obj_t       obj;
     sgl_surf_t      surf;
-#if (CONFIG_SGL_OBJ_SLOT_DYNAMIC)
-    sgl_list_node_t head;
-#else
-    sgl_obj_t       *slot[SGL_OBJ_SLOT_SIZE + 1];
-    uint32_t        slot_count;
-#endif
     sgl_color_t     color;
     sgl_pixmap_t    *bg_img;
 }sgl_page_t;
@@ -483,8 +465,8 @@ typedef struct current_ctx {
 
 /* dont to use this variable, it is used internally by sgl library */
 extern sgl_device_fb_info_t sgl_device_fb;
-extern current_ctx_t current_ctx;
 extern sgl_device_log_t sgl_device_log;
+extern current_ctx_t current_ctx;
 
 
 /**
@@ -643,64 +625,6 @@ static inline sgl_color_t sgl_rgb2color(uint8_t red, uint8_t green, uint8_t blue
 #define SGL_ICON(x)                                               (size_t)(&(x))
 
 
-#if (CONFIG_SGL_OBJ_SLOT_DYNAMIC)
-/**
- * @brief for each all slot of page
- * @param _obj: pointer of object
- * @param page: pointer of page object
- * @note it's a for cycle macro
- */
-#define  sgl_page_for_each_slot(_obj, page)                       sgl_list_for_each_entry(_obj, &page->head, sgl_obj_t, slot)
-
-
-/**
- * @brief for each all slot of page with safe
- * @param _obj: pointer of object
- * @param page: pointer of page object
- * @note it's a for cycle macro
- */
-#define  sgl_page_for_each_slot_safe(_obj, n, page)               sgl_list_for_each_entry_safe(_obj, n, &page->head, sgl_obj_t, slot)
-
-
-/**
- * @brief for each all slot of page
- * @param _obj: pointer of object
- * @param page: pointer of page object
- * @note it's a for cycle macro
- */
-#define  sgl_page_for_each_slot_reverse(_obj, page)               sgl_list_for_each_entry_reverse(_obj, &page->head, sgl_obj_t, slot)
-
-
-#else
-/**
- * @brief for each all slot of page
- * @param _obj: pointer of object
- * @param page: pointer of page object
- * @note it's a for cycle macro
- */
-#define  sgl_page_for_each_slot(_obj, page)                       _obj = page->slot[0]; for (uint32_t i = 0; i < page->slot_count; i++, _obj = page->slot[i])
-
-
-/**
- * @brief for each all slot of page with safe
- * @param _obj: pointer of object
- * @param page: pointer of page object
- * @note it's a for cycle macro
- */
-#define  sgl_page_for_each_slot_safe(_obj, n, page)               (void)n; _obj = page->slot[0]; for (uint32_t i = 0; i < page->slot_count; i++, _obj = page->slot[i])
-
-
-/**
- * @brief for each all slot of page
- * @param _obj: pointer of object
- * @param page: pointer of page object
- * @note it's a for cycle macro
- */
-#define  sgl_page_for_each_slot_reverse(_obj, page)               _obj = page->slot[page->slot_count - 1]; for (uint32_t i = page->slot_count - 1; i > 0; i--, _obj = page->slot[i])
-
-#endif
-
-
 /**
  * @brief for each child object of parent
  * @param _child: pointer of child object
@@ -785,7 +709,11 @@ static inline size_t sgl_obj_get_child_count(sgl_obj_t *obj)
  * @retval None
  * @note this function is used to set the destroyed flag of the object, then next draw cycle, the object will be removed
  */
-void sgl_obj_set_destroyed(sgl_obj_t *obj);
+static inline void sgl_obj_set_destroyed(sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL);
+    obj->destroyed = 1;
+}
 
 
 /**

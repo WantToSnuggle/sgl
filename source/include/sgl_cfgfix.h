@@ -107,16 +107,6 @@ extern "C" {
 #define CONFIG_SGL_EVENT_QUEUE_SIZE                32
 #endif
 
-#ifndef CONFIG_SGL_OBJ_SLOT_DYNAMIC
-#   ifndef CONFIG_SGL_OBJ_NUM_MAX
-#       define CONFIG_SGL_OBJ_SLOT_DYNAMIC         1
-#   else
-#       define CONFIG_SGL_OBJ_SLOT_DYNAMIC         0
-#       ifndef CONFIG_SGL_OBJ_NUM_MAX
-#           define CONFIG_SGL_OBJ_NUM_MAX          128
-#       endif
-#   endif
-#endif
 
 #ifndef CONFIG_SGL_DRAW_USE_DMA
 #define CONFIG_SGL_DRAW_USE_DMA                    0
@@ -145,8 +135,8 @@ extern "C" {
 #define CONFIG_SGL_TEXT_UTF8                       0
 #endif
 
-#ifndef CONFIG_SGL_USE_OBJ_ID
-#define CONFIG_SGL_USE_OBJ_ID                      0
+#ifndef CONFIG_SGL_OBJ_USE_NAME
+#define CONFIG_SGL_OBJ_USE_NAME                    0
 #endif
 
 #ifndef CONFIG_SGL_USE_STYLE_UNIFIED_API
