@@ -1425,8 +1425,8 @@ void sgl_area_selfmerge(sgl_area_t *merge, sgl_area_t *area);
  */
 static inline void sgl_surf_buffer_swap(sgl_surf_t *surf)
 {
-    current_ctx.fb_swap ^= 1;
-    surf->buffer = sgl_device_fb.framebuffer[current_ctx.fb_swap];
+    sgl_ctx.fb_swap ^= 1;
+    surf->buffer = sgl_ctx.fb_dev.framebuffer[sgl_ctx.fb_swap];
 }
 #endif // !CONFIG_SGL_DRAW_USE_DMA
 

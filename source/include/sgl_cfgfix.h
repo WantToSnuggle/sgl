@@ -96,74 +96,81 @@ extern "C" {
 
 
 #ifndef CONFIG_SGL_PANEL_PIXEL_DEPTH
-#define CONFIG_SGL_PANEL_PIXEL_DEPTH               16
+#define CONFIG_SGL_PANEL_PIXEL_DEPTH                               16
 #endif
 
 #ifndef CONFIG_SGL_COLOR16_SWAP
-#define CONFIG_SGL_COLOR16_SWAP                    0
+#define CONFIG_SGL_COLOR16_SWAP                                    0
 #endif
 
 #ifndef CONFIG_SGL_EVENT_QUEUE_SIZE
-#define CONFIG_SGL_EVENT_QUEUE_SIZE                32
+#define CONFIG_SGL_EVENT_QUEUE_SIZE                                32
 #endif
 
 
 #ifndef CONFIG_SGL_DRAW_USE_DMA
-#define CONFIG_SGL_DRAW_USE_DMA                    0
+#define CONFIG_SGL_DRAW_USE_DMA                                    0
 #endif
 
 #ifndef CONFIG_SGL_ANIMATION
-#define CONFIG_SGL_ANIMATION                       0
+#define CONFIG_SGL_ANIMATION                                       0
 #elif(CONFIG_SGL_ANIMATION == 1)
 #   ifndef CONFIG_SGL_ANIMATION_TICK_MS
-#       define CONFIG_SGL_ANIMATION_TICK_MS        5
+#       define CONFIG_SGL_ANIMATION_TICK_MS                        5
 #   endif
 #endif
 
 #ifndef CONFIG_SGL_DEBUG
-#   define CONFIG_SGL_DEBUG                        0
+#   define CONFIG_SGL_DEBUG                                        0
 #elif (CONFIG_SGL_DEBUG == 1)
 #   ifndef CONFIG_SGL_LOG_COLOR
-#       define CONFIG_SGL_LOG_COLOR                0
+#       define CONFIG_SGL_LOG_COLOR                                0
 #   endif
 #   ifndef CONFIG_SGL_LOG_LEVEL
-#       define CONFIG_SGL_LOG_LEVEL                1
+#       define CONFIG_SGL_LOG_LEVEL                                1
 #   endif
 #endif
 
 #ifndef CONFIG_SGL_TEXT_UTF8
-#define CONFIG_SGL_TEXT_UTF8                       0
+#define CONFIG_SGL_TEXT_UTF8                                       0
 #endif
 
 #ifndef CONFIG_SGL_OBJ_USE_NAME
-#define CONFIG_SGL_OBJ_USE_NAME                    0
+#define CONFIG_SGL_OBJ_USE_NAME                                    0
 #endif
 
 #ifndef CONFIG_SGL_USE_STYLE_UNIFIED_API
-#define CONFIG_SGL_USE_STYLE_UNIFIED_API           1
+#define CONFIG_SGL_USE_STYLE_UNIFIED_API                           1
 #endif
 
 #ifndef CONFIG_SGL_HEAP_ALGO
-#define CONFIG_SGL_HEAP_ALGO                       lwmem
+#define CONFIG_SGL_HEAP_ALGO                                       lwmem
 #endif
 
 #ifndef CONFIG_SGL_HEAP_MEMORY_SIZE
-#   define CONFIG_SGL_HEAP_MEMORY_SIZE             10240
+#   define CONFIG_SGL_HEAP_MEMORY_SIZE                             10240
 #   ifndef CONFIG_SGL_FL_INDEX_MAX
-#       define CONFIG_SGL_FL_INDEX_MAX             20
+#       define CONFIG_SGL_FL_INDEX_MAX                             20
 #   endif
 #endif
 
 #ifndef CONFIG_SGL_FONT_SONG23
-#define CONFIG_SGL_FONT_SONG23                     0
+#define CONFIG_SGL_FONT_SONG23                                     0
 #endif
 
 #ifndef CONFIG_SGL_FONT_CONSOLAS23
-#define CONFIG_SGL_FONT_CONSOLAS23                 0
+#define CONFIG_SGL_FONT_CONSOLAS23                                 0
 #endif
 
 #ifndef CONFIG_SGL_FONT_KAI33
-#define CONFIG_SGL_FONT_KAI33                      0
+#define CONFIG_SGL_FONT_KAI33                                      0
+#endif
+
+
+#ifndef CONFIG_SGL_THEME_DARK || CONFIG_SGL_THEME_LIGHT
+#   ifndef CONFIG_SGL_THEME_DEFAULT
+#   define CONFIG_SGL_THEME_DEFAULT                                1
+#   endif
 #endif
 
 

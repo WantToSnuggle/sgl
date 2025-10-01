@@ -9,6 +9,7 @@
 
 #define    CONFIG_SGL_PANEL_PIXEL_DEPTH       32
 #define    CONFIG_SGL_EVENT_QUEUE_SIZE        16
+#define    CONFIG_SGL_DRAW_USE_DMA            1
 #define    CONFIG_SGL_ANIMATION               1
 #define    CONFIG_SGL_ANIMATION_TICK_MS       1
 #define    CONFIG_SGL_DEBUG                   1
