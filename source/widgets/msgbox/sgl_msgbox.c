@@ -209,7 +209,7 @@ static void sgl_msgbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
 {
     sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
     sgl_font_t *font = msgbox->title_desc.font;
-    int32_t font_height = sgl_font_get_height(font);
+    int32_t font_height = sgl_font_get_height(font) + 8;
 
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
         sgl_draw_rect(surf, &obj->area, &obj->coords, &msgbox->body_desc);
