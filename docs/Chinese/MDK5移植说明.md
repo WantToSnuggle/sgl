@@ -84,7 +84,6 @@
     ```c
     #define    CONFIG_SGL_PANEL_PIXEL_DEPTH       16
     #define    CONFIG_SGL_EVENT_QUEUE_SIZE        16
-    #define    CONFIG_SGL_OBJ_SLOT_DYNAMIC        1
     #define    CONFIG_SGL_DEBUG                   0
     #define    CONFIG_SGL_LOG_COLOR               1
     #define    CONFIG_SGL_LOG_LEVEL               0
