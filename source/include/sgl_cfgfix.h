@@ -166,8 +166,7 @@ extern "C" {
 #define CONFIG_SGL_FONT_KAI33                                      0
 #endif
 
-
-#ifndef CONFIG_SGL_THEME_DARK || CONFIG_SGL_THEME_LIGHT
+#if !(defined(CONFIG_SGL_THEME_DARK) && defined(CONFIG_SGL_THEME_LIGHT))
 #   ifndef CONFIG_SGL_THEME_DEFAULT
 #   define CONFIG_SGL_THEME_DEFAULT                                1
 #   endif
