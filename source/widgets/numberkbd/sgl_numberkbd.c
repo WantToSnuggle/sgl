@@ -3,7 +3,6 @@
  * MIT License
  *
  * Copyright(c) 2023-present All contributors of SGL  
- * Li, Shanwen  (1477153217@qq.com)
  * Document reference link: docs directory
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -111,6 +110,14 @@ void sgl_numberkbd_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value
         numberkbd->text_color = sgl_int2color(value);
         break;
 
+    case SGL_STYLE_NUMBERKBD_BTN_BORDER_WIDTH:
+        numberkbd->btn_desc.border = (uint8_t)value;
+        break;
+    
+    case SGL_STYLE_NUMBERKBD_BTN_BORDER_COLOR:
+        numberkbd->btn_desc.border_color = sgl_int2color(value);
+        break;
+
     case SGL_STYLE_FONT:
         numberkbd->font = (sgl_font_t*)value;
         break;
@@ -187,6 +194,7 @@ static void sgl_numberkbd_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_eve
     sgl_numberkbd_t *numberkbd = (sgl_numberkbd_t*)obj;
     int16_t body_w = obj->coords.x2 - obj->coords.x1 + 1;
     int16_t body_h = obj->coords.y2 - obj->coords.y1 + 1;
+    sgl_color_t btn_color = numberkbd->btn_desc.color;
 
     int16_t box_w = (body_w - 4 * numberkbd->margin) / 3;
     int16_t box_h = (body_h - 5 * numberkbd->margin) / 4;
@@ -206,18 +214,30 @@ static void sgl_numberkbd_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_eve
             text_y = btn.y1 + ((box_h - sgl_font_get_height(numberkbd->font)) / 2);
 
             for(btn.x2 = (btn.x1 + box_w); btn.x1 < (obj->coords.x2 - numberkbd->margin) ; btn.x1 += (box_w + numberkbd->margin), btn.x2 = (btn.x1 + box_w)) {
+                if(numberkbd->opcode != digits[index]) {
+                    numberkbd->btn_desc.color = btn_color;
+                }
+                else {
+                    numberkbd->btn_desc.color = sgl_color_mixer(btn_color, numberkbd->text_color, 128);
+                }
+
                 sgl_draw_rect(surf, &obj->area, &btn, &numberkbd->btn_desc);
+
                 text_x = btn.x1 + ((box_w -  sgl_font_get_string_width("0", numberkbd->font)) / 2);
                 sgl_draw_character_with_alpha(surf, &obj->area, text_x, text_y, digits[index] - 32, numberkbd->text_color, numberkbd->btn_desc.alpha, numberkbd->font);
                 index ++;
             }
+
+            numberkbd->btn_desc.color = btn_color;
         }
     }
     else if(evt->type == SGL_EVENT_PRESSED) {
-
+        //if(evt->pos.x < 20) {
+            numberkbd->opcode = 49;
+        //}
     }
     else if(evt->type == SGL_EVENT_RELEASED) {
-
+        numberkbd->opcode = 0;
     }
 
     if(obj->event_fn) {
@@ -250,7 +270,7 @@ sgl_obj_t* sgl_numberkbd_create(sgl_obj_t* parent)
     obj->get_style = sgl_numberkbd_get_style;
 #endif
     obj->clickable = 1;
-    
+
     numberkbd->body_desc.alpha = SGL_THEME_ALPHA;
     numberkbd->body_desc.color = SGL_THEME_BG_COLOR;
     numberkbd->body_desc.radius = SGL_THEME_RADIUS;
@@ -266,8 +286,6 @@ sgl_obj_t* sgl_numberkbd_create(sgl_obj_t* parent)
     numberkbd->btn_desc.border = 0;
     numberkbd->btn_desc.border_color = SGL_THEME_BORDER_COLOR;
     numberkbd->btn_desc.pixmap = NULL;
-
-    numberkbd->opcode = 0;
 
     return obj;
 }

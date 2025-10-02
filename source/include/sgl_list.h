@@ -3,7 +3,6 @@
  * MIT License
  *
  * Copyright(c) 2023-present All contributors of SGL  
- * Li, Shanwen  (1477153217@qq.com)
  * Document reference link: docs directory
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
