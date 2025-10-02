@@ -506,7 +506,8 @@ void sgl_draw_text(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_dra
     sgl_font_t *font = desc->font;
     int text_x = 0, icon_y = 0;
 
-    sgl_check_ptr_break(desc->text);
+    SGL_ASSERT(desc->text != NULL);
+    SGL_ASSERT(font != NULL);
 
     if(!sgl_area_clip(area, rect, &clip)) {
         return;

@@ -225,7 +225,7 @@ void sgl_draw_icon(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_dra
     uint8_t alpha = desc->alpha;
     sgl_pos_t  icon_pos;
 
-    sgl_check_ptr_break(desc->icon);
+    SGL_ASSERT(desc->icon != NULL);
 
     if(!sgl_area_clip(area, rect, &clip)) {
         return;

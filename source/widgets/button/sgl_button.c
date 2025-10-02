@@ -293,6 +293,7 @@ sgl_obj_t* sgl_button_create(sgl_obj_t* parent)
     button->text_desc.radius = 0;
     button->text_desc.font = NULL;
     button->text_desc.margin = 0;
+    button->text_desc.icon = NULL;
 
     return obj;
 }

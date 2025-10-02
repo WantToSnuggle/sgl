@@ -3,7 +3,6 @@
  * MIT License
  *
  * Copyright(c) 2023-present All contributors of SGL  
- * SillyMem  (1508555728@qq.com)
  * Document reference link: docs directory
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
