@@ -933,13 +933,6 @@ void sgl_obj_free(sgl_obj_t *obj)
 
     stack[top++] = obj;
 
-    /* if the object is active, do nothing */
-    if(obj == sgl_screen_act()) {
-        /* clear destroyed flag */
-        obj->destroyed = 0;
-        return;
-    }
-
     while (top > 0) {
         obj = stack[--top];
 

@@ -40,10 +40,10 @@
 #define NUMBERKBD_BTN_OK_ASCII   13    
 
 static const char kbd_digits[NUMBERKBD_BTN_ROW][NUMBERKBD_BTN_COL] = {
-    {'+', '-', '*', '/' }, 
-    {'9', '8', '7', '=' },
-    {'6', '5', '4', '\b' },
-    {'3', '2', '1', NUMBERKBD_BTN_OK_ASCII },
+    {'+', '-', '*', '/'                    }, 
+    {'7', '8', '9', '='                    },
+    {'4', '5', '6', '\b'                   },
+    {'1', '2', '3', NUMBERKBD_BTN_OK_ASCII },
     {'.', '0', '%', NUMBERKBD_BTN_OK_ASCII }
 };
 
@@ -299,7 +299,7 @@ static void sgl_numberkbd_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_eve
                     if(btn_row == 2) {
                         sgl_draw_rect(surf, &btn, &btn, &numberkbd->btn_desc);
                         text_x = btn.x1 + ((box_w -  backspace_icon.width) / 2);
-                        text_y = btn.y1 + ((box_h - backspace_icon.height) / 2);
+                        text_y = btn.y1 + ((box_h - backspace_icon.height + 1) / 2);
                         sgl_draw_icon_with_alpha(surf, &btn, text_x, text_y, numberkbd->text_color, numberkbd->btn_desc.alpha, &backspace_icon);
                     }
                     else if (btn_row == 3) {
@@ -326,7 +326,7 @@ static void sgl_numberkbd_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_eve
         int16_t x_rel = evt->pos.x - obj->coords.x1;
         int16_t y_rel = evt->pos.y - obj->coords.y1;
 
-        int16_t btn_col = 0;
+        btn_col = -1;
         int16_t cur_x = 0;
         for (int c = 0; c < NUMBERKBD_BTN_COL; c++) {
             if (x_rel >= cur_x && x_rel < cur_x + box_w) {
@@ -336,7 +336,7 @@ static void sgl_numberkbd_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_eve
             cur_x += box_w + numberkbd->margin;
         }
 
-        int16_t btn_row = 0;
+        btn_row = -1;
         int16_t cur_y = 0;
 
         for (int r = 0; r < NUMBERKBD_BTN_ROW; r++) {
@@ -350,11 +350,23 @@ static void sgl_numberkbd_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_eve
         if(btn_col == 3 && btn_row > 3) {
             numberkbd->opcode = NUMBERKBD_BTN_OK_ASCII;
         }
-        else {
+        else if (btn_col >= 0 && btn_row >= 0) {
             numberkbd->opcode = (uint8_t)kbd_digits[btn_row][btn_col];
+        }
+        else {
+            sgl_obj_clear_dirty(obj);
+            return;
+        }
+
+        if(obj->event_fn) {
+            obj->event_fn(evt);
         }
     }
     else if(evt->type == SGL_EVENT_RELEASED) {
+        if(numberkbd->opcode == 0) {
+            sgl_obj_clear_dirty(obj);
+            return;
+        }
         numberkbd->opcode = 0;
     }
     else if(evt->type == SGL_EVENT_DRAW_INIT) {
@@ -363,10 +375,8 @@ static void sgl_numberkbd_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_eve
 
         obj->coords.x2 = obj->coords.x1 + new_width;
         obj->coords.y2 = obj->coords.y1 + new_height;
-    }
 
-    if(obj->event_fn) {
-        obj->event_fn(evt);
+        SGL_ASSERT(numberkbd->font != NULL);
     }
 }
 
@@ -409,7 +419,7 @@ sgl_obj_t* sgl_numberkbd_create(sgl_obj_t* parent)
     numberkbd->btn_desc.alpha = SGL_THEME_ALPHA;
     numberkbd->btn_desc.color = SGL_THEME_COLOR;
     numberkbd->btn_desc.radius = SGL_THEME_RADIUS;
-    numberkbd->btn_desc.border = 0;
+    numberkbd->btn_desc.border = 1;
     numberkbd->btn_desc.border_color = SGL_THEME_BORDER_COLOR;
     numberkbd->btn_desc.pixmap = NULL;
 

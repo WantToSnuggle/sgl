@@ -347,8 +347,8 @@ sgl_obj_t* sgl_msgbox_create(sgl_obj_t* parent)
     msgbox->close_text.text = "Close";
     msgbox->close_text.color = SGL_THEME_TEXT_COLOR;
 
-    msgbox->apply_text.bg_color = sgl_color_mixer(SGL_THEME_COLOR, SGL_THEME_TEXT_COLOR, 150);
-    msgbox->close_text.bg_color = sgl_color_mixer(SGL_THEME_COLOR, SGL_THEME_TEXT_COLOR, 150);
+    msgbox->apply_text.bg_color = sgl_color_mixer(SGL_THEME_COLOR, SGL_THEME_TEXT_COLOR, 200);
+    msgbox->close_text.bg_color = sgl_color_mixer(SGL_THEME_COLOR, SGL_THEME_TEXT_COLOR, 200);
 
     sgl_obj_set_clickable(obj);
 
