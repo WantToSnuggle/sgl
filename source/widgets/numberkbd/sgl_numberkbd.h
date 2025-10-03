@@ -77,4 +77,12 @@ void sgl_numberkbd_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value
 size_t sgl_numberkbd_get_style(sgl_obj_t *obj, sgl_style_type_t type);
 
 
+/**
+ * @brief get numberkbd opcode
+ * @param obj numberkbd object
+ * @return opcode [0 ~ 255]
+ */
+uint8_t sgl_numberkbd_get_opcode(sgl_obj_t *obj);
+
+
 #endif // !__SGL_NUMBERKBD_H__

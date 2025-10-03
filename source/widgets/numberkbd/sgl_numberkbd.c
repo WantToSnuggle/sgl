@@ -34,6 +34,78 @@
 #include "sgl_numberkbd.h"
 
 
+#define NUMBERKBD_BTN_ROW        5
+#define NUMBERKBD_BTN_COL        4
+
+#define NUMBERKBD_BTN_OK_ASCII   13    
+
+static const char kbd_digits[NUMBERKBD_BTN_ROW][NUMBERKBD_BTN_COL] = {
+    {'+', '-', '*', '/' }, 
+    {'9', '8', '7', '=' },
+    {'6', '5', '4', '\b' },
+    {'3', '2', '1', NUMBERKBD_BTN_OK_ASCII },
+    {'.', '0', '%', NUMBERKBD_BTN_OK_ASCII }
+};
+
+
+static const uint8_t btn_enter_bitmap[] = {
+/*  */
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x8e,0xfa,0x00,0x00,  //......................+@@%....
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x08,0xef,0xff,0xa0,0x00,  //.....................+@@@@%...
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x8e,0xff,0xff,0xfa,0x00,  //....................+@@@@@@%..
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x08,0xef,0xff,0xff,0xfe,0x50,  //...................+@@@@@@@@+.
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x8e,0xff,0xff,0xff,0xfe,0x30,  //..................+@@@@@@@@@..
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x08,0xef,0xff,0xff,0xff,0xe3,0x00,  //.................+@@@@@@@@@...
+0x00,0x00,0xae,0xe8,0x00,0x00,0x00,0x00,0x8e,0xff,0xff,0xff,0xfe,0x30,0x00,  //....%@@+........+@@@@@@@@@....
+0x00,0x0a,0xff,0xfe,0x80,0x00,0x00,0x08,0xef,0xff,0xff,0xff,0xe3,0x00,0x00,  //...%@@@@+......+@@@@@@@@@.....
+0x00,0xae,0xff,0xff,0xe8,0x00,0x00,0x8e,0xff,0xff,0xff,0xfe,0x30,0x00,0x00,  //..%@@@@@@+....+@@@@@@@@@......
+0x05,0xef,0xff,0xff,0xfe,0x80,0x08,0xef,0xff,0xff,0xff,0xe3,0x00,0x00,0x00,  //.+@@@@@@@@+..+@@@@@@@@@.......
+0x03,0xef,0xff,0xff,0xff,0xe8,0x8e,0xff,0xff,0xff,0xfe,0x30,0x00,0x00,0x00,  //..@@@@@@@@@++@@@@@@@@@........
+0x00,0x5e,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xe3,0x00,0x00,0x00,0x00,  //..+@@@@@@@@@@@@@@@@@@.........
+0x00,0x05,0xef,0xff,0xff,0xff,0xff,0xff,0xff,0xfe,0x30,0x00,0x00,0x00,0x00,  //...+@@@@@@@@@@@@@@@@..........
+0x00,0x00,0x5e,0xff,0xff,0xff,0xff,0xff,0xff,0xe3,0x00,0x00,0x00,0x00,0x00,  //....+@@@@@@@@@@@@@@...........
+0x00,0x00,0x05,0xef,0xff,0xff,0xff,0xff,0xfe,0x30,0x00,0x00,0x00,0x00,0x00,  //.....+@@@@@@@@@@@@............
+0x00,0x00,0x00,0x5e,0xff,0xff,0xff,0xff,0xe3,0x00,0x00,0x00,0x00,0x00,0x00,  //......+@@@@@@@@@@.............
+0x00,0x00,0x00,0x05,0xef,0xff,0xff,0xfe,0x30,0x00,0x00,0x00,0x00,0x00,0x00,  //.......+@@@@@@@@..............
+0x00,0x00,0x00,0x00,0x5e,0xff,0xff,0xe3,0x00,0x00,0x00,0x00,0x00,0x00,0x00,  //........+@@@@@@...............
+0x00,0x00,0x00,0x00,0x05,0xef,0xfe,0x30,0x00,0x00,0x00,0x00,0x00,0x00,0x00,  //.........+@@@@................
+0x00,0x00,0x00,0x00,0x00,0x5c,0xc3,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,  //..........+%%.................
+};
+
+
+static sgl_icon_pixmap_t enter_icon = {
+    .bitmap = btn_enter_bitmap,
+    .bpp = 4,
+    .height = 20,
+    .width = 30,
+};
+
+
+static const uint8_t btn_backspace_bitmap[] = {
+/*  */
+0x00,0x00,0x00,0x3e,0xc0,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,  //.......@%.....................
+0x00,0x00,0x05,0xef,0xc0,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,  //.....+@@%.....................
+0x00,0x00,0x5e,0xff,0xc0,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,  //....+@@@%.....................
+0x00,0x08,0xef,0xff,0xc0,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,  //...+@@@@%.....................
+0x00,0x8e,0xff,0xff,0xec,0xcc,0xcc,0xcc,0xcc,0xcc,0xcc,0xcc,0xcc,0xcc,0xcc,  //..+@@@@@@%%%%%%%%%%%%%%%%%%%%%
+0x0a,0xef,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xfe,  //.%@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+0x3e,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xfe,  //.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+0x03,0xef,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xfe,  //..@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+0x00,0x3e,0xff,0xff,0xc6,0x66,0x66,0x66,0x66,0x66,0x66,0x66,0x66,0x66,0x65,  //...@@@@@%+++++++++++++++++++++
+0x00,0x03,0xef,0xff,0xc0,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,  //....@@@@%.....................
+0x00,0x00,0x0c,0xff,0xc0,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,  //.....%@@%.....................
+0x00,0x00,0x00,0xcf,0xc0,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,  //......%@%.....................
+0x00,0x00,0x00,0x0a,0xa0,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,  //.......%%.....................
+};
+
+
+static sgl_icon_pixmap_t backspace_icon = {
+    .bitmap = btn_backspace_bitmap,
+    .bpp = 4,
+    .height = 13,
+    .width = 30,
+};
+
 
 /**
  * @brief Set style of numberkbd
@@ -66,10 +138,6 @@ void sgl_numberkbd_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value
         sgl_obj_set_height(obj, value);
         break;
 
-    case SGL_STYLE_NUMBERKBD_BG_COLOR:
-        numberkbd->body_desc.color = sgl_int2color(value);
-        break;    
-
     case SGL_STYLE_COLOR:
         numberkbd->body_desc.color = sgl_int2color(value);
         break;
@@ -82,24 +150,12 @@ void sgl_numberkbd_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value
         numberkbd->body_desc.radius = sgl_obj_fix_radius(obj, value);
         break;
 
-    case SGL_STYLE_NUMBERKBD_BTN_RADIUS:
-        numberkbd->btn_desc.radius = sgl_min((int16_t)value, r_min);
+    case SGL_STYLE_PIXMAP:
+        numberkbd->body_desc.pixmap = (sgl_pixmap_t*)value;
         break;
 
-    case SGL_STYLE_NUMBERKBD_BTN_COLOR:
-        numberkbd->btn_desc.color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_NUMBERKBD_BTN_PIXMAP:
-        numberkbd->btn_desc.pixmap = (sgl_pixmap_t*)(value);
-        break;
-
-    case SGL_STYLE_NUMBERKBD_BTN_ALPHA:
-        numberkbd->btn_desc.alpha = (uint8_t)value;
-        break;
-
-    case SGL_STYLE_NUMBERKBD_BTN_MARGIN:
-        numberkbd->margin = (uint8_t)value;
+    case SGL_STYLE_FONT:
+        numberkbd->font = (sgl_font_t*)value;
         break;
 
     case SGL_STYLE_TEXT_COLOR:
@@ -110,20 +166,36 @@ void sgl_numberkbd_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value
         numberkbd->text_color = sgl_int2color(value);
         break;
 
+    case SGL_STYLE_NUMBERKBD_BG_COLOR:
+        numberkbd->body_desc.color = sgl_int2color(value);
+        break;    
+
+    case SGL_STYLE_NUMBERKBD_BTN_MARGIN:
+        numberkbd->margin = (uint8_t)value;
+        break;
+
+    case SGL_STYLE_NUMBERKBD_BTN_COLOR:
+        numberkbd->btn_desc.color = sgl_int2color(value);
+        break;
+
+    case SGL_STYLE_NUMBERKBD_BTN_RADIUS:
+        numberkbd->btn_desc.radius = sgl_min((int16_t)value, r_min);
+        break;
+
+    case SGL_STYLE_NUMBERKBD_BTN_ALPHA:
+        numberkbd->btn_desc.alpha = (uint8_t)value;
+        break;
+
+    case SGL_STYLE_NUMBERKBD_BTN_PIXMAP:
+        numberkbd->btn_desc.pixmap = (sgl_pixmap_t*)(value);
+        break;
+
     case SGL_STYLE_NUMBERKBD_BTN_BORDER_WIDTH:
         numberkbd->btn_desc.border = (uint8_t)value;
         break;
     
     case SGL_STYLE_NUMBERKBD_BTN_BORDER_COLOR:
         numberkbd->btn_desc.border_color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_FONT:
-        numberkbd->font = (sgl_font_t*)value;
-        break;
-
-    case SGL_STYLE_PIXMAP:
-        numberkbd->body_desc.pixmap = (sgl_pixmap_t*)value;
         break;
 
     default:
@@ -172,6 +244,9 @@ size_t sgl_numberkbd_get_style(sgl_obj_t *obj, sgl_style_type_t type)
     case SGL_STYLE_FONT:
         return (size_t)numberkbd->font;
 
+    case SGL_STYLE_NUMBERKBD_OPCODE:
+        return numberkbd->opcode;
+
     default:
         SGL_LOG_WARN("sgl_numberkbd_set_style: unsupported style type %d", type);
     }
@@ -189,16 +264,14 @@ size_t sgl_numberkbd_get_style(sgl_obj_t *obj, sgl_style_type_t type)
  */
 static void sgl_numberkbd_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *evt)
 {
-    static const char digits[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.', 'b'};
-
     sgl_numberkbd_t *numberkbd = (sgl_numberkbd_t*)obj;
     int16_t body_w = obj->coords.x2 - obj->coords.x1 + 1;
     int16_t body_h = obj->coords.y2 - obj->coords.y1 + 1;
     sgl_color_t btn_color = numberkbd->btn_desc.color;
 
-    int16_t box_w = (body_w - 4 * numberkbd->margin) / 3;
-    int16_t box_h = (body_h - 5 * numberkbd->margin) / 4;
-    int16_t text_x = 0, text_y = 0, index = 0;
+    int16_t box_w = (body_w - (NUMBERKBD_BTN_COL + 1) * numberkbd->margin) / NUMBERKBD_BTN_COL;
+    int16_t box_h = (body_h - (NUMBERKBD_BTN_ROW + 1) * numberkbd->margin) / NUMBERKBD_BTN_ROW;
+    int16_t text_x = 0, text_y = 0, btn_row = 0, btn_col = 0;
 
     sgl_rect_t btn = {
         .y1 = obj->coords.y1 + numberkbd->margin,
@@ -212,32 +285,84 @@ static void sgl_numberkbd_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_eve
         for(; btn.y1 < (obj->coords.y2 - numberkbd->margin); btn.y1 += (box_h + numberkbd->margin), btn.y2 = (btn.y1 + box_h)) {
             btn.x1 = obj->coords.x1 + numberkbd->margin;
             text_y = btn.y1 + ((box_h - sgl_font_get_height(numberkbd->font)) / 2);
+            btn_col = 0;
 
             for(btn.x2 = (btn.x1 + box_w); btn.x1 < (obj->coords.x2 - numberkbd->margin) ; btn.x1 += (box_w + numberkbd->margin), btn.x2 = (btn.x1 + box_w)) {
-                if(numberkbd->opcode != digits[index]) {
+                if(numberkbd->opcode != kbd_digits[btn_row][btn_col]) {
                     numberkbd->btn_desc.color = btn_color;
                 }
                 else {
                     numberkbd->btn_desc.color = sgl_color_mixer(btn_color, numberkbd->text_color, 128);
                 }
 
-                sgl_draw_rect(surf, &obj->area, &btn, &numberkbd->btn_desc);
-
-                text_x = btn.x1 + ((box_w -  sgl_font_get_string_width("0", numberkbd->font)) / 2);
-                sgl_draw_character_with_alpha(surf, &obj->area, text_x, text_y, digits[index] - 32, numberkbd->text_color, numberkbd->btn_desc.alpha, numberkbd->font);
-                index ++;
+                if(btn_col == 3 && btn_row > 1) {
+                    if(btn_row == 2) {
+                        sgl_draw_rect(surf, &btn, &btn, &numberkbd->btn_desc);
+                        text_x = btn.x1 + ((box_w -  backspace_icon.width) / 2);
+                        text_y = btn.y1 + ((box_h - backspace_icon.height) / 2);
+                        sgl_draw_icon_with_alpha(surf, &btn, text_x, text_y, numberkbd->text_color, numberkbd->btn_desc.alpha, &backspace_icon);
+                    }
+                    else if (btn_row == 3) {
+                        btn.y2 += (numberkbd->margin + box_h);
+                        sgl_draw_rect(surf, &btn, &btn, &numberkbd->btn_desc);
+                        text_x = btn.x1 + ((box_w -  enter_icon.width) / 2);
+                        text_y = btn.y1 + ((2 * box_h - enter_icon.height) / 2);
+                        sgl_draw_icon_with_alpha(surf, &btn, text_x, text_y, numberkbd->text_color, numberkbd->btn_desc.alpha, &enter_icon);
+                    }
+                }
+                else {
+                    sgl_draw_rect(surf, &btn, &btn, &numberkbd->btn_desc);
+                    text_x = btn.x1 + ((box_w -  sgl_font_get_string_width("0", numberkbd->font)) / 2);
+                    sgl_draw_character_with_alpha(surf, &obj->area, text_x, text_y, kbd_digits[btn_row][btn_col] - 32, numberkbd->text_color, numberkbd->btn_desc.alpha, numberkbd->font);
+                }
+                btn_col ++;
             }
 
             numberkbd->btn_desc.color = btn_color;
+            btn_row ++;
         }
     }
     else if(evt->type == SGL_EVENT_PRESSED) {
-        //if(evt->pos.x < 20) {
-            numberkbd->opcode = 49;
-        //}
+        int16_t x_rel = evt->pos.x - obj->coords.x1;
+        int16_t y_rel = evt->pos.y - obj->coords.y1;
+
+        int16_t btn_col = 0;
+        int16_t cur_x = 0;
+        for (int c = 0; c < NUMBERKBD_BTN_COL; c++) {
+            if (x_rel >= cur_x && x_rel < cur_x + box_w) {
+                btn_col = c;
+                break;
+            }
+            cur_x += box_w + numberkbd->margin;
+        }
+
+        int16_t btn_row = 0;
+        int16_t cur_y = 0;
+
+        for (int r = 0; r < NUMBERKBD_BTN_ROW; r++) {
+            if (y_rel >= cur_y && y_rel < cur_y + box_h) {
+                btn_row = r;
+                break;
+            }
+            cur_y += box_h + numberkbd->margin;
+        }
+
+        if(btn_col == 3 && btn_row > 3) {
+            numberkbd->opcode = NUMBERKBD_BTN_OK_ASCII;
+        }
+        else {
+            numberkbd->opcode = (uint8_t)kbd_digits[btn_row][btn_col];
+        }
     }
     else if(evt->type == SGL_EVENT_RELEASED) {
         numberkbd->opcode = 0;
+    }
+    else if(evt->type == SGL_EVENT_DRAW_INIT) {
+        int16_t new_width = box_w * NUMBERKBD_BTN_COL + (NUMBERKBD_BTN_COL + 1) * numberkbd->margin;
+        int16_t new_height = box_h * NUMBERKBD_BTN_ROW + (NUMBERKBD_BTN_ROW + 1) * numberkbd->margin;
+
+        obj->coords.x2 = obj->coords.x1 + new_width;
+        obj->coords.y2 = obj->coords.y1 + new_height;
     }
 
     if(obj->event_fn) {
@@ -270,9 +395,10 @@ sgl_obj_t* sgl_numberkbd_create(sgl_obj_t* parent)
     obj->get_style = sgl_numberkbd_get_style;
 #endif
     obj->clickable = 1;
+    obj->needinit  = 1;
 
     numberkbd->body_desc.alpha = SGL_THEME_ALPHA;
-    numberkbd->body_desc.color = SGL_THEME_BG_COLOR;
+    numberkbd->body_desc.color = SGL_THEME_COLOR;
     numberkbd->body_desc.radius = SGL_THEME_RADIUS;
     numberkbd->body_desc.border = SGL_THEME_BORDER_WIDTH;
     numberkbd->body_desc.border_color = SGL_THEME_BORDER_COLOR;
@@ -288,4 +414,15 @@ sgl_obj_t* sgl_numberkbd_create(sgl_obj_t* parent)
     numberkbd->btn_desc.pixmap = NULL;
 
     return obj;
+}
+
+
+/**
+ * @brief get numberkbd opcode
+ * @param obj numberkbd object
+ * @return opcode [0 ~ 255]
+ */
+uint8_t sgl_numberkbd_get_opcode(sgl_obj_t *obj)
+{
+    return ((sgl_numberkbd_t*)obj)->opcode;
 }
