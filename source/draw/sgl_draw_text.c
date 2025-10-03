@@ -73,7 +73,7 @@ void sgl_draw_character( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t 
     const uint8_t *dot = &font->bitmap[font->table[ch_index].bitmap_index];
     const uint8_t font_w = font->table[ch_index].box_w;
     int rel_x, rel_y, byte_x, dot_index;
-    uint8_t alpha_byte, alpha_dot;
+    uint8_t alpha_dot;
     sgl_area_t clip;
     sgl_color_t *buf = NULL;
 
@@ -101,12 +101,11 @@ void sgl_draw_character( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t 
 
             byte_x = rel_x >> 1;
             dot_index = byte_x + (rel_y * (font_w >> 1));
-            alpha_byte = dot[dot_index];
 
             if (rel_x & 1) {
-                alpha_dot = alpha_byte & 0xF;
+                alpha_dot = dot[dot_index] & 0xF;
             } else {
-                alpha_dot = (alpha_byte >> 4) & 0xF;
+                alpha_dot = (dot[dot_index] >> 4) & 0xF;
             }
 
             *buf = sgl_color_mixer(color, bg_color, alpha_dot * 16);
@@ -137,7 +136,7 @@ void sgl_draw_character_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, in
     sgl_area_t clip;
     sgl_color_t *buf = NULL;
     int rel_x, rel_y, byte_x, dot_index;
-    uint8_t alpha_byte, alpha_dot;
+    uint8_t alpha_dot;
 
     sgl_area_t text_rect = {
         .x1 = x + font->table[ch_index].ofs_x,
@@ -163,12 +162,11 @@ void sgl_draw_character_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, in
 
             byte_x = rel_x >> 1;
             dot_index = byte_x + (rel_y * (font_w >> 1));
-            alpha_byte = dot[dot_index];
 
             if (rel_x & 1) {
-                alpha_dot = alpha_byte & 0xF;
+                alpha_dot = dot[dot_index] & 0xF;
             } else {
-                alpha_dot = (alpha_byte >> 4) & 0xF;
+                alpha_dot = (dot[dot_index] >> 4) & 0xF;
             }
 
             *buf = sgl_color_mixer(color, *buf, alpha_dot * 16);
@@ -198,7 +196,7 @@ void sgl_draw_character_with_alpha( sgl_surf_t *surf, sgl_area_t *area, int16_t 
     const uint8_t *dot = &font->bitmap[font->table[ch_index].bitmap_index];
     const uint8_t font_w = font->table[ch_index].box_w;
     int rel_x, rel_y, byte_x, dot_index;
-    uint8_t alpha_byte, alpha_dot;
+    uint8_t alpha_dot;
     sgl_color_t color_mix;
     sgl_color_t *buf = NULL;
     sgl_area_t clip;
@@ -227,12 +225,11 @@ void sgl_draw_character_with_alpha( sgl_surf_t *surf, sgl_area_t *area, int16_t 
 
             byte_x = rel_x >> 1;
             dot_index = byte_x + (rel_y * (font_w >> 1));
-            alpha_byte = dot[dot_index];
 
             if (rel_x & 1) {
-                alpha_dot = alpha_byte & 0xF;
+                alpha_dot = dot[dot_index] & 0xF;
             } else {
-                alpha_dot = (alpha_byte >> 4) & 0xF;
+                alpha_dot = (dot[dot_index] >> 4) & 0xF;
             }
 
             color_mix = sgl_color_mixer(color, *buf, alpha_dot * 16);

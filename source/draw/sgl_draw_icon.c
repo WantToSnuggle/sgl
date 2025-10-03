@@ -45,6 +45,9 @@ void sgl_draw_one_icon( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y
     uint8_t aplha = 0;
     sgl_area_t clip;
     sgl_color_t *buf = NULL;
+    int rel_x, rel_y, byte_x, dot_index;
+    uint8_t alpha_dot;
+
     sgl_area_t icon_rect = {
         .x1 = x,
         .x2 = x + icon->width - 1,
@@ -61,27 +64,40 @@ void sgl_draw_one_icon( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y
     }
 
     if(icon->bpp == 4) {
-        for(int y = clip.y1; y <= clip.y2; y ++) {
+        for (int y = clip.y1; y <= clip.y2; y++) {
             buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
+            rel_y = y - icon_rect.y1;
 
-            for(int x = clip.x1; x <= clip.x2; x += 2) {
-                aplha = dot[((x - icon_rect.x1) >> 1) + ((y - icon_rect.y1) * icon->width >> 1)];
-                *buf++ = sgl_color_mixer(color, bg_color, ((aplha >> 4) & 0xF) * 16);
+            for (int x = clip.x1; x <= clip.x2; x++) {
+                rel_x = x - icon_rect.x1;
 
-                if((x + 2) > clip.x2)
-                    continue;
+                byte_x = rel_x >> 1;
+                dot_index = byte_x + (rel_y * (icon->width >> 1));
 
-                *buf++ = sgl_color_mixer(color, bg_color, ((aplha) & 0xF) * 16);
+                if (rel_x & 1) {
+                    alpha_dot = dot[dot_index] & 0xF;
+                } else {
+                    alpha_dot = (dot[dot_index] >> 4) & 0xF;
+                }
+
+                *buf = sgl_color_mixer(color, bg_color, alpha_dot * 16);
+                buf++;
             }
         }
     }
     else if(icon->bpp == 8) {
-        for(int y = clip.y1; y <= clip.y2; y ++) {
+        for (int y = clip.y1; y <= clip.y2; y++) {
             buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
+            rel_y = y - icon_rect.y1;
 
-            for(int x = clip.x1; x <= clip.x2; x ++) {
-                aplha = dot[(x - icon_rect.x1) + (y - icon_rect.y1) * icon->width];
-                *buf++ = sgl_color_mixer(color, bg_color, aplha);
+            for (int x = clip.x1; x <= clip.x2; x++) {
+                rel_x = x - icon_rect.x1;
+
+                byte_x = rel_x >> 1;
+                dot_index = byte_x + (rel_y * (icon->width >> 1));
+
+                *buf = sgl_color_mixer(color, bg_color, dot[dot_index]);
+                buf++;
             }
         }
     }
@@ -103,6 +119,9 @@ void sgl_draw_icon_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t
     uint8_t aplha = 0;
     sgl_area_t clip;
     sgl_color_t *buf = NULL;
+    int rel_x, rel_y, byte_x, dot_index;
+    uint8_t alpha_dot;
+
     sgl_area_t icon_rect = {
         .x1 = x,
         .x2 = x + icon->width - 1,
@@ -119,27 +138,39 @@ void sgl_draw_icon_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t
     }
 
     if(icon->bpp == 4) {
-        for(int y = clip.y1; y <= clip.y2; y++) {
+        for (int y = clip.y1; y <= clip.y2; y++) {
             buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
-            for(int x = clip.x1; x <= clip.x2; x += 2) {
-                aplha = dot[((x - icon_rect.x1) >> 1) + ((y - icon_rect.y1) * icon->width >> 1)];
-                *buf = sgl_color_mixer(color, *buf, ((aplha >> 4) & 0xF) * 16);
-                buf++;
+            rel_y = y - icon_rect.y1;
 
-                if((x + 2) > clip.x2)
-                    continue;
+            for (int x = clip.x1; x <= clip.x2; x++) {
+                rel_x = x - icon_rect.x1;
 
-                *buf = sgl_color_mixer(color, *buf, ((aplha) & 0xF) * 16);
+                byte_x = rel_x >> 1;
+                dot_index = byte_x + (rel_y * (icon->width >> 1));
+
+                if (rel_x & 1) {
+                    alpha_dot = dot[dot_index] & 0xF;
+                } else {
+                    alpha_dot = (dot[dot_index] >> 4) & 0xF;
+                }
+
+                *buf = sgl_color_mixer(color, *buf, alpha_dot * 16);
                 buf++;
             }
         }
     }
     else if(icon->bpp == 8) {
-        for(int y = clip.y1; y <= clip.y2; y++) {
+        for (int y = clip.y1; y <= clip.y2; y++) {
             buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
-            for(int x = clip.x1; x <= clip.x2; x ++) {
-                aplha = dot[(x - icon_rect.x1) + (y - icon_rect.y1) * icon->width];
-                *buf = sgl_color_mixer(color, *buf, aplha);
+            rel_y = y - icon_rect.y1;
+
+            for (int x = clip.x1; x <= clip.x2; x++) {
+                rel_x = x - icon_rect.x1;
+
+                byte_x = rel_x >> 1;
+                dot_index = byte_x + (rel_y * (icon->width >> 1));
+
+                *buf = sgl_color_mixer(color, *buf, dot[dot_index]);
                 buf++;
             }
         }
@@ -163,6 +194,9 @@ void sgl_draw_icon_with_alpha( sgl_surf_t *surf, sgl_area_t *area, int16_t x, in
     sgl_color_t color_mix;
     sgl_area_t clip;
     sgl_color_t *buf = NULL;
+    int rel_x, rel_y, byte_x, dot_index;
+    uint8_t alpha_dot;
+
     sgl_area_t icon_rect = {
         .x1 = x,
         .x2 = x + icon->width - 1,
@@ -179,32 +213,39 @@ void sgl_draw_icon_with_alpha( sgl_surf_t *surf, sgl_area_t *area, int16_t x, in
     }
 
     if(icon->bpp == 4) {
-        for(int y = clip.y1; y <= clip.y2; y++) {
+        for (int y = clip.y1; y <= clip.y2; y++) {
             buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
-            for(int x = clip.x1; x <= clip.x2; x += 2) {
-                uint8_t edge_aplha = dot[((x - icon_rect.x1) >> 1) + ((y - icon_rect.y1) * icon->width >> 1)];
+            rel_y = y - icon_rect.y1;
 
-                color_mix = sgl_color_mixer(color, *buf, ((edge_aplha >> 4) & 0xF) * 16);
-                *buf = sgl_color_mixer(color_mix, *buf, alpha);
-                buf++;
+            for (int x = clip.x1; x <= clip.x2; x++) {
+                rel_x = x - icon_rect.x1;
 
-                if((x + 2) > clip.x2)
-                    continue;
+                byte_x = rel_x >> 1;
+                dot_index = byte_x + (rel_y * (icon->width >> 1));
 
-                color_mix = sgl_color_mixer(color, *buf, (edge_aplha & 0xF) * 16);
-                *buf = sgl_color_mixer(color_mix, *buf, alpha);
+                if (rel_x & 1) {
+                    alpha_dot = dot[dot_index] & 0xF;
+                } else {
+                    alpha_dot = (dot[dot_index] >> 4) & 0xF;
+                }
+
+                *buf = sgl_color_mixer(color, *buf, alpha_dot * 16);
                 buf++;
             }
         }
     }
     else if(icon->bpp == 8) {
-        for(int y = clip.y1; y <= clip.y2; y++) {
+        for (int y = clip.y1; y <= clip.y2; y++) {
             buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
-            for(int x = clip.x1; x <= clip.x2; x ++) {
-                uint8_t edge_aplha = dot[(x - icon_rect.x1) + (y - icon_rect.y1) * icon->width];
+            rel_y = y - icon_rect.y1;
 
-                color_mix = sgl_color_mixer(color, *buf, edge_aplha);
-                *buf = sgl_color_mixer(color_mix, *buf, alpha);
+            for (int x = clip.x1; x <= clip.x2; x++) {
+                rel_x = x - icon_rect.x1;
+
+                byte_x = rel_x >> 1;
+                dot_index = byte_x + (rel_y * (icon->width >> 1));
+
+                *buf = sgl_color_mixer(color, *buf, dot[dot_index]);
                 buf++;
             }
         }
