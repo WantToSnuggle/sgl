@@ -347,14 +347,13 @@ static void sgl_numberkbd_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_eve
             cur_y += box_h + numberkbd->margin;
         }
 
-        if(btn_col == 3 && btn_row > 3) {
+        if(btn_col == 3 && btn_row >= 3) {
             numberkbd->opcode = NUMBERKBD_BTN_OK_ASCII;
         }
         else if (btn_col >= 0 && btn_row >= 0) {
             numberkbd->opcode = (uint8_t)kbd_digits[btn_row][btn_col];
         }
         else {
-            sgl_obj_clear_dirty(obj);
             return;
         }
 
