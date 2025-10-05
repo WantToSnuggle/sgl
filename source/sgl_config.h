@@ -9,6 +9,7 @@
 
 #define    CONFIG_SGL_PANEL_PIXEL_DEPTH       32
 #define    CONFIG_SGL_EVENT_QUEUE_SIZE        16
+#define    CONFIG_SGL_DIRTY_AREA_THRESHOLD    0
 #define    CONFIG_SGL_ANIMATION               1
 #define    CONFIG_SGL_ANIMATION_TICK_MS       1
 #define    CONFIG_SGL_DEBUG                   1
@@ -18,7 +19,7 @@
 #define    CONFIG_SGL_USE_STYLE_UNIFIED_API     1
 #define    CONFIG_SGL_HEAP_ALGO               lwmem
 #define    CONFIG_SGL_FL_INDEX_MAX            20
-#define    CONFIG_SGL_HEAP_MEMORY_SIZE        40960
+#define    CONFIG_SGL_HEAP_MEMORY_SIZE        1000000
 #define    CONFIG_SGL_FONT_SONG23             1
 #define    CONFIG_SGL_FONT_CONSOLAS23         1
 #define    CONFIG_SGL_FONT_KAI33              1

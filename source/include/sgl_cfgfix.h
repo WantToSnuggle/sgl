@@ -106,6 +106,9 @@ extern "C" {
 #define CONFIG_SGL_EVENT_QUEUE_SIZE                                32
 #endif
 
+#ifndef CONFIG_SGL_DIRTY_AREA_THRESHOLD
+#define CONFIG_SGL_DIRTY_AREA_THRESHOLD                            64
+#endif
 
 #ifndef CONFIG_SGL_DRAW_USE_DMA
 #define CONFIG_SGL_DRAW_USE_DMA                                    0

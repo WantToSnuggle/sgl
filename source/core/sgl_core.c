@@ -570,6 +570,60 @@ sgl_obj_t* sgl_obj_create(sgl_obj_t *parent)
 
 
 /**
+ * @brief initialize dirty area
+ * @param none
+ * @return none
+ */
+static inline void sgl_dirty_area_init(void)
+{
+#if CONFIG_SGL_DIRTY_AREA_THRESHOLD
+    sgl_ctx.dirty_num = 0;
+#else
+    sgl_area_init(&sgl_ctx.dirty);
+#endif
+}
+
+
+/**
+ * @brief sgl global initialization
+ * @param none
+ * @return none
+ * @note you should call this function before using sgl and you should call this function after register framebuffer device
+ */
+void sgl_init(void)
+{
+    /* init memory pool */
+    sgl_mm_init(sgl_mem_pool, sizeof(sgl_mem_pool));
+
+    /* initialize current context */
+    sgl_ctx.page = NULL;
+    sgl_ctx.started = false;
+
+#if (CONFIG_SGL_DIRTY_AREA_THRESHOLD)
+    /* alloc memory for dirty area */
+    sgl_ctx.dirty_num = ((sgl_panel_resolution_height() + SGL_DIRTY_AREA_THRESHOLD - 1) / SGL_DIRTY_AREA_THRESHOLD) *
+                        ((sgl_panel_resolution_width()  + SGL_DIRTY_AREA_THRESHOLD - 1) / SGL_DIRTY_AREA_THRESHOLD);
+
+    sgl_ctx.dirty = sgl_malloc(sgl_ctx.dirty_num * sizeof(sgl_area_t));
+    if(sgl_ctx.dirty == NULL) {
+        SGL_LOG_ERROR("sgl dirty area memory alloc failed");
+        SGL_ASSERT(0);
+        return;
+    }
+#endif // !CONFIG_SGL_DIRTY_AREA_THRESHOLD
+
+    /* initialize dirty area */
+    sgl_dirty_area_init();
+
+    /* create a screen object for drawing */
+    sgl_obj_create(NULL);
+
+    /* create event queue */
+    sgl_event_queue_init();
+}
+
+
+/**
  * @brief set current object as screen object
  * @param obj object, that you want to set an object as active page
  * @return none
@@ -586,7 +640,7 @@ void sgl_screen_load(sgl_obj_t *obj)
     #endif
 
     /* initialize dirty area */
-    sgl_area_init(&sgl_ctx.dirty);
+    sgl_dirty_area_init();
 }
 
 
@@ -749,31 +803,52 @@ void sgl_area_selfmerge(sgl_area_t *merge, sgl_area_t *area)
 void sgl_obj_dirty_merge(sgl_obj_t *obj)
 {
     SGL_ASSERT(obj != NULL);
-    sgl_area_selfmerge(&sgl_ctx.dirty, &obj->area);
-}
+#if CONFIG_SGL_DIRTY_AREA_THRESHOLD
+    int interval_x, interval_y;
 
+    for(int i = 0; i < sgl_ctx.dirty_num; i++) {
 
-/**
- * @brief sgl global initialization
- * @param none
- * @return none
- * @note you should call this function before using sgl
- */
-void sgl_init(void)
-{
-    /* init memory pool */
-    sgl_mm_init(sgl_mem_pool, sizeof(sgl_mem_pool));
+        if (obj->area.x2 < sgl_ctx.dirty[i].x1) {
+            interval_x = sgl_ctx.dirty[i].x1 - obj->area.x2;
+        }
+        else if (obj->area.x1 > sgl_ctx.dirty[i].x2) {
+            interval_x = obj->area.x1 - sgl_ctx.dirty[i].x2;
+        }
+        else {
+            interval_x = 0;
+        }
 
-    /* initialize current context */
-    sgl_ctx.page = NULL;
-    sgl_ctx.started = false;
-    sgl_area_init(&sgl_ctx.dirty);
+        if (obj->area.y2 < sgl_ctx.dirty[i].y1) {
+            interval_y = sgl_ctx.dirty[i].y1 - obj->area.y2;
+        }
+        else if (obj->area.y1 > sgl_ctx.dirty[i].y2) {
+            interval_y = obj->area.y1 - sgl_ctx.dirty[i].y2;
+        }
+        else {
+            interval_y = 0;
+        }
 
-    /* create a screen object for drawing */
-    sgl_obj_create(NULL);
+        /* If the object's area is near the dirty rectangle, merge it.*/
+        if (interval_x <= SGL_DIRTY_AREA_THRESHOLD && interval_y <= SGL_DIRTY_AREA_THRESHOLD) {
+            /* merge object area with dirty area */
+            sgl_ctx.dirty[i].x1 = sgl_min(sgl_ctx.dirty[i].x1, obj->area.x1);
+            sgl_ctx.dirty[i].x2 = sgl_max(sgl_ctx.dirty[i].x2, obj->area.x2);
+            sgl_ctx.dirty[i].y1 = sgl_min(sgl_ctx.dirty[i].y1, obj->area.y1);
+            sgl_ctx.dirty[i].y2 = sgl_max(sgl_ctx.dirty[i].y2, obj->area.y2); 
 
-    /* create event queue */
-    sgl_event_queue_init();
+            return;
+        }
+    }
+
+    sgl_ctx.dirty[sgl_ctx.dirty_num] = obj->area;
+    sgl_ctx.dirty_num ++;
+#else
+    /* direct to merge object area with dirty area  */
+    sgl_ctx.dirty.x1 = sgl_min(sgl_ctx.dirty.x1, obj->area.x1);
+    sgl_ctx.dirty.x2 = sgl_max(sgl_ctx.dirty.x2, obj->area.x2);
+    sgl_ctx.dirty.y1 = sgl_min(sgl_ctx.dirty.y1, obj->area.y1);
+    sgl_ctx.dirty.y2 = sgl_max(sgl_ctx.dirty.y2, obj->area.y2); 
+#endif
 }
 
 
@@ -848,7 +923,7 @@ int sgl_obj_init(sgl_obj_t *obj, sgl_obj_t *parent)
     if(parent == NULL) {
         parent = sgl_screen_act();
         if(parent == NULL) {
-            SGL_LOG_ERROR("sgl_button_create: have no active page");
+            SGL_LOG_ERROR("sgl_obj_init: have no active page");
             return -1;
         }
     }
@@ -1158,7 +1233,14 @@ void sgl_obj_set_align(sgl_obj_t *obj, sgl_align_type_t type)
 }
 
 
-static inline void draw_widget_slice(sgl_obj_t *obj, sgl_surf_t *surf, int16_t dirty_h)
+/**
+ * @brief draw object slice completely
+ * @param obj it should point to active root object
+ * @param surf surface that draw to
+ * @param dirty_h dirty height
+ * @return none
+ */
+static inline void draw_obj_slice(sgl_obj_t *obj, sgl_surf_t *surf, int16_t dirty_h)
 {
     sgl_event_t evt;
     sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX], *child = NULL;
@@ -1193,7 +1275,13 @@ static inline void draw_widget_slice(sgl_obj_t *obj, sgl_surf_t *surf, int16_t d
 }
 
 
-static bool draw_calculate_dirty_area(sgl_obj_t *obj)
+/**
+ * @brief calculate dirty area by for each all object that is dirty and visible
+ * @param obj it should point to active root object
+ * @return true if there is dirty area, otherwise false
+ * @note if there is no dirty area, the dirty area will remain unchanged
+ */
+static inline bool sgl_dirty_area_calculate(sgl_obj_t *obj)
 {
     bool need_draw = false;
     sgl_obj_t *child = NULL, *stack[SGL_OBJ_DEPTH_MAX];
@@ -1211,7 +1299,7 @@ static bool draw_calculate_dirty_area(sgl_obj_t *obj)
         /* check if obj is destroyed */
         if(unlikely(sgl_obj_is_destroyed(obj))) {
             /* merge destroy area */
-            sgl_area_selfmerge(&sgl_ctx.dirty, &obj->area);
+            sgl_obj_dirty_merge(obj);
 
             /* free obj resource */
             sgl_obj_free(obj);
@@ -1253,7 +1341,7 @@ static bool draw_calculate_dirty_area(sgl_obj_t *obj)
             }
 
             /* merge dirty area */
-            sgl_area_selfmerge(&sgl_ctx.dirty, &obj->area);
+            sgl_obj_dirty_merge(obj);
 
             need_draw = true;
 
@@ -1272,20 +1360,14 @@ static bool draw_calculate_dirty_area(sgl_obj_t *obj)
 
 /**
  * @brief sgl to draw complete frame
- * @param page current page
  * @param dirty the dirty area that need to upate
  * @return none
  * @note this function should be called in deamon thread or cyclic thread
  */
-void sgl_draw_task(sgl_area_t *dirty)
+static inline void sgl_draw_task(sgl_area_t *dirty)
 {
     sgl_surf_t *surf = &sgl_ctx.page->surf;
     sgl_obj_t *head = &sgl_ctx.page->obj;
-
-    /* calculate dirty area, if no dirty area, return directly */
-    if(! draw_calculate_dirty_area(head)) {
-        return;
-    }
 
     /* fix button press increase area */
     dirty->y1 = sgl_max(dirty->y1 - 2, 0);
@@ -1297,11 +1379,9 @@ void sgl_draw_task(sgl_area_t *dirty)
     surf->w = sgl_min(dirty->x2 - dirty->x1 + 5, head->area.x2 - surf->x);
     surf->h = surf->size / surf->w;
 
-    SGL_LOG_TRACE("start draw dirty area: x = %d, y = %d, w = %d, h = %d, dirty_h = %d", surf->x, surf->y, surf->w, surf->h, dirty->y2 - surf->y);
-
     while(surf->y < dirty->y2) {
         /* cycle draw widget slice until the end of dirty area */
-        draw_widget_slice(head, surf, sgl_min(dirty->y2 - surf->y, surf->h));
+        draw_obj_slice(head, surf, sgl_min(dirty->y2 - surf->y, surf->h));
         surf->y += surf->h;
 
         /* swap buffer for dma operation, but it depends on double buffer */
@@ -1309,9 +1389,6 @@ void sgl_draw_task(sgl_area_t *dirty)
         sgl_surf_buffer_swap(surf);
         #endif
     }
-
-    /* clear dirty area */
-    sgl_area_init(&sgl_ctx.dirty);
 }
 
 
@@ -1330,6 +1407,18 @@ void sgl_task_handle(void)
     sgl_anim_task();
     #endif // !CONFIG_SGL_ANIMATION
 
+    /* calculate dirty area, if no dirty area, return directly */
+    if(! sgl_dirty_area_calculate(&sgl_ctx.page->obj)) {
+        return;
+    }
+
     /* draw task  */
+#if (CONFIG_SGL_DIRTY_AREA_THRESHOLD)
+    for(int i = 0; i < sgl_ctx.dirty_num; i++) {
+        sgl_draw_task(&sgl_ctx.dirty[i]);
+    }
+#else
     sgl_draw_task(&sgl_ctx.dirty);
+#endif
+    sgl_dirty_area_init();
 }

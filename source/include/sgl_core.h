@@ -40,13 +40,18 @@ extern "C" {
 
 
 /* the maximum depth of object*/
-#define  SGL_OBJ_DEPTH_MAX        64
+#define  SGL_OBJ_DEPTH_MAX                 64
 
 
 #if (CONFIG_SGL_DRAW_USE_DMA)
-#define SGL_DRAW_BUFFER_SIZE      2
+#define SGL_DRAW_BUFFER_SIZE               2
 #else
-#define SGL_DRAW_BUFFER_SIZE      1
+#define SGL_DRAW_BUFFER_SIZE               1
+#endif
+
+
+#if (CONFIG_SGL_DIRTY_AREA_THRESHOLD)
+#define SGL_DIRTY_AREA_THRESHOLD           CONFIG_SGL_DIRTY_AREA_THRESHOLD
 #endif
 
 
@@ -460,7 +465,13 @@ typedef struct sgl_context {
 #if (CONFIG_SGL_DRAW_USE_DMA)
     uint8_t              fb_swap;
 #endif
+
+#if (CONFIG_SGL_DIRTY_AREA_THRESHOLD)
+    uint16_t             dirty_num;
+    sgl_area_t           *dirty;
+#else
     sgl_area_t           dirty;
+#endif
 }sgl_context_t;
 
 
