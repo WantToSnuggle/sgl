@@ -97,6 +97,30 @@ int sgl_device_fb_register(sgl_device_fb_t *fb_dev)
 
 
 /**
+ * @brief Set object to dirty
+ * @param obj point to object
+ * @return none
+ * @note this function will set object to dirty, include its children
+ */
+void sgl_obj_set_dirty(sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL);
+    sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX], *child = NULL;
+    int top = 0;
+    stack[top++] = obj;
+
+    while (top > 0) {
+        obj = stack[--top];
+        obj->dirty = 1;
+
+        sgl_obj_for_each_child(child, obj) {
+            stack[top++] = child;
+        }
+    }
+}
+
+
+/**
  * @brief add object to parent
  * @param parent: pointer of parent object
  * @param obj: pointer of object

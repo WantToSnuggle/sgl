@@ -330,15 +330,9 @@ void sgl_event_task(void)
             /* if event type is not motion, use pos to detect object */
             if(evt.type != SGL_EVENT_MOTION) {
                 obj = click_detect_object(&evt.pos);
-                if(unlikely(obj == NULL || (!sgl_obj_is_clickable(obj)))) {
-                    continue;
-                }
             }
             else {
                 obj = motion_detect_object(&evt.pos);
-                if(unlikely(obj == NULL || (!sgl_obj_is_movable(obj)))) {
-                    continue;
-                }
                 sgl_get_move_info(&evt);
             }
         }
