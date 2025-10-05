@@ -1390,7 +1390,18 @@ static inline sgl_color_t* sgl_pixmap_get_buf(sgl_pixmap_t *pixmap, int16_t x, i
  * @return true or false, true means overlap, false means not overlap
  * @note: this function is unsafe, you should check the surfcare and area is not NULL by yourself
  */
-bool sgl_surf_area_is_overlap(sgl_surf_t *surf, sgl_area_t *area);
+static inline bool sgl_surf_area_is_overlap(sgl_surf_t *surf, sgl_area_t *area)
+{
+    SGL_ASSERT(surf != NULL && area != NULL);
+    int16_t h_pos = surf->y + surf->h - 1;
+    int16_t w_pos = surf->x + surf->w - 1;
+
+    if(area->y1 > h_pos || area->y2 < surf->y || area->x1 > w_pos || area->x2 < surf->x) {
+        return false;
+    }
+
+    return true;
+}
 
 
 /**
@@ -1400,7 +1411,15 @@ bool sgl_surf_area_is_overlap(sgl_surf_t *surf, sgl_area_t *area);
  * @return true or false, true means overlap, false means not overlap
  * @note: this function is unsafe, you should check the area_a and area_b is not NULL by yourself
  */
-bool sgl_area_is_overlap(sgl_area_t *area_a, sgl_area_t *area_b);
+static inline bool sgl_area_is_overlap(sgl_area_t *area_a, sgl_area_t *area_b)
+{
+    SGL_ASSERT(area_a != NULL && area_b != NULL);
+    if(area_b->y1 > area_a->y2 || area_b->y2 < area_a->y1 || area_b->x1 > area_a->x2 || area_b->x2 < area_a->x1) {
+        return false;
+    }
+
+    return true;
+}
 
 
 /**

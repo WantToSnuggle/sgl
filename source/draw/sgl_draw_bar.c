@@ -23,7 +23,7 @@
  */
 
 #include <sgl_core.h>
-#include <sgl_draw_cg.h>
+#include <sgl_draw.h>
 #include <sgl_math.h>
 #include <sgl_log.h>
 #include <sgl_cfgfix.h>

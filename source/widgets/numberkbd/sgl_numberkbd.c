@@ -29,7 +29,7 @@
 #include <sgl_mm.h>
 #include <sgl_theme.h>
 #include <sgl_cfgfix.h>
-#include <sgl_draw_cg.h>
+#include <sgl_draw.h>
 #include <string.h>
 #include "sgl_numberkbd.h"
 
