@@ -42,7 +42,6 @@
 void sgl_draw_one_icon( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, sgl_color_t color, sgl_color_t bg_color, sgl_icon_pixmap_t *icon)
 {
     const uint8_t *dot = icon->bitmap;
-    uint8_t aplha = 0;
     sgl_area_t clip;
     sgl_color_t *buf = NULL;
     int rel_x, rel_y, byte_x, dot_index;
@@ -116,7 +115,6 @@ void sgl_draw_one_icon( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y
 void sgl_draw_icon_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, sgl_color_t color, sgl_icon_pixmap_t *icon)
 {
     const uint8_t *dot = icon->bitmap;
-    uint8_t aplha = 0;
     sgl_area_t clip;
     sgl_color_t *buf = NULL;
     int rel_x, rel_y, byte_x, dot_index;
@@ -229,7 +227,8 @@ void sgl_draw_icon_with_alpha( sgl_surf_t *surf, sgl_area_t *area, int16_t x, in
                     alpha_dot = (dot[dot_index] >> 4) & 0xF;
                 }
 
-                *buf = sgl_color_mixer(color, *buf, alpha_dot * 16);
+                color_mix = sgl_color_mixer(color, *buf, alpha_dot * 16);
+                *buf = sgl_color_mixer(color_mix, *buf, alpha);
                 buf++;
             }
         }
