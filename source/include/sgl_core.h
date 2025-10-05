@@ -1893,6 +1893,30 @@ static inline void sgl_obj_set_text(sgl_obj_t *obj, const char *text)
 }
 
 
+#if (CONFIG_SGL_OBJ_USE_NAME)
+/**
+ * @brief set object name
+ * @param obj The object to set the name
+ * @param name The name to set.
+ * @return None.
+ */
+static inline void sgl_obj_set_name(sgl_obj_t *obj, const char *name)
+{
+    SGL_ASSERT(obj != NULL);
+    obj->name = name;
+}
+
+
+/**
+ * @brief print object name that include this all child
+ * @param obj point to object
+ * @return none
+ */
+void sgl_obj_print_name(sgl_obj_t *obj);
+
+#endif
+
+
 #endif // CONFIG_SGL_USE_STYLE_UNIFIED_API
 
 

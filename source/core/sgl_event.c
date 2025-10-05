@@ -84,7 +84,7 @@ int sgl_event_queue_init(void)
  * @param none
  * @return true if the event queue is empty, false otherwise
  */
-static bool sgl_event_queue_is_empty(void)
+static inline bool sgl_event_queue_is_empty(void)
 {
     return evtq.size == 0;
 }
@@ -113,7 +113,7 @@ static void sgl_event_queue_push(sgl_event_t event)
  * @param out_event The event to be popped
  * @return 0 on success, -1 on failure
  */
-static int sgl_event_queue_pop(sgl_event_t* out_event)
+static inline int sgl_event_queue_pop(sgl_event_t* out_event)
 {
     if (sgl_event_queue_is_empty()) {
         return -1;
@@ -176,35 +176,15 @@ static bool pos_is_focus_on_obj(sgl_event_pos_t *pos, sgl_rect_t *rect, int16_t 
 
 
 /**
- * @brief check whether the object is clickable or movable
- * @param obj The object to be checked
- * @param type The type of the event
- * @return The object that is clickable or movable, NULL if no object is clickable or movable
- */
-static inline sgl_obj_t* touch_act_is_valid(sgl_obj_t *obj, sgl_event_type_t type)
-{
-    if(type == SGL_EVENT_NORMAL) {
-        return sgl_obj_is_clickable(obj) ? obj : NULL;
-    }
-    else if(type == SGL_EVENT_MOTION) {
-        return sgl_obj_is_movable(obj) ? obj : NULL;
-    }
-
-    return NULL;
-}
-
-
-/**
  * @brief check whether the position is clicked on the object
  * @param pos The position to be clicked
- * @param type The type of the event
  * @return The object that is clicked on, NULL if no object is clicked
  */
-static sgl_obj_t* touch_detect_object(sgl_event_pos_t *pos, sgl_event_type_t type)
+static sgl_obj_t* click_detect_object(sgl_event_pos_t *pos)
 {
     sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX];
-    int top = 0; bool find = false;
-    sgl_obj_t *child = NULL, *obj = NULL;
+    int top = 0;
+    sgl_obj_t *child = NULL, *obj = NULL, *find = NULL;
 
     sgl_obj_for_each_child(child, sgl_screen_act()) {
         stack[top++] = child;
@@ -215,7 +195,7 @@ static sgl_obj_t* touch_detect_object(sgl_event_pos_t *pos, sgl_event_type_t typ
 
         if(pos_is_focus_on_obj(pos, &obj->coords, obj->radius)) {
             if(sgl_obj_has_child(obj)) {
-                find = true;
+                find = obj;
                 /* reset the stack */
                 i = -1, top = 0;
                 /* for each child, push it into the stack */
@@ -224,16 +204,51 @@ static sgl_obj_t* touch_detect_object(sgl_event_pos_t *pos, sgl_event_type_t typ
                 }
                 continue;
             }
-            return touch_act_is_valid(obj, type);
-        }
-        else {
-            if(find) {
-                return touch_act_is_valid(obj->parent, type);
-            }
+            return obj;
         }
     }
 
-    return NULL;
+    return find;
+}
+
+
+/**
+ * @brief check whether the position is motion on the object
+ * @param pos The position to be motion
+ * @return The object that is motion on, NULL if no object is motion
+ */
+static sgl_obj_t* motion_detect_object(sgl_event_pos_t *pos)
+{
+    sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX];
+    int top = 0;
+    sgl_obj_t *child = NULL, *obj = NULL, *find = NULL;
+
+    sgl_obj_for_each_child(child, sgl_screen_act()) {
+        stack[top++] = child;
+    }
+
+    for(int i = 0; i < top; i++) {
+        obj = stack[i];
+
+        if(pos_is_focus_on_obj(pos, &obj->coords, obj->radius)) {
+            if(sgl_obj_is_movable(obj)) {
+                return obj;
+            }
+            else if(sgl_obj_has_child(obj)) {
+                find = obj;
+                /* reset the stack */
+                i = -1, top = 0;
+                /* for each child, push it into the stack */
+                sgl_obj_for_each_child(child, obj) {
+                    stack[top++] = child;
+                }
+                continue;
+            }
+            return obj;
+        }
+    }
+
+    return find;
 }
 
 
@@ -314,10 +329,16 @@ void sgl_event_task(void)
         if(evt.obj == NULL) {
             /* if event type is not motion, use pos to detect object */
             if(evt.type != SGL_EVENT_MOTION) {
-                obj = touch_detect_object(&evt.pos, SGL_EVENT_NORMAL);
+                obj = click_detect_object(&evt.pos);
+                if(unlikely(obj == NULL || (!sgl_obj_is_clickable(obj)))) {
+                    continue;
+                }
             }
             else {
-                obj = touch_detect_object(&evt.pos, SGL_EVENT_MOTION);
+                obj = motion_detect_object(&evt.pos);
+                if(unlikely(obj == NULL || (!sgl_obj_is_movable(obj)))) {
+                    continue;
+                }
                 sgl_get_move_info(&evt);
             }
         }

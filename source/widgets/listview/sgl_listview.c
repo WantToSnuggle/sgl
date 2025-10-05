@@ -179,7 +179,6 @@ sgl_obj_t* sgl_listview_create(sgl_obj_t* parent)
     obj->set_style = sgl_listview_set_style;
     obj->get_style = sgl_listview_get_style;
 #endif
-    sgl_obj_set_clickable(obj);
     sgl_obj_set_movable(obj);
 
     listview->desc.alpha = SGL_ALPHA_MAX;
@@ -219,6 +218,7 @@ sgl_obj_t* sgl_listview_add_item(sgl_obj_t *listview, sgl_icon_pixmap_t *icon, c
     sgl_button_set_style(new_obj, SGL_STYLE_COLOR, SGL_COLOR(SGL_BLUE));
 
     plistview->item_count ++;
+    sgl_obj_set_name(new_obj, text);
 
     return new_obj;
 }
@@ -244,5 +244,7 @@ void sgl_listview_set_offset(sgl_obj_t *listview, int16_t offset)
     sgl_obj_for_each_child(child, listview) {
         child->coords.y1 += offset;
         child->coords.y2 += offset;
+        child->area.y1 += offset;
+        child->area.y2 += offset;
     }
 }

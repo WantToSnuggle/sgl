@@ -386,6 +386,37 @@ int16_t sgl_obj_fix_radius(sgl_obj_t *obj, size_t radius)
 }
 
 
+#if (CONFIG_SGL_OBJ_USE_NAME && CONFIG_SGL_DEBUG)
+/**
+ * @brief print object name that include this all child
+ * @param obj point to object
+ * @return none
+ */
+void sgl_obj_print_name(sgl_obj_t *obj)
+{
+    sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX], *child = NULL;
+    int top = 0;
+
+    stack[top++] = obj;
+
+    while (top > 0) {
+        obj = stack[--top];
+        if(obj->name == NULL) {
+            SGL_LOG_INFO("[OBJ NAME]: %s", "NULL");
+        }
+        else {
+            SGL_LOG_INFO("[OBJ NAME]: %s", obj->name);
+        }
+
+        sgl_obj_for_each_child(child, obj) {
+            stack[top++] = child;
+        }
+    }
+}
+
+#endif
+
+
 /**
  * @brief page construct callback function
  * @param surf surface pointer

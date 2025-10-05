@@ -194,9 +194,6 @@ size_t sgl_checkbox_get_style(sgl_obj_t *obj, sgl_style_type_t type)
     case SGL_STYLE_SIZE_H:
         return sgl_obj_get_height(obj);
 
-    case SGL_STYLE_RADIUS:
-        return obj->radius;
-
     case SGL_STYLE_TEXT_COLOR:
         return sgl_color2int(checkbox->text.color);
 
