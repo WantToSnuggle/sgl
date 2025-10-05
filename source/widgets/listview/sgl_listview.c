@@ -218,7 +218,6 @@ sgl_obj_t* sgl_listview_add_item(sgl_obj_t *listview, sgl_icon_pixmap_t *icon, c
     sgl_button_set_style(new_obj, SGL_STYLE_COLOR, SGL_COLOR(SGL_BLUE));
 
     plistview->item_count ++;
-    sgl_obj_set_name(new_obj, text);
 
     return new_obj;
 }
