@@ -1421,7 +1421,7 @@ static inline bool sgl_surf_area_is_overlap(sgl_surf_t *surf, sgl_area_t *area)
 static inline bool sgl_area_is_overlap(sgl_area_t *area_a, sgl_area_t *area_b)
 {
     SGL_ASSERT(area_a != NULL && area_b != NULL);
-    if(area_b->y1 > area_a->y2 || area_b->y2 < area_a->y1 || area_b->x1 > area_a->x2 || area_b->x2 < area_a->x1) {
+    if (area_b->y1 > area_a->y2 || area_b->y2 < area_a->y1 || area_b->x1 > area_a->x2 || area_b->x2 < area_a->x1) {
         return false;
     }
 

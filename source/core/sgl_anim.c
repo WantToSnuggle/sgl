@@ -73,7 +73,7 @@ void sgl_anim_init(sgl_anim_t *anim)
 sgl_anim_t* sgl_anim_create(void)
 {
     sgl_anim_t *anim = sgl_malloc(sizeof(sgl_anim_t));
-    if(anim == NULL) {
+    if (anim == NULL) {
         SGL_LOG_ERROR("sgl_anim_create: malloc failed");
         return NULL;
     }
@@ -90,7 +90,7 @@ sgl_anim_t* sgl_anim_create(void)
 */
 static void sgl_anim_add(sgl_anim_t *anim)
 {
-    if(anim_ctx.anim_list_tail != NULL) {
+    if (anim_ctx.anim_list_tail != NULL) {
         anim_ctx.anim_list_tail->next = anim;
         anim_ctx.anim_list_tail = anim;
     }
@@ -113,19 +113,17 @@ void sgl_anim_remove(sgl_anim_t *anim)
     sgl_anim_t *prev = anim_ctx.anim_list_head;
     sgl_anim_t *find = NULL;
 
-    if(prev == NULL) {
+    if (prev == NULL) {
         return;
     }
 
-    if(anim == anim_ctx.anim_list_head) {
+    if (anim == anim_ctx.anim_list_head) {
         anim_ctx.anim_list_head = anim->next;
         anim_ctx.anim_cnt--;
         return;
     }
 
-    find = prev->next;
-
-    for(; prev != NULL; prev = find, find = prev->next) {
+    for (find = prev->next; prev != NULL; prev = find, find = prev->next) {
         if(find == anim) {
             if(find == anim_ctx.anim_list_tail) {
                 anim_ctx.anim_list_tail = prev;
@@ -163,7 +161,7 @@ void sgl_anim_stop(sgl_anim_t *anim)
     anim->disable = 1;
     sgl_anim_remove(anim);
     /* if animation is auto free, free it */
-    if(anim->auto_free) {
+    if (anim->auto_free) {
         sgl_free(anim);
     }
 }
@@ -181,12 +179,12 @@ void sgl_anim_task(void)
     uint32_t elaps_time = 0;
     sgl_anim_t *anim = NULL;
 
-    if(anim_ctx.tick_ms < SGL_ANIMATION_TICK_MS) {
+    if (anim_ctx.tick_ms < SGL_ANIMATION_TICK_MS) {
         return;
     }
 
     /* if no anim object, do nothing */
-    if(unlikely(anim_ctx.anim_cnt == 0)) {
+    if (unlikely(anim_ctx.anim_cnt == 0)) {
         return;
     }
 
@@ -218,7 +216,7 @@ void sgl_anim_task(void)
                 anim->act_time = 0;
 
                 /* remove anim object if repeat count is 0 */
-                if(anim->repeat_cnt == 0) {
+                if (anim->repeat_cnt == 0) {
                     sgl_anim_stop(anim);
                 }
             }

@@ -65,7 +65,7 @@ int sgl_device_fb_register(sgl_device_fb_t *fb_dev)
 {
     sgl_check_ptr_return(fb_dev, -1);
 
-    if(fb_dev->framebuffer == NULL || fb_dev->flush_area == NULL) {
+    if (fb_dev->framebuffer == NULL || fb_dev->flush_area == NULL) {
         SGL_LOG_ERROR("framebuffer or flush_area is null");
         return -1;
     }
@@ -78,7 +78,7 @@ int sgl_device_fb_register(sgl_device_fb_t *fb_dev)
     sgl_ctx.fb_dev.framebuffer_size = fb_dev->framebuffer_size / 2;
     sgl_ctx.fb_dev.framebuffer[1]   = ((sgl_color_t*)fb_dev->framebuffer) + sgl_ctx.fb_dev.framebuffer_size;
 
-    if((sgl_ctx.fb_dev.framebuffer_size) < (size_t)fb_dev->xres) {
+    if ((sgl_ctx.fb_dev.framebuffer_size) < (size_t)fb_dev->xres) {
         SGL_LOG_ERROR("framebuffer size is too small");
         return -1;
     }
@@ -137,8 +137,8 @@ void sgl_obj_add_child(sgl_obj_t *parent, sgl_obj_t *obj)
     SGL_ASSERT(parent != NULL && obj != NULL);
     sgl_obj_t *tail = parent->child;
 
-    if(parent->child) {
-        while(tail->sibling != NULL) {
+    if (parent->child) {
+        while (tail->sibling != NULL) {
             tail = tail->sibling;
         };
         tail->sibling = obj;
@@ -164,13 +164,13 @@ void sgl_obj_remove(sgl_obj_t *obj)
     sgl_obj_t *pos = NULL;
 
     /* if the object is active, do not remove it */
-    if(obj == sgl_screen_act()) {
+    if (obj == sgl_screen_act()) {
         return;
     }
 
-    if(parent->child != obj) {
+    if (parent->child != obj) {
         pos = parent->child;
-        while(pos->sibling != obj) {
+        while (pos->sibling != obj) {
             pos = pos->sibling;
         }
         pos->sibling = obj->sibling;
@@ -237,7 +237,7 @@ void sgl_obj_set_pos(sgl_obj_t *obj, int16_t x, int16_t y)
 
     sgl_obj_dirty_merge(obj);
 
-    if(obj->parent != NULL) {
+    if (obj->parent != NULL) {
         obj->coords.x1 = obj->parent->coords.x1 + x;
         obj->coords.y1 = obj->parent->coords.y1 + y;
     }
@@ -270,10 +270,10 @@ void sgl_obj_move_up(sgl_obj_t *obj)
     sgl_obj_t *gprev = NULL;
 
     /* if the object is the first child, do not move it */
-    if(parent->child == obj || obj->sibling == NULL) {
+    if (parent->child == obj || obj->sibling == NULL) {
         return;
     }
-    else if(parent->child->sibling == obj) {
+    else if (parent->child->sibling == obj) {
         parent->child->sibling = obj->sibling;
         obj->sibling = parent->child;
         parent->child = obj;
@@ -286,7 +286,7 @@ void sgl_obj_move_up(sgl_obj_t *obj)
     sgl_obj_for_each_child(gprev, parent) {
         prev = gprev->sibling;
 
-        if(prev->sibling == obj) {
+        if (prev->sibling == obj) {
             prev->sibling = obj->sibling;
             gprev->sibling = obj;
             obj->sibling = prev;
@@ -312,10 +312,10 @@ void sgl_obj_move_down(sgl_obj_t *obj)
     sgl_obj_t *next = NULL;
 
     /* if the object is the last child, do not move it */
-    if(obj->sibling == NULL) {
+    if (obj->sibling == NULL) {
         return;
     }
-    else if(parent->child == obj) {
+    else if (parent->child == obj) {
         parent->child = obj->sibling;
         obj->sibling = obj->sibling->sibling;
         /* mark object as dirty */
@@ -325,7 +325,7 @@ void sgl_obj_move_down(sgl_obj_t *obj)
 
     /* move the object to its next sibling */
     sgl_obj_for_each_child(prev, parent) {
-        if(prev->sibling == obj) {
+        if (prev->sibling == obj) {
             next = obj->sibling;
             obj->sibling = next->sibling;
             prev->sibling = next;
@@ -351,12 +351,12 @@ void sgl_obj_move_foreground(sgl_obj_t *obj)
     sgl_obj_t *prev = NULL;
 
     /* if the object is the first child, do not move it */
-    if(parent->child == obj) {
+    if (parent->child == obj) {
         return;
     }
 
     sgl_obj_for_each_child(prev, parent) {
-        if(prev->sibling == obj) {
+        if (prev->sibling == obj) {
             break;
         }
     }
@@ -389,7 +389,7 @@ void sgl_obj_move_background(sgl_obj_t *obj)
     }
 
     sgl_obj_for_each_child(last, parent) {
-        if(last->sibling == obj) {
+        if (last->sibling == obj) {
             prev = last;
         }
     }
@@ -414,7 +414,7 @@ int16_t sgl_obj_fix_radius(sgl_obj_t *obj, size_t radius)
     int16_t h = (obj->coords.y2 - obj->coords.y1 + 1) / 2;
     int16_t r_min = w > h ? h : w;
 
-    if((int16_t)radius > r_min) {
+    if ((int16_t)radius > r_min) {
         radius = r_min;
     }
 
@@ -439,7 +439,7 @@ void sgl_obj_print_name(sgl_obj_t *obj)
 		SGL_ASSERT(top < SGL_OBJ_DEPTH_MAX);
 		obj = stack[--top];
 
-        if(obj->name == NULL) {
+        if (obj->name == NULL) {
             SGL_LOG_INFO("[OBJ NAME]: %s", "NULL");
         }
         else {
@@ -472,8 +472,8 @@ static void sgl_page_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t 
     sgl_page_t *page = (sgl_page_t *)obj;
     sgl_pixmap_t *pixmap = page->bg_img;
 
-    if(evt->type == SGL_EVENT_DRAW_MAIN) {
-        if(pixmap == NULL) {
+    if (evt->type == SGL_EVENT_DRAW_MAIN) {
+        if (pixmap == NULL) {
             sgl_draw_fill_rect(surf, &obj->area, &obj->coords, page->color);
         }
         else {
@@ -546,7 +546,7 @@ size_t sgl_page_get_style(sgl_obj_t* obj, sgl_style_type_t type)
 static sgl_page_t* sgl_page_create(void)
 {
     sgl_page_t *page = sgl_malloc(sizeof(sgl_page_t));
-    if(page == NULL) {
+    if (page == NULL) {
         SGL_LOG_ERROR("sgl_page_create: malloc failed");
         return NULL;
     }
@@ -556,7 +556,7 @@ static sgl_page_t* sgl_page_create(void)
 
     sgl_obj_t *obj = &page->obj;
 
-    if(sgl_ctx.fb_dev.framebuffer[0] == NULL)  {
+    if (sgl_ctx.fb_dev.framebuffer[0] == NULL)  {
         SGL_LOG_ERROR("sgl_page_create: framebuffer is NULL");
         sgl_free(page);
         return NULL;
@@ -590,7 +590,7 @@ static sgl_page_t* sgl_page_create(void)
     /* init child list */
     sgl_obj_node_init(&page->obj);
 
-    if(sgl_ctx.page == NULL) {
+    if (sgl_ctx.page == NULL) {
         sgl_ctx.page = page;
     }
 
@@ -609,9 +609,9 @@ sgl_obj_t* sgl_obj_create(sgl_obj_t *parent)
     sgl_obj_t *obj;
 
     /* create page object */
-    if(parent == NULL) {
+    if (parent == NULL) {
         sgl_page_t *page = sgl_page_create();
-        if(page == NULL) {
+        if (page == NULL) {
             SGL_LOG_ERROR("sgl_obj_create: create page failed");
             return NULL;
         }
@@ -620,7 +620,7 @@ sgl_obj_t* sgl_obj_create(sgl_obj_t *parent)
     }
     else {
         obj = (sgl_obj_t*)sgl_malloc(sizeof(sgl_obj_t));
-        if(obj == NULL) {
+        if (obj == NULL) {
             SGL_LOG_ERROR("malloc failed");
             return NULL;
         }
@@ -678,7 +678,7 @@ void sgl_init(void)
                         ((sgl_panel_resolution_width()  + SGL_DIRTY_AREA_THRESHOLD - 1) / SGL_DIRTY_AREA_THRESHOLD);
 
     sgl_ctx.dirty = sgl_malloc(sgl_ctx.dirty_num * sizeof(sgl_area_t));
-    if(sgl_ctx.dirty == NULL) {
+    if (sgl_ctx.dirty == NULL) {
         SGL_LOG_ERROR("sgl dirty area memory alloc failed");
         SGL_ASSERT(0);
         return;
@@ -773,7 +773,7 @@ bool sgl_surf_clip(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *clip)
     int16_t h_pos = surf->y + surf->h - 1;
     int16_t w_pos = surf->x + surf->w - 1;
 
-    if(area->y1 > h_pos || area->y2 < surf->y || area->x1 > w_pos || area->x2 < surf->x) {
+    if (area->y1 > h_pos || area->y2 < surf->y || area->x1 > w_pos || area->x2 < surf->x) {
         return false;
     }
 
@@ -797,7 +797,7 @@ bool sgl_surf_clip(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *clip)
 bool sgl_area_clip(sgl_area_t *area_a, sgl_area_t *area_b, sgl_area_t *clip)
 {
     SGL_ASSERT(area_a != NULL && area_b != NULL && clip != NULL);
-    if(area_b->y1 > area_a->y2 || area_b->y2 < area_a->y1 || area_b->x1 > area_a->x2 || area_b->x2 < area_a->x1) {
+    if (area_b->y1 > area_a->y2 || area_b->y2 < area_a->y1 || area_b->x1 > area_a->x2 || area_b->x2 < area_a->x1) {
         return false;
     }
 
@@ -820,7 +820,7 @@ bool sgl_area_clip(sgl_area_t *area_a, sgl_area_t *area_b, sgl_area_t *clip)
 bool sgl_area_selfclip(sgl_area_t *clip, sgl_area_t *area)
 {
     SGL_ASSERT(clip != NULL && area != NULL);
-    if(area->y1 > clip->y2 || area->y2 < clip->y1 || area->x1 > clip->x2 || area->x2 < clip->x1) {
+    if (area->y1 > clip->y2 || area->y2 < clip->y1 || area->x1 > clip->x2 || area->x2 < clip->x1) {
         return false;
     }
 
@@ -879,7 +879,7 @@ void sgl_obj_dirty_merge(sgl_obj_t *obj)
 #if CONFIG_SGL_DIRTY_AREA_THRESHOLD
     int interval_x, interval_y;
 
-    for(int i = 0; i < sgl_ctx.dirty_num; i++) {
+    for (int i = 0; i < sgl_ctx.dirty_num; i++) {
 
         if (obj->area.x2 < sgl_ctx.dirty[i].x1) {
             interval_x = sgl_ctx.dirty[i].x1 - obj->area.x2;
@@ -936,7 +936,7 @@ void sgl_obj_set_layout(sgl_obj_t *obj, sgl_layout_type_t type)
     SGL_ASSERT(obj != NULL);
     obj->layout = (((uint8_t)type) & 0x03);
 
-    if((!sgl_obj_has_child(obj)) || (type == SGL_LAYOUT_NONE)) {
+    if ((!sgl_obj_has_child(obj)) || (type == SGL_LAYOUT_NONE)) {
         return;
     }
 
@@ -947,7 +947,7 @@ void sgl_obj_set_layout(sgl_obj_t *obj, sgl_layout_type_t type)
     /* set object to dirty flag for layout change */
     sgl_obj_set_dirty(obj);
 
-    switch(obj->layout) {
+    switch (obj->layout) {
     case SGL_LAYOUT_HORIZONTAL:
         child_w  = (obj->coords.x2 - obj->coords.x1 - margin * (child_num + 1)) / child_num;
         child_xs = obj->coords.x1 + margin;
@@ -993,9 +993,9 @@ int sgl_obj_init(sgl_obj_t *obj, sgl_obj_t *parent)
 {
     SGL_ASSERT(obj != NULL);
 
-    if(parent == NULL) {
+    if (parent == NULL) {
         parent = sgl_screen_act();
-        if(parent == NULL) {
+        if (parent == NULL) {
             SGL_LOG_ERROR("sgl_obj_init: have no active page");
             return -1;
         }
@@ -1126,13 +1126,13 @@ int32_t sgl_font_get_string_width(const char *str, sgl_font_t *font)
 #if CONFIG_SGL_TEXT_UTF8
     uint32_t unicode = 0;
     uint32_t ch_index = 0;
-    while(*str) {
+    while (*str) {
         str += sgl_utf8_to_unicode(str, &unicode);
         ch_index = sgl_search_unicode_ch_index(font, unicode);
         len += font->table[ch_index].box_w;
     }
 #else
-    while(*str) {
+    while (*str) {
         len += font->table[(uint8_t)(*str) - 32].box_w;
         str++;
     }
@@ -1152,7 +1152,7 @@ sgl_pos_t sgl_get_align_pos(sgl_size_t *parent_size, sgl_size_t *size, sgl_align
 {
     SGL_ASSERT(parent_size != NULL && size != NULL);
     sgl_pos_t ret = {.x = 0, .y = 0};
-    switch(type) {
+    switch (type) {
         case SGL_ALIGN_CENTER:
             ret.x = (parent_size->w - size->w)/2;
             ret.y = (parent_size->h - size->h)/2;
@@ -1282,7 +1282,7 @@ void sgl_obj_set_align(sgl_obj_t *obj, sgl_align_type_t type)
         .h = obj->coords.y2 - obj->coords.y1 + 1,
     };
 
-    if(obj->parent == NULL) {
+    if (obj->parent == NULL) {
         p_size = (sgl_size_t){
             .w = sgl_ctx.fb_dev.xres,
             .h = sgl_ctx.fb_dev.yres,
@@ -1335,7 +1335,7 @@ static inline void draw_obj_slice(sgl_obj_t *obj, sgl_surf_t *surf, int16_t dirt
 			stack[top++] = obj->sibling;
 		}
     
-		if(sgl_surf_area_is_overlap(surf, &obj->area)) {
+		if (sgl_surf_area_is_overlap(surf, &obj->area)) {
 			evt.type = SGL_EVENT_DRAW_MAIN;
 			SGL_ASSERT(obj->construct_fn != NULL);
 			obj->construct_fn(surf, obj, &evt);
@@ -1369,12 +1369,12 @@ static inline bool sgl_dirty_area_calculate(sgl_obj_t *obj)
         SGL_ASSERT(top < SGL_OBJ_DEPTH_MAX);
 		obj = stack[--top];
 
-        if(unlikely(sgl_obj_is_hidden(obj))) {
+        if (unlikely(sgl_obj_is_hidden(obj))) {
             continue;
         }
 
         /* check if obj is destroyed */
-        if(unlikely(sgl_obj_is_destroyed(obj))) {
+        if (unlikely(sgl_obj_is_destroyed(obj))) {
             /* merge destroy area */
             sgl_obj_dirty_merge(obj);
 
@@ -1393,7 +1393,7 @@ static inline bool sgl_dirty_area_calculate(sgl_obj_t *obj)
         }
 
         /* check child need init coords */
-        if(unlikely(sgl_obj_is_needinit(obj))) {
+        if (unlikely(sgl_obj_is_needinit(obj))) {
             sgl_event_t evt = {
                 .type = SGL_EVENT_DRAW_INIT,
             };
@@ -1406,7 +1406,7 @@ static inline bool sgl_dirty_area_calculate(sgl_obj_t *obj)
         }
 
         /* check child dirty and merge all dirty area */
-        if(sgl_obj_is_dirty(obj)){
+        if (sgl_obj_is_dirty(obj)){
 
             /* update obj area */
             if(unlikely(!sgl_area_clip(&obj->parent->area, &obj->coords, &obj->area))) {
@@ -1460,7 +1460,7 @@ static inline void sgl_draw_task(sgl_area_t *dirty)
     surf->w = sgl_min(dirty->x2 - dirty->x1 + 5, head->area.x2 - surf->x);
     surf->h = surf->size / surf->w;
 
-    while(surf->y < dirty->y2) {
+    while (surf->y < dirty->y2) {
         /* cycle draw widget slice until the end of dirty area */
         draw_obj_slice(head, surf, sgl_min(dirty->y2 - surf->y, surf->h));
         surf->y += surf->h;
@@ -1489,13 +1489,13 @@ void sgl_task_handle(void)
     #endif // !CONFIG_SGL_ANIMATION
 
     /* calculate dirty area, if no dirty area, return directly */
-    if(! sgl_dirty_area_calculate(&sgl_ctx.page->obj)) {
+    if (! sgl_dirty_area_calculate(&sgl_ctx.page->obj)) {
         return;
     }
 
     /* draw task  */
     #if (CONFIG_SGL_DIRTY_AREA_THRESHOLD)
-    for(int i = 0; i < sgl_ctx.dirty_num; i++) {
+    for (int i = 0; i < sgl_ctx.dirty_num; i++) {
         sgl_draw_task(&sgl_ctx.dirty[i]);
     }
     #else
