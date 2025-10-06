@@ -162,6 +162,14 @@ void sgl_numberkbd_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value
         numberkbd->text_color = sgl_int2color(value);
         break;
 
+    case SGL_STYLE_BORDER_WIDTH:
+        numberkbd->body_desc.border = (uint8_t)value;
+        break;
+
+    case SGL_STYLE_BORDER_COLOR:
+        numberkbd->body_desc.color = sgl_int2color(value);
+        break;
+
     case SGL_STYLE_NUMBERKBD_TEXT_COLOR:
         numberkbd->text_color = sgl_int2color(value);
         break;
