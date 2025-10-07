@@ -124,8 +124,8 @@ void sgl_anim_remove(sgl_anim_t *anim)
     }
 
     for (find = prev->next; prev != NULL; prev = find, find = prev->next) {
-        if(find == anim) {
-            if(find == anim_ctx.anim_list_tail) {
+        if (find == anim) {
+            if (find == anim_ctx.anim_list_tail) {
                 anim_ctx.anim_list_tail = prev;
                 anim_ctx.anim_list_tail->next = NULL;
             }
@@ -194,7 +194,7 @@ void sgl_anim_task(void)
     sgl_anim_for_each(anim, &anim_ctx) {
         anim->act_time += anim_ctx.tick_ms;
 
-        if(anim->act_time >= anim->act_delay) {
+        if (anim->act_time >= anim->act_delay) {
             elaps_time = anim->act_time - anim->act_delay;
 
             /* check callback function for debug */

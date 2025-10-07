@@ -108,7 +108,7 @@ void sgl_assert_handler(const char *file, const char *func, int line);
 #    if CONFIG_SGL_LOG_LEVEL <= SGL_LOG_LEVEL_TRACE
 #        define SGL_LOG_TRACE(...)      sgl_log(SGL_LOG_TRACE_FLAG, __VA_ARGS__)
 #    else
-#        define SGL_LOG_TRACE(...)      do {}while(0)
+#        define SGL_LOG_TRACE(...)      do {} while(0)
 #    endif
 #endif
 
@@ -116,7 +116,7 @@ void sgl_assert_handler(const char *file, const char *func, int line);
 #    if CONFIG_SGL_LOG_LEVEL <= SGL_LOG_LEVEL_INFO
 #        define SGL_LOG_INFO(...)       sgl_log(SGL_LOG_INFO_FLAG,  __VA_ARGS__)
 #    else
-#        define SGL_LOG_INFO(...)       do {}while(0)
+#        define SGL_LOG_INFO(...)       do {} while(0)
 #    endif
 #endif
 
@@ -124,7 +124,7 @@ void sgl_assert_handler(const char *file, const char *func, int line);
 #    if CONFIG_SGL_LOG_LEVEL <= SGL_LOG_LEVEL_WARN
 #        define SGL_LOG_WARN(...)       sgl_log(SGL_LOG_WARN_FLAG, __VA_ARGS__)
 #    else
-#        define SGL_LOG_WARN(...)       do {}while(0)
+#        define SGL_LOG_WARN(...)       do {} while(0)
 #    endif
 #endif
 
@@ -132,7 +132,7 @@ void sgl_assert_handler(const char *file, const char *func, int line);
 #    if CONFIG_SGL_LOG_LEVEL <= SGL_LOG_LEVEL_ERROR
 #        define SGL_LOG_ERROR(...)      sgl_log(SGL_LOG_ERROR_FLAG, __VA_ARGS__)
 #    else
-#        define SGL_LOG_ERROR(...)      do {}while(0)
+#        define SGL_LOG_ERROR(...)      do {} while(0)
 #    endif
 #endif
 
@@ -140,7 +140,7 @@ void sgl_assert_handler(const char *file, const char *func, int line);
 #    if CONFIG_SGL_LOG_LEVEL <= SGL_LOG_LEVEL_USER
 #        define SGL_LOG_USER(...)       sgl_log(SGL_LOG_USER_FLAG,  __VA_ARGS__)
 #    else
-#        define SGL_LOG_USER(...)       do {}while(0)
+#        define SGL_LOG_USER(...)       do {} while(0)
 #    endif
 #endif
 
@@ -152,7 +152,7 @@ void sgl_assert_handler(const char *file, const char *func, int line);
 
 
 #define SGL_ASSERT(condition)           do {                                                          \
-                                            if(!(condition)) {                                        \
+                                            if (!(condition)) {                                        \
                                                 sgl_assert_handler(__FILE__, __FUNCTION__, __LINE__); \
                                             }                                                         \
                                         } while(0)
@@ -161,14 +161,14 @@ void sgl_assert_handler(const char *file, const char *func, int line);
 #else // if no define debug mode macro
 
 #define SGL_LOG_NONE                     0
-#define SGL_LOG_TRACE(...)               do {}while(0)
-#define SGL_LOG_INFO(...)                do {}while(0)
-#define SGL_LOG_WARN(...)                do {}while(0)
-#define SGL_LOG_ERROR(...)               do {}while(0)
-#define SGL_LOG_USER(...)                do {}while(0)
-#define SGL_LOG(...)                     do {}while(0)
+#define SGL_LOG_TRACE(...)               do {} while(0)
+#define SGL_LOG_INFO(...)                do {} while(0)
+#define SGL_LOG_WARN(...)                do {} while(0)
+#define SGL_LOG_ERROR(...)               do {} while(0)
+#define SGL_LOG_USER(...)                do {} while(0)
+#define SGL_LOG(...)                     do {} while(0)
 
-#define SGL_ASSERT(condition)            do {}while(0)
+#define SGL_ASSERT(condition)            do {} while(0)
 
 #endif
 
@@ -176,7 +176,7 @@ void sgl_assert_handler(const char *file, const char *func, int line);
 #if CONFIG_SGL_DEBUG
 #define SGL_DEBUG_TRACE(...)             sgl_log(SGL_DEBUG_TRACE_FLAG, __VA_ARGS__)
 #else
-#define SGL_DEBUG_TRACE(...)             do {}while(0)
+#define SGL_DEBUG_TRACE(...)             do {} while(0)
 #endif
 
 

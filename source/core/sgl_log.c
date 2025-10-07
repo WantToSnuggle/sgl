@@ -70,7 +70,7 @@ void sgl_log(const char *level, const char * format, ...)
 void sgl_assert_handler(const char *file, const char *func, int line)
 {
     sgl_log(SGL_ASSERT_FLAG, "file: %s, function: %s, line: %d", file, func, line);
-    while(1) {
+    while (1) {
 
     };
 }

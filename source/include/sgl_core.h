@@ -40,7 +40,7 @@ extern "C" {
 
 
 /* the maximum depth of object*/
-#define  SGL_OBJ_DEPTH_MAX                 64
+#define  SGL_OBJ_DEPTH_MAX                 32
 
 
 #if (CONFIG_SGL_DRAW_USE_DMA)
@@ -500,7 +500,7 @@ static inline void sgl_panel_flush_area(int16_t x, int16_t y, int16_t w, int16_t
 {
 #if CONFIG_SGL_COLOR16_SWAP
     uint32_t *dst = (uint32_t *)src;
-    for(int i = 0; i < ((w * h) * sizeof(sgl_color_t) / 4); i++) {
+    for (int i = 0; i < ((w * h) * sizeof(sgl_color_t) / 4); i++) {
         *dst = ((*dst << 8) & 0xFF00FF00) | ((*dst >> 8) & 0x00FF00FF);
         dst++;
     }
@@ -560,7 +560,7 @@ static inline void sgl_device_log_register(void (*log_puts)(const char *str))
  */
 static inline void sgl_log_stdout(const char *str)
 {
-    if(sgl_ctx.log_dev.log_puts) {
+    if (sgl_ctx.log_dev.log_puts) {
         sgl_ctx.log_dev.log_puts(str);
     }
 }
@@ -691,6 +691,17 @@ void sgl_obj_remove(sgl_obj_t *obj);
 static inline bool sgl_obj_has_child(sgl_obj_t *obj) {
     SGL_ASSERT(obj != NULL);
     return obj->child != NULL ? true : false;
+}
+
+
+/**
+ * @brief check if object has sibling
+ * @param  obj object
+ * @return true or false, true means object has sibling, false means object has no sibling
+ */
+static inline bool sgl_obj_has_sibling(sgl_obj_t *obj) {
+    SGL_ASSERT(obj != NULL);
+    return obj->sibling != NULL ? true : false;
 }
 
 
@@ -1403,7 +1414,7 @@ static inline bool sgl_surf_area_is_overlap(sgl_surf_t *surf, sgl_area_t *area)
     int16_t h_pos = surf->y + surf->h - 1;
     int16_t w_pos = surf->x + surf->w - 1;
 
-    if(area->y1 > h_pos || area->y2 < surf->y || area->x1 > w_pos || area->x2 < surf->x) {
+    if (area->y1 > h_pos || area->y2 < surf->y || area->x1 > w_pos || area->x2 < surf->x) {
         return false;
     }
 

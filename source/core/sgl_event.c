@@ -66,7 +66,7 @@ static sgl_event_t evtq_buffer[SGL_EVENT_QUEUE_SIZE] = {0};
  */
 int sgl_event_queue_init(void)
 {
-    if(!sgl_is_pow2(SGL_EVENT_QUEUE_SIZE)) {
+    if (!sgl_is_pow2(SGL_EVENT_QUEUE_SIZE)) {
         SGL_LOG_ERROR("The capacity must be power of 2");
         return -1;
     }
@@ -136,7 +136,7 @@ static inline int sgl_event_queue_pop(sgl_event_t* out_event)
  */
 static bool pos_is_focus_on_obj(sgl_event_pos_t *pos, sgl_rect_t *rect, int16_t radius)
 {
-    if(pos->x < rect->x1 || pos->x > rect->x2 || pos->y < rect->y1 || pos->y > rect->y2) {
+    if (pos->x < rect->x1 || pos->x > rect->x2 || pos->y < rect->y1 || pos->y > rect->y2) {
         return false;
     }
     else if(radius == 0) {
@@ -182,29 +182,24 @@ static bool pos_is_focus_on_obj(sgl_event_pos_t *pos, sgl_rect_t *rect, int16_t 
  */
 static sgl_obj_t* click_detect_object(sgl_event_pos_t *pos)
 {
-    sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX];
+    sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX], *obj = NULL, *find = NULL;
     int top = 0;
-    sgl_obj_t *child = NULL, *obj = NULL, *find = NULL;
+    stack[top++] = sgl_screen_act();
 
-    sgl_obj_for_each_child(child, sgl_screen_act()) {
-        stack[top++] = child;
-    }
+    while(top > 0) {
+        SGL_ASSERT(top < SGL_OBJ_DEPTH_MAX);
+		obj = stack[--top];
 
-    for(int i = 0; i < top; i++) {
-        obj = stack[i];
+        if (sgl_obj_has_sibling(obj)) {
+            stack[top++] = obj->sibling;
+        }
 
-        if(pos_is_focus_on_obj(pos, &obj->coords, obj->radius)) {
-            if(sgl_obj_has_child(obj)) {
-                find = obj;
-                /* reset the stack */
-                i = -1, top = 0;
-                /* for each child, push it into the stack */
-                sgl_obj_for_each_child(child, obj) {
-                    stack[top++] = child;
-                }
+        if (pos_is_focus_on_obj(pos, &obj->coords, obj->radius)) {
+            find = obj;
+            if (sgl_obj_has_child(obj)) {
+                stack[top++] = obj->child;
                 continue;
             }
-            return obj;
         }
     }
 
@@ -219,36 +214,30 @@ static sgl_obj_t* click_detect_object(sgl_event_pos_t *pos)
  */
 static sgl_obj_t* motion_detect_object(sgl_event_pos_t *pos)
 {
-    sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX];
+    sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX], *obj = NULL;
     int top = 0;
-    sgl_obj_t *child = NULL, *obj = NULL, *find = NULL;
+    stack[top++] = sgl_screen_act();
 
-    sgl_obj_for_each_child(child, sgl_screen_act()) {
-        stack[top++] = child;
-    }
+    while(top > 0) {
+        SGL_ASSERT(top < SGL_OBJ_DEPTH_MAX);
+		obj = stack[--top];
 
-    for(int i = 0; i < top; i++) {
-        obj = stack[i];
+        if (sgl_obj_has_sibling(obj)) {
+            stack[top++] = obj->sibling;
+        }
 
-        if(pos_is_focus_on_obj(pos, &obj->coords, obj->radius)) {
+        if (pos_is_focus_on_obj(pos, &obj->coords, obj->radius)) {
             if(sgl_obj_is_movable(obj)) {
                 return obj;
             }
-            else if(sgl_obj_has_child(obj)) {
-                find = obj;
-                /* reset the stack */
-                i = -1, top = 0;
-                /* for each child, push it into the stack */
-                sgl_obj_for_each_child(child, obj) {
-                    stack[top++] = child;
-                }
+            else if (sgl_obj_has_child(obj)) {
+                stack[top++] = obj->child;
                 continue;
             }
-            return obj;
         }
     }
 
-    return find;
+    return NULL;
 }
 
 
@@ -266,10 +255,10 @@ void sgl_event_send_pos(sgl_event_pos_t pos, sgl_event_type_t type)
         .pos = pos,
     };
 
-    if(type == SGL_EVENT_PRESSED) {
+    if (type == SGL_EVENT_PRESSED) {
         touch_atc_pos[1] = pos;
     }
-    else if(type == SGL_EVENT_MOTION) {
+    else if (type == SGL_EVENT_MOTION) {
         touch_atc_pos[0] = touch_atc_pos[1];
         touch_atc_pos[1] = pos;
     }
@@ -324,11 +313,11 @@ void sgl_event_task(void)
     sgl_obj_t *obj = NULL;
 
     /* get event from event queue */
-    while(sgl_event_queue_pop(&evt) == 0) {
+    while (sgl_event_queue_pop(&evt) == 0) {
 
-        if(evt.obj == NULL) {
+        if (evt.obj == NULL) {
             /* if event type is not motion, use pos to detect object */
-            if(evt.type != SGL_EVENT_MOTION) {
+            if (evt.type != SGL_EVENT_MOTION) {
                 obj = click_detect_object(&evt.pos);
             }
             else {
@@ -341,13 +330,13 @@ void sgl_event_task(void)
             obj = evt.obj;
         }
 
-        if(obj) {
+        if (obj) {
             /* set obj to event */
             evt.obj = obj;
 
             /* if type is PRESSED, means obj is clicked */
-            if(evt.type == SGL_EVENT_PRESSED) {
-                if(obj->pressed == false) {
+            if (evt.type == SGL_EVENT_PRESSED) {
+                if (obj->pressed == false) {
                     /* set obj pressed to true */
                     obj->pressed = true;
                     /* update event lost object */
@@ -358,23 +347,23 @@ void sgl_event_task(void)
                     continue;
                 }
             }
-            else if(evt.type == SGL_EVENT_RELEASED) {
+            else if (evt.type == SGL_EVENT_RELEASED) {
                 /* if obj is pressed, set obj pressed to false */
-                if(obj->pressed) {
+                if (obj->pressed) {
                     obj->pressed = false;
                     /* clear event lost */
                     event_lost = NULL;
                 }
                 else {
                     /* if event lost is not current, means error occurred, push the event into queue again */
-                    if(event_lost && event_lost != obj) {
+                    if (event_lost && event_lost != obj) {
                         evt.obj = event_lost;
                         sgl_event_queue_push(evt);
                     }
                     continue;
                 }
             }
-            else if(evt.type == SGL_EVENT_MOTION && (!sgl_obj_is_movable(obj))) {
+            else if (evt.type == SGL_EVENT_MOTION && (!sgl_obj_is_movable(obj))) {
                 continue;
             }
 
@@ -383,7 +372,7 @@ void sgl_event_task(void)
             SGL_LOG_TRACE("Hit object ID: %d", obj->id);
 #endif
             /* call the event function */
-            if(obj->construct_fn) {
+            if (obj->construct_fn) {
                 sgl_obj_set_dirty(obj);
                 evt.param = obj->event_data;
                 obj->construct_fn(NULL, obj, &evt);
@@ -392,7 +381,7 @@ void sgl_event_task(void)
         else {
             SGL_LOG_TRACE("pos is out of object, skip event");
             /* if the event is released, check if the event is lost */
-            if(evt.type == SGL_EVENT_RELEASED && event_lost != obj) {
+            if (evt.type == SGL_EVENT_RELEASED && event_lost != obj) {
                 /* if the event is lost, set the event to the lost object and push it to the event queue again */
                 evt.obj = event_lost;
                 sgl_event_queue_push(evt);

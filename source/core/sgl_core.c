@@ -1409,7 +1409,7 @@ static inline bool sgl_dirty_area_calculate(sgl_obj_t *obj)
         if (sgl_obj_is_dirty(obj)){
 
             /* update obj area */
-            if(unlikely(!sgl_area_clip(&obj->parent->area, &obj->coords, &obj->area))) {
+            if (unlikely(!sgl_area_clip(&obj->parent->area, &obj->coords, &obj->area))) {
                 sgl_obj_set_invalid(obj);
                 continue;
             }

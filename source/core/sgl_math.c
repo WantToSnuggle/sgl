@@ -136,18 +136,18 @@ int32_t sgl_sin(int16_t angle)
         angle += 360;
     }
 
-    if(angle < 0) {
+    if (angle < 0) {
         angle = 360 + angle;
     }
 
-    if(angle < 90) {
+    if (angle < 90) {
         ret = sin0_90_table[angle];
     }
-    else if(angle >= 90 && angle < 180){
+    else if (angle >= 90 && angle < 180){
         angle = 180 - angle;
         ret   = sin0_90_table[angle];
     }
-    else if(angle >= 180 && angle < 270){
+    else if (angle >= 180 && angle < 270){
         angle = angle - 180;
         ret   = -sin0_90_table[angle];
     }
@@ -171,13 +171,13 @@ uint16_t sgl_sqrt(uint32_t x)
     uint32_t root = 0;
     uint32_t divisor = 0;
 
-    for(int i=0; i<16; i++) {
+    for (int i=0; i<16; i++) {
         root <<= 1;
         rem = ((rem << 2) + (x >> 30));
         x <<= 2;
         divisor = (root<<1) + 1;
         
-        if(divisor <= rem) {
+        if (divisor <= rem) {
             rem -= divisor;
             root++;
         }
@@ -198,7 +198,7 @@ uint8_t sgl_sqrt_error(uint32_t x)
     uint32_t osh = 0;
     uint32_t bod;
 
-    if(x < 1025) {
+    if (x < 1025) {
         return sqrt_error_table[x];
     }
     else if (x > (1 << 30)) {
@@ -219,12 +219,12 @@ uint8_t sgl_sqrt_error(uint32_t x)
 
     do {
         bod = bsh + fpr;
-        if(x >= bod) {
+        if (x >= bod) {
             x -= bod;
             fpr = bsh + bod;
         }
         x <<= 1;
-    }while(bsh >>= 1);
+    }while (bsh >>= 1);
 
     return fpr>>osh;
 }
@@ -243,8 +243,8 @@ int32_t sgl_atan2_raw(int x, int y)
 {
     int32_t ret;
 
-    if(y == 0) {
-        if(x > 0) {
+    if (y == 0) {
+        if (x > 0) {
             ret = -32767;
         }
         else {
@@ -254,7 +254,7 @@ int32_t sgl_atan2_raw(int x, int y)
     else {
         ret = (x << 8) / y;
     }
-    if(y > 0) {
+    if (y > 0) {
         ret += 32767;
     }
     else {
@@ -284,51 +284,51 @@ uint16_t sgl_atan2_angle(int x, int y)
     unsigned int uy;
 
     negflag = 0;
-    if(x < 0) {
+    if (x < 0) {
         negflag += 0x01;
         x = (0 - x);
     }
     ux = x;
-    if(y < 0) {
+    if (y < 0) {
         negflag += 0x02;
         y = (0 - y);
     }
     uy = y;
 
-    if(ux > uy) {
+    if (ux > uy) {
         degree = (uy * 45) / ux;
         negflag += 0x10;
     }
-    else{
+    else {
         degree = (ux * 45) / uy;
     }
 
     comp = 0;
     tempdegree = degree;
-    if(tempdegree > 22) {
-        if(tempdegree <= 44) comp++;
-        if(tempdegree <= 41) comp++;
-        if(tempdegree <= 37) comp++;
-        if(tempdegree <= 32) comp++;
+    if (tempdegree > 22) {
+        if (tempdegree <= 44) comp++;
+        if (tempdegree <= 41) comp++;
+        if (tempdegree <= 37) comp++;
+        if (tempdegree <= 32) comp++;
     }
     else {
-        if(tempdegree >= 2) comp++;
-        if(tempdegree >= 6) comp++;
-        if(tempdegree >= 10) comp++;
-        if(tempdegree >= 15) comp++;
+        if (tempdegree >= 2) comp++;
+        if (tempdegree >= 6) comp++;
+        if (tempdegree >= 10) comp++;
+        if (tempdegree >= 15) comp++;
     }
     degree += comp;
 
-    if(negflag & 0x10) degree = (90 - degree);
+    if (negflag & 0x10) degree = (90 - degree);
 
-    if(negflag & 0x02) {
-        if(negflag & 0x01)
+    if (negflag & 0x02) {
+        if (negflag & 0x01)
             degree = (180 + degree);
         else
             degree = (180 - degree);
     }
     else {
-        if(negflag & 0x01)
+        if (negflag & 0x01)
             degree = (360 - degree);
     }
     return degree;
