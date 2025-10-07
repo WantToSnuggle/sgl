@@ -59,7 +59,7 @@
             .yres_virtual = PANEL_HEIGHT,
             .flush_area = demo_panel_flush_area,
             .framebuffer = panel_buffer,
-            .framebuffer_size = sizeof(panel_buffer),
+            .framebuffer_size = SGL_ARRAY_SIZE(panel_buffer),
         };
 
         sgl_device_fb_register(&fb_dev);
@@ -73,7 +73,7 @@
             
         
         while(1) {
-            
+            sgl_task_handle();
         }
         
         return 0;
@@ -96,7 +96,7 @@
     #define    CONFIG_SGL_FONT_SONG23             1
     #define    CONFIG_SGL_FONT_CONSOLAS23         0
     #define    CONFIG_SGL_FONT_KAI33              0
-    #define  CONFIG_SGL_THEME_DEFAULT             1    
+    #define    CONFIG_SGL_THEME_DEFAULT           1    
     ```
 ## 配置编译选项
 1. 打开`Options for Target`窗口，然后找到`Target`选项:             
@@ -127,7 +127,7 @@ int main(void)
     sgl_obj_set_style(button, SGL_STYLE_BORDER_COLOR, SGL_COLOR(SGL_BLACK));
 
     while(1) {
-
+        sgl_task_handle();
     }
 
     return 0;
