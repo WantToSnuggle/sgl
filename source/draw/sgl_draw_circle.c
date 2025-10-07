@@ -364,7 +364,7 @@ void sgl_draw_fill_circle_with_alpha_border(sgl_surf_t *surf, sgl_area_t *area, 
             real_r2 = sgl_pow2(x - cx) + y2;
 
             if (real_r2 >= out_r2_max) {
-                if(x > cx)
+                if (x > cx)
                     break;
                 continue;
             }

@@ -120,11 +120,11 @@ void sgl_draw_fill_ring_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t c
             real_r2 = sgl_pow2(x - cx) + y2;
 
             if (real_r2 >= out_r2_max) {
-               if(x > cx) break;
+               if (x > cx) break;
                 continue;
             }
             if (real_r2 < in_r2_max) {
-                if(x < cx) {
+                if (x < cx) {
                     buf += ((cx - x) * 2);
                     x = cx*2 - x;
                 }

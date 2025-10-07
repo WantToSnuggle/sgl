@@ -227,7 +227,7 @@ static sgl_obj_t* motion_detect_object(sgl_event_pos_t *pos)
         }
 
         if (pos_is_focus_on_obj(pos, &obj->coords, obj->radius)) {
-            if(sgl_obj_is_movable(obj)) {
+            if (sgl_obj_is_movable(obj)) {
                 return obj;
             }
             else if (sgl_obj_has_child(obj)) {

@@ -298,7 +298,7 @@ void sgl_draw_fill_round_rect(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *re
             y2 = sgl_pow2(y - cy_tmp);
 
             for (int x = clip.x1; x <= clip.x2; x++, buf++) {
-                if(x > cx1 && x < cx2) {
+                if (x > cx1 && x < cx2) {
                     *buf = color;
                 }
                 else {
@@ -368,7 +368,7 @@ void sgl_draw_fill_round_rect_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl
             y2 = sgl_pow2(y - cy_tmp);
 
             for (int x = clip.x1; x <= clip.x2; x++, buf++) {
-                if(x > cx1 && x < cx2) {
+                if (x > cx1 && x < cx2) {
                     *buf = sgl_color_mixer(color, *buf, alpha);
                 }
                 else {
