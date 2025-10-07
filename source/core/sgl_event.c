@@ -203,6 +203,14 @@ static sgl_obj_t* click_detect_object(sgl_event_pos_t *pos)
         }
     }
 
+    /**
+     * if the object is clickable, return it, otherwise return its parent 
+     * because the object may be a label attached to the object
+    */
+    if(find != NULL) {
+        return sgl_obj_is_clickable(find) ? find : find->parent;
+    }
+
     return find;
 }
 
