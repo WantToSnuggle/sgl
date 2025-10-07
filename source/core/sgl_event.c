@@ -375,10 +375,11 @@ void sgl_event_task(void)
                 continue;
             }
 
-            /* print object id for debug */
-#if CONFIG_SGL_USE_OBJ_ID
-            SGL_LOG_TRACE("Hit object ID: %d", obj->id);
-#endif
+            /* print object name for debug */
+            #if CONFIG_SGL_OBJ_USE_NAME
+            SGL_LOG_TRACE("Hit object name: %d", obj->name);
+            #endif
+
             /* call the event function */
             if (obj->construct_fn) {
                 sgl_obj_set_dirty(obj);
