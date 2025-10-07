@@ -500,7 +500,7 @@ static inline void sgl_panel_flush_area(int16_t x, int16_t y, int16_t w, int16_t
 {
 #if CONFIG_SGL_COLOR16_SWAP
     uint32_t *dst = (uint32_t *)src;
-    for (int i = 0; i < ((w * h) * sizeof(sgl_color_t) / 4); i++) {
+    for (uint32_t i = 0; i < ((w * h) * sizeof(sgl_color_t) / 4); i++) {
         *dst = ((*dst << 8) & 0xFF00FF00) | ((*dst >> 8) & 0x00FF00FF);
         dst++;
     }
