@@ -178,11 +178,6 @@ int main(void)
     // sgl_obj_set_style(textbox, SGL_STYLE_BG_TRANSPARENT, 1);
     //sgl_obj_set_style(textbox, SGL_STYLE_PIXMAP, SGL_PIXMAP(bg_pixmap));
 
-    sgl_obj_t *icon = sgl_icon_create(NULL);
-    sgl_obj_set_pos(icon, 10, 10);
-    sgl_obj_set_size(icon, 60, 60);
-    //sgl_obj_set_style(icon, SGL_STYLE_ICON, SGL_ICON(icon_pixmap));
-
     sgl_obj_t *rect = sgl_rect_create(NULL);
     sgl_obj_set_pos(rect, 20, 20);
     sgl_obj_set_size(rect, 50, 100);
