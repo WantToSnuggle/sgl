@@ -377,7 +377,7 @@ void sgl_event_task(void)
 
             /* print object name for debug */
             #if CONFIG_SGL_OBJ_USE_NAME
-            SGL_LOG_TRACE("Hit object name: %d", obj->name);
+            SGL_LOG_TRACE("Hit object name: %s", obj->name);
             #endif
 
             /* call the event function */
