@@ -186,7 +186,7 @@ static sgl_obj_t* click_detect_object(sgl_event_pos_t *pos)
     int top = 0;
     stack[top++] = sgl_screen_act();
 
-    while(top > 0) {
+    while (top > 0) {
         SGL_ASSERT(top < SGL_OBJ_DEPTH_MAX);
 		obj = stack[--top];
 
@@ -207,7 +207,7 @@ static sgl_obj_t* click_detect_object(sgl_event_pos_t *pos)
      * if the object is clickable, return it, otherwise return its parent 
      * because the object may be a label attached to the object
     */
-    if(find != NULL) {
+    if (find != NULL) {
         return sgl_obj_is_clickable(find) ? find : find->parent;
     }
 
@@ -226,7 +226,7 @@ static sgl_obj_t* motion_detect_object(sgl_event_pos_t *pos)
     int top = 0;
     stack[top++] = sgl_screen_act();
 
-    while(top > 0) {
+    while (top > 0) {
         SGL_ASSERT(top < SGL_OBJ_DEPTH_MAX);
 		obj = stack[--top];
 
