@@ -44,17 +44,17 @@ static void arc_dot_sin_cos(int16_t cx, int16_t cy, int16_t radius_in, int16_t r
 {
     int len = (radius_out + radius_in) / 2;
     int r = (radius_out - radius_in) / 2;
-    if(unlikely(r == 0)) {
+    if (unlikely(r == 0)) {
         return;
     }
 
-    if(sin < 0) {
+    if (sin < 0) {
         dot->cx = (sin * len - 16348) / 32768;
     }
     else {
         dot->cx = (sin * len + 16348) / 32768;
     }
-    if(cos<0) {
+    if (cos<0) {
         dot->cy = (cos * len - 16348) / 32768;
     }
     else {
@@ -77,16 +77,16 @@ static inline uint8_t arc_get_dot(sgl_arc_dot_t *dot,int ax, int ay)
     sgl_arc_dot_t *p = dot;
     int32_t rate = (0xff00) / (dot->rmax - dot->r2);
 
-    for(int k = 0; k < 2; k++, p++) {
+    for (int k = 0; k < 2; k++, p++) {
         int x = ax > p->cx ? ax - p->cx : p->cx-ax;
         int y = ay > p->cy ? ay - p->cy : p->cy-ay;
 
-        if((x < p->r) && (y < p->r)) {
+        if ((x < p->r) && (y < p->r)) {
             temp = sgl_pow2(x) + sgl_pow2(y);
-            if(temp >= p->rmax) {
+            if (temp >= p->rmax) {
                 alpha = 0;
             }
-            else if(temp > p->r2) {
+            else if (temp > p->r2) {
                 if(dot->outer==0) {
                     dot->outer = rate;
                 }
@@ -130,7 +130,7 @@ void sgl_draw_fill_arc(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_arc_t *desc)
     sgl_color_t tmp_color;
     sgl_area_t clip;
 
-    if(!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, area, &clip)) {
         return;
     }
 
@@ -141,18 +141,18 @@ void sgl_draw_fill_arc(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_arc_t *desc)
         .y2 = desc->cy + desc->radius_out
     };
 
-    if(!sgl_area_selfclip(&clip, &c_rect)) {
+    if (!sgl_area_selfclip(&clip, &c_rect)) {
         return;
     }
 
-    if(desc->start_angle != 0 || desc->end_angle != 360) {
+    if (desc->start_angle != 0 || desc->end_angle != 360) {
         flag = (desc->end_angle - desc->start_angle > 180) ? 1 : 0;
         sx = sgl_sin(desc->start_angle);
         sy = -sgl_cos(desc->start_angle);
         ex = sgl_sin(desc->end_angle);
         ey = -sgl_cos(desc->end_angle);
 
-        if(desc->mode == SGL_DRAW_ARC_NORMAL_SMOOTH || desc->mode == SGL_DRAW_ARC_RING_SMOOTH) {
+        if (desc->mode == SGL_DRAW_ARC_NORMAL_SMOOTH || desc->mode == SGL_DRAW_ARC_RING_SMOOTH) {
             arc_dot_sin_cos(desc->cx, desc->cy, desc->radius_in, desc->radius_out, &arc_dot[0], sx, sy);
             arc_dot_sin_cos(desc->cx, desc->cy, desc->radius_in, desc->radius_out, &arc_dot[1], ex, ey);
         }
@@ -173,7 +173,7 @@ void sgl_draw_fill_arc(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_arc_t *desc)
             real_r2 = sgl_pow2(x - desc->cx) + y2;
 
             if (real_r2 >= out_r2_max) {
-                if(x > desc->cx) {
+                if (x > desc->cx) {
                     buf++;
                     break;
                 }
@@ -187,13 +187,13 @@ void sgl_draw_fill_arc(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_arc_t *desc)
                 continue;
             }
             if (real_r2 < in_r2 ) {
-                if(inv_inner == 0) {
+                if (inv_inner == 0) {
                     inv_inner = rate;
                 }
                 alpha  = (real_r2 - in_r2_max) *inv_inner >> 8;
             }
             else if (real_r2 > out_r2) {
-                if(inv_outer == 0) {
+                if (inv_outer == 0) {
                     inv_outer = rate2;
                 }
                 alpha = (out_r2_max - real_r2) * inv_outer >> 8;
@@ -203,13 +203,13 @@ void sgl_draw_fill_arc(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_arc_t *desc)
             }
 
             tmp_color = desc->color;
-            if(flag != 255) {
+            if (flag != 255) {
                 ds = (dx *  sy - dy *  sx);
                 de = (dy *  ex - dx *  ey);
                 in_range =  flag > 0 ? (ds > 0 || de >0) : (ds >= 0 && de >= 0);
                 if (!in_range) {
 
-                    switch(desc->mode) {
+                    switch (desc->mode) {
                     case SGL_DRAW_ARC_NORMAL:
                         sd = sgl_xy_has_component(dx,dy, sx, sy) ? sgl_abs(ds) : 256;
                         ed = sgl_xy_has_component(dx,dy, ex, ey) ? sgl_abs(de) : 256;
@@ -273,7 +273,7 @@ void sgl_draw_fill_arc_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_a
     sgl_color_t tmp_color;
     sgl_area_t clip;
 
-    if(!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, area, &clip)) {
         return;
     }
 
@@ -284,18 +284,18 @@ void sgl_draw_fill_arc_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_a
         .y2 = desc->cy + desc->radius_out
     };
 
-    if(!sgl_area_selfclip(&clip, &c_rect)) {
+    if (!sgl_area_selfclip(&clip, &c_rect)) {
         return;
     }
 
-    if(desc->start_angle != 0 || desc->end_angle != 360) {
+    if (desc->start_angle != 0 || desc->end_angle != 360) {
         flag = (desc->end_angle - desc->start_angle > 180) ? 1 : 0;
         sx = sgl_sin(desc->start_angle);
         sy = -sgl_cos(desc->start_angle);
         ex = sgl_sin(desc->end_angle);
         ey = -sgl_cos(desc->end_angle);
 
-        if(desc->mode == SGL_DRAW_ARC_NORMAL_SMOOTH || desc->mode == SGL_DRAW_ARC_RING_SMOOTH) {
+        if (desc->mode == SGL_DRAW_ARC_NORMAL_SMOOTH || desc->mode == SGL_DRAW_ARC_RING_SMOOTH) {
             arc_dot_sin_cos(desc->cx, desc->cy, desc->radius_in, desc->radius_out, &arc_dot[0], sx, sy);
             arc_dot_sin_cos(desc->cx, desc->cy, desc->radius_in, desc->radius_out, &arc_dot[1], ex, ey);
         }
@@ -316,7 +316,7 @@ void sgl_draw_fill_arc_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_a
             real_r2 = sgl_pow2(x - desc->cx) + y2;
 
             if (real_r2 >= out_r2_max) {
-                if(x > desc->cx) {
+                if (x > desc->cx) {
                     buf++;
                     break;
                 }
@@ -346,13 +346,13 @@ void sgl_draw_fill_arc_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_a
             }
 
             tmp_color = desc->color;
-            if(flag != 255) {
+            if (flag != 255) {
                 ds = (dx *  sy - dy *  sx);
                 de = (dy *  ex - dx *  ey);
                 in_range =  flag > 0 ? (ds > 0 || de >0) : (ds >= 0 && de >= 0);
                 if (!in_range) {
 
-                    switch(desc->mode) {
+                    switch (desc->mode) {
                     case SGL_DRAW_ARC_NORMAL:
                         sd = sgl_xy_has_component(dx,dy, sx, sy) ? sgl_abs(ds) : 256;
                         ed = sgl_xy_has_component(dx,dy, ex, ey) ? sgl_abs(de) : 256;
@@ -399,14 +399,14 @@ void sgl_draw_arc(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_arc_t *desc)
 {
     uint8_t alpha = desc->alpha;
 
-    if(unlikely(desc->start_angle == desc->end_angle)) {
+    if (unlikely(desc->start_angle == desc->end_angle)) {
         return;
     }
 
-    if(alpha == SGL_ALPHA_MAX) {
+    if (alpha == SGL_ALPHA_MAX) {
         sgl_draw_fill_arc(surf, area, desc);
     }
-    else if(alpha > SGL_ALPHA_MIN) {
+    else if (alpha > SGL_ALPHA_MIN) {
         sgl_draw_fill_arc_with_alpha(surf, area, desc);
     }
     else {

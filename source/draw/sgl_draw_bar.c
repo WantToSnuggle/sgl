@@ -45,10 +45,10 @@ void sgl_draw_fill_hori_bar(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect
 {
     int16_t radius = (rect->y2 - rect->y1) / 2;
 
-    if(knob_offset == 0) {
+    if (knob_offset == 0) {
         sgl_draw_fill_round_rect(surf, area, rect, radius, bg_color);
     }
-    else if(knob_offset == (rect->x2 - rect->x1)) {
+    else if (knob_offset == (rect->x2 - rect->x1)) {
         sgl_draw_fill_round_rect(surf, area, rect, radius, fg_color);
     }
     else {
@@ -90,10 +90,10 @@ void sgl_draw_fill_hori_bar_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_a
 {
     int16_t radius = (rect->y2 - rect->y1) / 2;
 
-    if(knob_offset == 0) {
+    if (knob_offset == 0) {
         sgl_draw_fill_round_rect_with_alpha(surf, area, rect, radius, bg_color, alpha);
     }
-    else if(knob_offset == (rect->x2 - rect->x1)) {
+    else if (knob_offset == (rect->x2 - rect->x1)) {
         sgl_draw_fill_round_rect_with_alpha(surf, area, rect, radius, fg_color, alpha);
     }
     else {
@@ -136,10 +136,10 @@ void sgl_draw_fill_hori_bar_with_border(sgl_surf_t *surf, sgl_area_t *area, sgl_
 {
     int16_t radius = (rect->y2 - rect->y1) / 2;
 
-    if(knob_offset == 0) {
+    if (knob_offset == 0) {
         sgl_draw_fill_round_rect_with_border(surf, area, rect, radius, bg_color, border_color, border_width);
     }
-    else if(knob_offset == (rect->x2 - rect->x1)) {
+    else if (knob_offset == (rect->x2 - rect->x1)) {
         sgl_draw_fill_round_rect_with_border(surf, area, rect, radius, fg_color, border_color, border_width);
     }
     else {
@@ -183,10 +183,10 @@ void sgl_draw_fill_hori_bar_with_alpha_border(sgl_surf_t *surf, sgl_area_t *area
 {
     int16_t radius = (rect->y2 - rect->y1) / 2;
 
-    if(knob_offset == 0) {
+    if (knob_offset == 0) {
         sgl_draw_fill_round_rect_with_alpha_border(surf, area, rect, radius, bg_color, border_color, border_width, alpha);
     }
-    else if(knob_offset == (rect->x2 - rect->x1)) {
+    else if (knob_offset == (rect->x2 - rect->x1)) {
         sgl_draw_fill_round_rect_with_alpha_border(surf, area, rect, radius, fg_color, border_color, border_width, alpha);
     }
     else {
@@ -227,10 +227,10 @@ void sgl_draw_fill_vert_bar(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect
 {
     int16_t radius = (rect->x2 - rect->x1) / 2;
 
-    if(knob_offset == 0) {
+    if (knob_offset == 0) {
         sgl_draw_fill_round_rect(surf, area, rect, radius, bg_color);
     }
-    else if(knob_offset == (rect->y2 - rect->y1)) {
+    else if (knob_offset == (rect->y2 - rect->y1)) {
         sgl_draw_fill_round_rect(surf, area, rect, radius, fg_color);
     }
     else {
@@ -273,10 +273,10 @@ void sgl_draw_fill_vert_bar_with_border(sgl_surf_t *surf, sgl_area_t *area, sgl_
 {
     int16_t radius = (rect->x2 - rect->x1) / 2;
 
-    if(knob_offset == 0) {
+    if (knob_offset == 0) {
         sgl_draw_fill_round_rect_with_border(surf, area, rect, radius, bg_color, border_color, border_width);
     }
-    else if(knob_offset == (rect->y2 - rect->y1)) {
+    else if (knob_offset == (rect->y2 - rect->y1)) {
         sgl_draw_fill_round_rect_with_border(surf, area, rect, radius, fg_color, border_color, border_width);
     }
     else {
@@ -318,10 +318,10 @@ void sgl_draw_fill_vert_bar_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_a
 {
     int16_t radius = (rect->x2 - rect->x1) / 2;
 
-    if(knob_offset == 0) {
+    if (knob_offset == 0) {
         sgl_draw_fill_round_rect_with_alpha(surf, area, rect, radius, bg_color, alpha);
     }
-    else if(knob_offset == (rect->y2 - rect->y1)) {
+    else if (knob_offset == (rect->y2 - rect->y1)) {
         sgl_draw_fill_round_rect_with_alpha(surf, area, rect, radius, fg_color, alpha);
     }
     else {
@@ -365,10 +365,10 @@ void sgl_draw_fill_vert_bar_with_alpha_border(sgl_surf_t *surf, sgl_area_t *area
 {
     int16_t radius = (rect->x2 - rect->x1) / 2;
 
-    if(knob_offset == 0) {
+    if (knob_offset == 0) {
         sgl_draw_fill_round_rect_with_alpha_border(surf, area, rect, radius, bg_color, border_color, border_width, alpha);
     }
-    else if(knob_offset == (rect->y2 - rect->y1)) {
+    else if (knob_offset == (rect->y2 - rect->y1)) {
         sgl_draw_fill_round_rect_with_alpha_border(surf, area, rect, radius, fg_color, border_color, border_width, alpha);
     }
     else {
@@ -410,17 +410,17 @@ void sgl_draw_bar(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *coords, sgl_dr
     uint8_t alpha = desc->alpha;
     uint8_t border = desc->border;
 
-    if(desc->direct == 0) {
-        if(alpha == SGL_ALPHA_MAX) {
-            if(border) {
+    if (desc->direct == 0) {
+        if (alpha == SGL_ALPHA_MAX) {
+            if (border) {
                 sgl_draw_fill_hori_bar_with_border(surf, area, coords, color, bg_color, desc->knob_offset, desc->border_color, border);
             }
             else {
                 sgl_draw_fill_hori_bar(surf, area, coords, color, bg_color, desc->knob_offset);
             }
         }
-        else if(alpha > SGL_ALPHA_MIN) {
-            if(border) {
+        else if (alpha > SGL_ALPHA_MIN) {
+            if (border) {
                 sgl_draw_fill_hori_bar_with_alpha_border(surf, area, coords, color, bg_color, alpha, desc->knob_offset, desc->border_color, border);
             }
             else {
@@ -432,16 +432,16 @@ void sgl_draw_bar(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *coords, sgl_dr
         }
     }
     else {
-        if(alpha == SGL_ALPHA_MAX) {
-            if(border) {
+        if (alpha == SGL_ALPHA_MAX) {
+            if (border) {
                 sgl_draw_fill_vert_bar_with_border(surf, area, coords, color, bg_color, desc->knob_offset, desc->border_color, border);
             }
             else {
                 sgl_draw_fill_vert_bar(surf, area, coords, color, bg_color, desc->knob_offset);
             }
         }
-        else if(alpha > SGL_ALPHA_MIN) {
-            if(border) {
+        else if (alpha > SGL_ALPHA_MIN) {
+            if (border) {
                 sgl_draw_fill_vert_bar_with_alpha_border(surf, area, coords, color, bg_color, alpha, desc->knob_offset, desc->border_color, border);
             }
             else {

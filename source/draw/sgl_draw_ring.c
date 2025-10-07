@@ -50,7 +50,7 @@ void sgl_draw_fill_ring(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_t 
 
     sgl_area_t clip;
 
-    if(!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, area, &clip)) {
         return;
     }
 
@@ -108,7 +108,7 @@ void sgl_draw_fill_ring_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t c
     sgl_color_t *buf = NULL;
     sgl_area_t clip;
 
-    if(!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, area, &clip)) {
         return;
     }
 
@@ -159,7 +159,7 @@ void sgl_draw_ring(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_ring_t *desc)
 {
     uint8_t alpha = desc->alpha;
 
-    if(alpha == SGL_ALPHA_MAX) {
+    if (alpha == SGL_ALPHA_MAX) {
         sgl_draw_fill_ring(surf, area, desc->cx, desc->cy, desc->radius_in, desc->radius_out, desc->color);
     }
     else if(alpha > SGL_ALPHA_MIN) {

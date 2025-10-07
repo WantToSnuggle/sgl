@@ -42,7 +42,7 @@ void sgl_draw_fill_circle(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_
     sgl_area_t clip;
     sgl_color_t *buf = NULL;
 
-    if(!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, area, &clip)) {
         return;
     }
 
@@ -53,7 +53,7 @@ void sgl_draw_fill_circle(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_
         .y2 = cy + radius
     };
 
-    if(!sgl_area_selfclip(&clip, &c_rect)) {
+    if (!sgl_area_selfclip(&clip, &c_rect)) {
         return;
     }
 
@@ -101,7 +101,7 @@ void sgl_draw_fill_circle_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t
     sgl_area_t clip;
     sgl_color_t *buf = NULL;
 
-    if(!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, area, &clip)) {
         return;
     }
 
@@ -111,7 +111,7 @@ void sgl_draw_fill_circle_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t
         .y1 = cy - radius,
         .y2 = cy + radius
     };
-    if(!sgl_area_selfclip(&clip, &c_rect)) {
+    if (!sgl_area_selfclip(&clip, &c_rect)) {
         return;
     }
 
@@ -166,7 +166,7 @@ void sgl_draw_fill_circle_pixmap(sgl_surf_t *surf, sgl_area_t *area, int16_t cx,
 
     sgl_area_t clip;
 
-    if(!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, area, &clip)) {
         return;
     }
 
@@ -176,7 +176,7 @@ void sgl_draw_fill_circle_pixmap(sgl_surf_t *surf, sgl_area_t *area, int16_t cx,
         .y1 = cy - radius,
         .y2 = cy + radius
     };
-    if(!sgl_area_selfclip(&clip, &c_rect)) {
+    if (!sgl_area_selfclip(&clip, &c_rect)) {
         return;
     }
 
@@ -227,7 +227,7 @@ void sgl_draw_fill_circle_pixmap_with_alpha(sgl_surf_t *surf, sgl_area_t *area, 
 
     sgl_area_t clip;
 
-    if(!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, area, &clip)) {
         return;
     }
 
@@ -237,7 +237,7 @@ void sgl_draw_fill_circle_pixmap_with_alpha(sgl_surf_t *surf, sgl_area_t *area, 
         .y1 = cy - radius,
         .y2 = cy + radius
     };
-    if(!sgl_area_selfclip(&clip, &c_rect)) {
+    if (!sgl_area_selfclip(&clip, &c_rect)) {
         return;
     }
 
@@ -291,7 +291,7 @@ void sgl_draw_fill_circle_with_border(sgl_surf_t *surf, sgl_area_t *area, int16_
 
     sgl_area_t clip;
 
-    if(!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, area, &clip)) {
         return;
     }
 
@@ -352,7 +352,7 @@ void sgl_draw_fill_circle_with_alpha_border(sgl_surf_t *surf, sgl_area_t *area, 
 
     sgl_area_t clip;
 
-    if(!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, area, &clip)) {
         return;
     }
 
@@ -406,9 +406,9 @@ void sgl_draw_circle(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_circle_t *desc
     uint16_t border = desc->border;
     sgl_color_t border_color = desc->border_color;
 
-    if(alpha == SGL_ALPHA_MAX) {
-        if(desc->pixmap == NULL) {
-            if(border) {
+    if (alpha == SGL_ALPHA_MAX) {
+        if (desc->pixmap == NULL) {
+            if (border) {
                 sgl_draw_fill_circle_with_border(surf, area, desc->cx, desc->cy, radius, color, border_color, border);
             }
             else {
@@ -419,9 +419,9 @@ void sgl_draw_circle(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_circle_t *desc
             sgl_draw_fill_circle_pixmap(surf, area, desc->cx, desc->cy, radius, desc->pixmap, desc->pixmap->width / 2, desc->pixmap->height / 2);
         }
     }
-    else if(alpha > SGL_ALPHA_MIN) {
-        if(desc->pixmap == NULL) {
-            if(border) {
+    else if (alpha > SGL_ALPHA_MIN) {
+        if (desc->pixmap == NULL) {
+            if (border) {
                 sgl_draw_fill_circle_with_alpha_border(surf, area, desc->cx, desc->cy, radius, color, border_color, border, alpha);
             }
             else {

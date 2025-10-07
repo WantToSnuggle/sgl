@@ -42,17 +42,17 @@ void sgl_draw_fill_rect(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sg
     sgl_area_t clip;
     sgl_color_t *buf = NULL;
 
-    if(!sgl_surf_clip(surf, rect, &clip)) {
+    if (!sgl_surf_clip(surf, rect, &clip)) {
         return;
     }
 
-    if(!sgl_area_selfclip(&clip, area)) {
+    if (!sgl_area_selfclip(&clip, area)) {
         return;
     }
 
-    for(int y = clip.y1; y <= clip.y2; y++, buf++) {
+    for (int y = clip.y1; y <= clip.y2; y++, buf++) {
         buf = sgl_surf_get_buf(surf,  clip.x1 - surf->x, y - surf->y);
-        for(int x = clip.x1; x <= clip.x2; x++, buf++) {
+        for (int x = clip.x1; x <= clip.x2; x++, buf++) {
             *buf = color;
         }
     }
@@ -78,19 +78,19 @@ void sgl_draw_fill_rect_with_border(sgl_surf_t *surf, sgl_area_t *area, sgl_area
     int16_t b_y1 = rect->y1 + border_width - 1;
     int16_t b_y2 = rect->y2 - border_width + 1;
 
-    if(!sgl_surf_clip(surf, rect, &clip)) {
+    if (!sgl_surf_clip(surf, rect, &clip)) {
         return;
     }
 
-    if(!sgl_area_selfclip(&clip, area)) {
+    if (!sgl_area_selfclip(&clip, area)) {
         return;
     }
 
-    for(int y = clip.y1; y <= clip.y2; y++) {
+    for (int y = clip.y1; y <= clip.y2; y++) {
         buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
 
-        for(int x = clip.x1; x <= clip.x2; x++, buf++) {
-            if(x > b_x1 && x < b_x2 && y > b_y1 && y < b_y2) {
+        for (int x = clip.x1; x <= clip.x2; x++, buf++) {
+            if (x > b_x1 && x < b_x2 && y > b_y1 && y < b_y2) {
                 *buf = color;
             }
             else {
@@ -115,18 +115,18 @@ void sgl_draw_fill_rect_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_area_
     sgl_area_t clip;
     sgl_color_t *buf = NULL;
 
-    if(!sgl_surf_clip(surf, rect, &clip)) {
+    if (!sgl_surf_clip(surf, rect, &clip)) {
         return;
     }
 
-    if(!sgl_area_selfclip(&clip, area)) {
+    if (!sgl_area_selfclip(&clip, area)) {
         return;
     }
 
-    for(int y = clip.y1; y <= clip.y2; y++) {
+    for (int y = clip.y1; y <= clip.y2; y++) {
         buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
 
-        for(int x = clip.x1; x <= clip.x2; x++, buf++) {
+        for (int x = clip.x1; x <= clip.x2; x++, buf++) {
             *buf = sgl_color_mixer(color, *buf, alpha);
         }
     }
@@ -153,19 +153,19 @@ void sgl_draw_fill_rect_with_alpha_border(sgl_surf_t *surf, sgl_area_t *area, sg
     int16_t b_y1 = rect->y1 + border_width - 1;
     int16_t b_y2 = rect->y2 - border_width + 1;
 
-    if(!sgl_surf_clip(surf, rect, &clip)) {
+    if (!sgl_surf_clip(surf, rect, &clip)) {
         return;
     }
 
-    if(!sgl_area_selfclip(&clip, area)) {
+    if (!sgl_area_selfclip(&clip, area)) {
         return;
     }
 
-    for(int y = clip.y1; y <= clip.y2; y++) {
+    for (int y = clip.y1; y <= clip.y2; y++) {
         buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
 
-        for(int x = clip.x1; x <= clip.x2; x++, buf++) {
-            if(x > b_x1 && x < b_x2 && y > b_y1 && y < b_y2) {
+        for (int x = clip.x1; x <= clip.x2; x++, buf++) {
+            if (x > b_x1 && x < b_x2 && y > b_y1 && y < b_y2) {
                 *buf = sgl_color_mixer(color, *buf, alpha);
             }
             else {
@@ -190,11 +190,11 @@ void sgl_draw_fill_rect_pixmap(sgl_surf_t *surf, sgl_area_t *area, sgl_rect_t *r
     sgl_color_t *buf = NULL;
     sgl_color_t *pbuf = NULL;
 
-    if(!sgl_surf_clip(surf, rect, &clip)) {
+    if (!sgl_surf_clip(surf, rect, &clip)) {
         return;
     }
 
-    if(!sgl_area_selfclip(&clip, area)) {
+    if (!sgl_area_selfclip(&clip, area)) {
         return;
     }
 
@@ -203,10 +203,10 @@ void sgl_draw_fill_rect_pixmap(sgl_surf_t *surf, sgl_area_t *area, sgl_rect_t *r
     int pick_cx = pixmap->width / 2;
     int pick_cy = pixmap->height / 2;
 
-    for(int y = clip.y1; y <= clip.y2; y++) {
+    for (int y = clip.y1; y <= clip.y2; y++) {
         buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
         pbuf = &((sgl_color_t*)pixmap->bitmap)[(pick_cy - (cy - y)) * pixmap->width + (pick_cx - (cx - clip.x1))];
-        for(int x = clip.x1; x <= clip.x2; x++, buf++) {
+        for (int x = clip.x1; x <= clip.x2; x++, buf++) {
             *buf = *pbuf ++;
         }
     }
@@ -228,11 +228,11 @@ void sgl_draw_fill_rect_pixmap_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sg
     sgl_color_t *buf = NULL;
     sgl_color_t *pbuf = NULL;
 
-    if(!sgl_surf_clip(surf, rect, &clip)) {
+    if (!sgl_surf_clip(surf, rect, &clip)) {
         return;
     }
 
-    if(!sgl_area_selfclip(&clip, area)) {
+    if (!sgl_area_selfclip(&clip, area)) {
         return;
     }
 
@@ -241,11 +241,11 @@ void sgl_draw_fill_rect_pixmap_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sg
     int pick_cx = pixmap->width / 2;
     int pick_cy = pixmap->height / 2;
 
-    for(int y = clip.y1; y <= clip.y2; y++) {
+    for (int y = clip.y1; y <= clip.y2; y++) {
         buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
         pbuf = &((sgl_color_t*)pixmap->bitmap)[(pick_cy - (cy - y)) * pixmap->width + (pick_cx - (cx - clip.x1))];
 
-        for(int x = clip.x1; x <= clip.x2; x++, buf++) {
+        for (int x = clip.x1; x <= clip.x2; x++, buf++) {
             *buf = sgl_color_mixer(*pbuf, *buf, alpha);
             pbuf ++;
         }
@@ -273,11 +273,11 @@ void sgl_draw_fill_round_rect(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *re
     int cx_tmp = 0;
     int cy_tmp = 0;
 
-    if(!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, area, &clip)) {
         return;
     }
 
-    if(!sgl_area_selfclip(&clip, rect)) {
+    if (!sgl_area_selfclip(&clip, rect)) {
         return;
     }
 
@@ -288,7 +288,7 @@ void sgl_draw_fill_round_rect(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *re
     for (int y = clip.y1; y <= clip.y2; y++) {
         buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
 
-        if(y > cy1 && y < cy2) {
+        if (y > cy1 && y < cy2) {
             for (int x = clip.x1; x <= clip.x2; x++, buf++) {
                 *buf = color;
             }
@@ -343,11 +343,11 @@ void sgl_draw_fill_round_rect_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl
     int cx_tmp = 0;
     int cy_tmp = 0;
 
-    if(!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, area, &clip)) {
         return;
     }
 
-    if(!sgl_area_selfclip(&clip, rect)) {
+    if (!sgl_area_selfclip(&clip, rect)) {
         return;
     }
 
@@ -358,7 +358,7 @@ void sgl_draw_fill_round_rect_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl
     for (int y = clip.y1; y <= clip.y2; y++) {
         buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
 
-        if(y > cy1 && y < cy2) {
+        if (y > cy1 && y < cy2) {
             for (int x = clip.x1; x <= clip.x2; x++, buf++) {
                 *buf = sgl_color_mixer(color, *buf, alpha);
             }
@@ -428,16 +428,16 @@ void sgl_draw_fill_round_rect_with_border(sgl_surf_t *surf, sgl_area_t *area, sg
 
     sgl_area_t clip;
 
-    if(!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, area, &clip)) {
         return;
     }
 
     for (int y = clip.y1; y <= clip.y2; y++) {
         buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
 
-        if(y > cy1 && y < cy2) {
+        if (y > cy1 && y < cy2) {
             for (int x = clip.x1; x <= clip.x2; x++, buf++) {
-                if(x < cx1i || x > cx2i) {
+                if (x < cx1i || x > cx2i) {
                     *buf = border_color;
                 }
                 else {
@@ -450,8 +450,8 @@ void sgl_draw_fill_round_rect_with_border(sgl_surf_t *surf, sgl_area_t *area, sg
             y2 = sgl_pow2(y - cy_tmp);
 
             for (int x = clip.x1; x <= clip.x2; x++, buf++) {
-                if(x > cx1 && x < cx2) {
-                    if(y < cyi1 || y > cyi2) {
+                if (x > cx1 && x < cx2) {
+                    if (y < cyi1 || y > cyi2) {
                         *buf = border_color;
                     }
                     else {
@@ -522,16 +522,16 @@ void sgl_draw_fill_round_rect_with_alpha_border(sgl_surf_t *surf, sgl_area_t *ar
 
     sgl_area_t clip;
 
-    if(!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, area, &clip)) {
         return;
     }
 
     for (int y = clip.y1; y <= clip.y2; y++) {
         buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
 
-        if(y > cy1 && y < cy2) {
+        if (y > cy1 && y < cy2) {
             for (int x = clip.x1; x <= clip.x2; x++, buf++) {
-                if(x < cx1i || x > cx2i) {
+                if (x < cx1i || x > cx2i) {
                     *buf = sgl_color_mixer(border_color, *buf, alpha);
                 }
                 else {
@@ -544,8 +544,8 @@ void sgl_draw_fill_round_rect_with_alpha_border(sgl_surf_t *surf, sgl_area_t *ar
             y2 = sgl_pow2(y - cy_tmp);
 
             for (int x = clip.x1; x <= clip.x2; x++, buf++) {
-                if(x > cx1 && x < cx2) {
-                    if(y < cyi1 || y > cyi2) {
+                if (x > cx1 && x < cx2) {
+                    if (y < cyi1 || y > cyi2) {
                         *buf = sgl_color_mixer(border_color, *buf, alpha);
                     }
                     else {
@@ -609,11 +609,11 @@ void sgl_draw_fill_round_rect_pixmap(sgl_surf_t *surf, sgl_area_t *area, sgl_are
     int pick_cx = pixmap->width / 2;
     int pick_cy = pixmap->height / 2;
 
-    if(!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, area, &clip)) {
         return;
     }
 
-    if(!sgl_area_selfclip(&clip, rect)) {
+    if (!sgl_area_selfclip(&clip, rect)) {
         return;
     }
 
@@ -625,7 +625,7 @@ void sgl_draw_fill_round_rect_pixmap(sgl_surf_t *surf, sgl_area_t *area, sgl_are
         buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
         pbuf = &((sgl_color_t*)pixmap->bitmap)[(pick_cy - (cy - y)) * pixmap->width + (pick_cx - (cx - clip.x1))];
 
-        if(y > cy1 && y < cy2) {
+        if (y > cy1 && y < cy2) {
             for (int x = clip.x1; x <= clip.x2; x++, buf++, pbuf ++) {
                 *buf = *pbuf;
             }
@@ -635,7 +635,7 @@ void sgl_draw_fill_round_rect_pixmap(sgl_surf_t *surf, sgl_area_t *area, sgl_are
             y2 = sgl_pow2(y - cy_tmp);
 
             for (int x = clip.x1; x <= clip.x2; x++, buf++, pbuf ++) {
-                if(x > cx1 && x < cx2) {
+                if (x > cx1 && x < cx2) {
                     *buf = *pbuf;
                 }
                 else {
@@ -685,11 +685,11 @@ void sgl_draw_fill_round_rect_pixmap_with_alpha(sgl_surf_t *surf, sgl_area_t *ar
     int pick_cx = pixmap->width / 2;
     int pick_cy = pixmap->height / 2;
 
-    if(!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, area, &clip)) {
         return;
     }
 
-    if(!sgl_area_selfclip(&clip, rect)) {
+    if (!sgl_area_selfclip(&clip, rect)) {
         return;
     }
 
@@ -701,7 +701,7 @@ void sgl_draw_fill_round_rect_pixmap_with_alpha(sgl_surf_t *surf, sgl_area_t *ar
         buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
         pbuf = &((sgl_color_t*)pixmap->bitmap)[(pick_cy - (cy - y)) * pixmap->width + (pick_cx - (cx - clip.x1))];
 
-        if(y > cy1 && y < cy2) {
+        if (y > cy1 && y < cy2) {
             for (int x = clip.x1; x <= clip.x2; x++, buf++, pbuf++) {
                 *buf = sgl_color_mixer(*pbuf, *buf, alpha);
             }
@@ -749,10 +749,10 @@ void sgl_draw_rect(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_dra
     uint8_t alpha = desc->alpha;
     uint8_t border = desc->border;
 
-    if(desc->radius > 0) {
-        if(alpha == SGL_ALPHA_MAX) {
-            if(desc->pixmap == NULL) {
-                if(border) {
+    if (desc->radius > 0) {
+        if (alpha == SGL_ALPHA_MAX) {
+            if (desc->pixmap == NULL) {
+                if (border) {
                     sgl_draw_fill_round_rect_with_border(surf, area, rect, desc->radius, desc->color, desc->border_color, border);
                 }
                 else {
@@ -763,9 +763,9 @@ void sgl_draw_rect(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_dra
                 sgl_draw_fill_round_rect_pixmap(surf, area, rect, desc->radius, desc->pixmap);
             }
         }
-        else if(alpha > SGL_ALPHA_MIN) {
-            if(desc->pixmap == NULL) {
-                if(border) {
+        else if (alpha > SGL_ALPHA_MIN) {
+            if (desc->pixmap == NULL) {
+                if (border) {
                     sgl_draw_fill_round_rect_with_alpha_border(surf, area, rect, desc->radius, desc->color, desc->border_color, border, alpha);
                 }
                 else {
@@ -781,9 +781,9 @@ void sgl_draw_rect(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_dra
         }
     }
     else {
-        if(alpha == SGL_ALPHA_MAX) {
-            if(desc->pixmap == NULL) {
-                if(border) {
+        if (alpha == SGL_ALPHA_MAX) {
+            if (desc->pixmap == NULL) {
+                if (border) {
                     sgl_draw_fill_rect_with_border(surf, area, rect, desc->color, desc->border_color, border);
                 }
                 else {
@@ -794,9 +794,9 @@ void sgl_draw_rect(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_dra
                 sgl_draw_fill_rect_pixmap(surf, area, rect, desc->pixmap);
             }
         }
-        else if(alpha > SGL_ALPHA_MIN) {
-            if(desc->pixmap == NULL) {
-                if(border) {
+        else if (alpha > SGL_ALPHA_MIN) {
+            if (desc->pixmap == NULL) {
+                if (border) {
                     sgl_draw_fill_rect_with_alpha_border(surf, area, rect, desc->color, desc->border_color, border, alpha);
                 }
                 else {

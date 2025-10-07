@@ -84,11 +84,11 @@ void sgl_draw_character( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t 
         .y2 = y + offset_y2 - 1,
     };
 
-    if(!sgl_surf_clip(surf, &text_rect, &clip)) {
+    if (!sgl_surf_clip(surf, &text_rect, &clip)) {
         return;
     }
 
-    if(!sgl_area_selfclip(&clip, area)) {
+    if (!sgl_area_selfclip(&clip, area)) {
         return;
     }
 
@@ -145,11 +145,11 @@ void sgl_draw_character_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, in
         .y2 = y + offset_y2 - 1,
     };
 
-    if(!sgl_surf_clip(surf, &text_rect, &clip)) {
+    if (!sgl_surf_clip(surf, &text_rect, &clip)) {
         return;
     }
 
-    if(!sgl_area_selfclip(&clip, area)) {
+    if (!sgl_area_selfclip(&clip, area)) {
         return;
     }
 
@@ -208,11 +208,11 @@ void sgl_draw_character_with_alpha( sgl_surf_t *surf, sgl_area_t *area, int16_t 
         .y2 = y + offset_y2 - 1,
     };
 
-    if(!sgl_surf_clip(surf, &text_rect, &clip)) {
+    if (!sgl_surf_clip(surf, &text_rect, &clip)) {
         return;
     }
 
-    if(!sgl_area_selfclip(&clip, area)) {
+    if (!sgl_area_selfclip(&clip, area)) {
         return;
     }
 
@@ -262,7 +262,7 @@ void sgl_draw_string(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, c
     uint32_t unicode = 0;
     #endif
 
-    while(*str) {
+    while (*str) {
         #if CONFIG_SGL_TEXT_UTF8
         str += sgl_utf8_to_unicode(str, &unicode);
         ch_index = sgl_search_unicode_ch_index(font, unicode);
@@ -297,7 +297,7 @@ void sgl_draw_string_on_bg(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_
     uint32_t unicode = 0;
     #endif
 
-    while(*str) {
+    while (*str) {
         #if CONFIG_SGL_TEXT_UTF8
         str += sgl_utf8_to_unicode(str, &unicode);
         ch_index = sgl_search_unicode_ch_index(font, unicode);
@@ -333,7 +333,7 @@ void sgl_draw_string_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t x, i
     uint32_t unicode = 0;
     #endif
 
-    while(*str) {
+    while (*str) {
         #if CONFIG_SGL_TEXT_UTF8
         str += sgl_utf8_to_unicode(str, &unicode);
         ch_index = sgl_search_unicode_ch_index(font, unicode);
@@ -371,7 +371,7 @@ void sgl_draw_string_lines(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_
     uint32_t unicode = 0;
     #endif
 
-    while(*str) {
+    while (*str) {
         #if CONFIG_SGL_TEXT_UTF8
         str += sgl_utf8_to_unicode(str, &unicode);
         ch_index = sgl_search_unicode_ch_index(font, unicode);
@@ -382,7 +382,7 @@ void sgl_draw_string_lines(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_
 
         ch_width = font->table[ch_index].box_w;
 
-        if((offset_x + ch_width + margin) > area->x2) {
+        if ((offset_x + ch_width + margin) > area->x2) {
             offset_x = x + margin;
             y += (font->font_height + line_space);
         }
@@ -417,7 +417,7 @@ void sgl_draw_string_lines_on_bg(sgl_surf_t *surf, sgl_area_t *area, int16_t x, 
     uint32_t unicode = 0;
     #endif
 
-    while(*str) {
+    while (*str) {
         #if CONFIG_SGL_TEXT_UTF8
         str += sgl_utf8_to_unicode(str, &unicode);
         ch_index = sgl_search_unicode_ch_index(font, unicode);
@@ -428,7 +428,7 @@ void sgl_draw_string_lines_on_bg(sgl_surf_t *surf, sgl_area_t *area, int16_t x, 
 
         ch_width = font->table[ch_index].box_w;
 
-        if((offset_x + ch_width + margin) > area->x2) {
+        if ((offset_x + ch_width + margin) > area->x2) {
             offset_x = x + margin;
             y += (font->font_height + line_space);
         }
@@ -464,7 +464,7 @@ void sgl_draw_string_lines_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_
     uint32_t unicode = 0;
     #endif
 
-    while(*str) {
+    while (*str) {
         #if CONFIG_SGL_TEXT_UTF8
         str += sgl_utf8_to_unicode(str, &unicode);
         ch_index = sgl_search_unicode_ch_index(font, unicode);
@@ -475,7 +475,7 @@ void sgl_draw_string_lines_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_
 
         ch_width = font->table[ch_index].box_w;
 
-        if((offset_x + ch_width + margin) > area->x2) {
+        if ((offset_x + ch_width + margin) > area->x2) {
             offset_x = x + margin;
             y += (font->font_height + line_space);
         }
@@ -506,13 +506,13 @@ void sgl_draw_text(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_dra
     SGL_ASSERT(desc->text != NULL);
     SGL_ASSERT(font != NULL);
 
-    if(!sgl_area_clip(area, rect, &clip)) {
+    if (!sgl_area_clip(area, rect, &clip)) {
         return;
     }
 
-    if(alpha == SGL_ALPHA_MAX) {
-        if(desc->bg_flag) {
-            if(desc->radius > 0) {
+    if (alpha == SGL_ALPHA_MAX) {
+        if (desc->bg_flag) {
+            if (desc->radius > 0) {
                 sgl_draw_fill_round_rect(surf, &clip, rect, desc->radius, desc->bg_color);
             }
             else {
@@ -520,30 +520,30 @@ void sgl_draw_text(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_dra
             }
         }
 
-        if(desc->mode == SGL_DRAW_TEXT_NORMAL) {
-            if(desc->icon) {
+        if (desc->mode == SGL_DRAW_TEXT_NORMAL) {
+            if (desc->icon) {
                 text_x = desc->icon->width + 2;
             }
 
             align_pos = sgl_get_text_pos(rect, font, desc->text, text_x, (sgl_align_type_t)desc->align);
 
-            if(desc->icon) {
+            if (desc->icon) {
                 icon_y = ((rect->y2 - rect->y1) - (desc->icon->height)) / 2 + 1;
                 sgl_draw_icon_on_bg(surf, &clip, align_pos.x + desc->x_offset, rect->y1 + icon_y + desc->y_offset, desc->color, desc->icon);
             }
 
             sgl_draw_string_on_bg(surf, &clip, align_pos.x + desc->x_offset + text_x, align_pos.y + desc->y_offset, desc->text, desc->color, font, desc->margin);
         }
-        else if(desc->mode == SGL_DRAW_TEXT_ROLL) {
+        else if (desc->mode == SGL_DRAW_TEXT_ROLL) {
             /* TODO: add roll text */
         }
-        else if(desc->mode == SGL_DRAW_TEXT_LINES) {
+        else if (desc->mode == SGL_DRAW_TEXT_LINES) {
             sgl_draw_string_lines_on_bg(surf, &clip, clip.x1 + desc->x_offset, clip.y1 + desc->y_offset, desc->text, desc->color, font, desc->line_space, desc->margin);
         }
     }
-    else if(alpha > SGL_ALPHA_MIN) {
-        if(desc->bg_flag) {
-            if(desc->radius > 0) {
+    else if (alpha > SGL_ALPHA_MIN) {
+        if (desc->bg_flag) {
+            if (desc->radius > 0) {
                 sgl_draw_fill_round_rect_with_alpha(surf, &clip, rect, desc->radius, desc->bg_color, alpha);
             }
             else {
@@ -551,24 +551,24 @@ void sgl_draw_text(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_dra
             }
         }
 
-        if(desc->mode == SGL_DRAW_TEXT_NORMAL) {
-            if(desc->icon) {
+        if (desc->mode == SGL_DRAW_TEXT_NORMAL) {
+            if (desc->icon) {
                 text_x = desc->icon->width + 2;
             }
 
             align_pos = sgl_get_text_pos(rect, font, desc->text, text_x, (sgl_align_type_t)desc->align);
 
-            if(desc->icon) {
+            if (desc->icon) {
                 icon_y = ((rect->y2 - rect->y1) - (desc->icon->height)) / 2;
                 sgl_draw_icon_with_alpha(surf, &clip, align_pos.x + desc->x_offset, rect->y1 + icon_y + desc->y_offset, desc->color, alpha, desc->icon);
             }
 
             sgl_draw_string_with_alpha(surf, &clip, align_pos.x + desc->x_offset + text_x, align_pos.y + desc->y_offset, desc->text, desc->color, alpha, font, desc->margin);
         }
-        else if(desc->mode == SGL_DRAW_TEXT_ROLL) {
+        else if (desc->mode == SGL_DRAW_TEXT_ROLL) {
             /* TODO: add roll text */
         }
-        else if(desc->mode == SGL_DRAW_TEXT_LINES) {
+        else if (desc->mode == SGL_DRAW_TEXT_LINES) {
             sgl_draw_string_lines_with_alpha(surf, &clip, clip.x1 + desc->x_offset, clip.y1 + desc->y_offset, desc->text, desc->color, alpha, font, desc->line_space, desc->margin); 
         }
     }

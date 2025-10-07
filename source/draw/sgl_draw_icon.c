@@ -54,15 +54,15 @@ void sgl_draw_one_icon( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y
         .y2 = y + icon->height - 1,
     };
 
-    if(!sgl_surf_clip(surf, &icon_rect, &clip)) {
+    if (!sgl_surf_clip(surf, &icon_rect, &clip)) {
         return;
     }
 
-    if(!sgl_area_selfclip(&clip, area)) {
+    if (!sgl_area_selfclip(&clip, area)) {
         return;
     }
 
-    if(icon->bpp == 4) {
+    if (icon->bpp == 4) {
         for (int y = clip.y1; y <= clip.y2; y++) {
             buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
             rel_y = y - icon_rect.y1;
@@ -84,7 +84,7 @@ void sgl_draw_one_icon( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y
             }
         }
     }
-    else if(icon->bpp == 8) {
+    else if (icon->bpp == 8) {
         for (int y = clip.y1; y <= clip.y2; y++) {
             buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
             rel_y = y - icon_rect.y1;
@@ -127,15 +127,15 @@ void sgl_draw_icon_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t
         .y2 = y + icon->height - 1,
     };
 
-    if(!sgl_surf_clip(surf, &icon_rect, &clip)) {
+    if (!sgl_surf_clip(surf, &icon_rect, &clip)) {
         return;
     }
 
-    if(!sgl_area_selfclip(&clip, area)) {
+    if (!sgl_area_selfclip(&clip, area)) {
         return;
     }
 
-    if(icon->bpp == 4) {
+    if (icon->bpp == 4) {
         for (int y = clip.y1; y <= clip.y2; y++) {
             buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
             rel_y = y - icon_rect.y1;
@@ -157,7 +157,7 @@ void sgl_draw_icon_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t
             }
         }
     }
-    else if(icon->bpp == 8) {
+    else if (icon->bpp == 8) {
         for (int y = clip.y1; y <= clip.y2; y++) {
             buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
             rel_y = y - icon_rect.y1;
@@ -202,15 +202,15 @@ void sgl_draw_icon_with_alpha( sgl_surf_t *surf, sgl_area_t *area, int16_t x, in
         .y2 = y + icon->height - 1,
     };
 
-    if(!sgl_surf_clip(surf, &icon_rect, &clip)) {
+    if (!sgl_surf_clip(surf, &icon_rect, &clip)) {
         return;
     }
 
-    if(!sgl_area_selfclip(&clip, area)) {
+    if (!sgl_area_selfclip(&clip, area)) {
         return;
     }
 
-    if(icon->bpp == 4) {
+    if (icon->bpp == 4) {
         for (int y = clip.y1; y <= clip.y2; y++) {
             buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
             rel_y = y - icon_rect.y1;
@@ -267,16 +267,16 @@ void sgl_draw_icon(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_dra
 
     SGL_ASSERT(desc->icon != NULL);
 
-    if(!sgl_area_clip(area, rect, &clip)) {
+    if (!sgl_area_clip(area, rect, &clip)) {
         return;
     }
 
     icon_pos = sgl_get_icon_pos(area, desc->icon, 0, (sgl_align_type_t)desc->align);
 
-    if(alpha == SGL_ALPHA_MAX) {
+    if (alpha == SGL_ALPHA_MAX) {
         sgl_draw_icon_on_bg(surf, &clip, icon_pos.x, icon_pos.y, desc->color, desc->icon);
     }
-    else if(alpha > SGL_ALPHA_MIN) {
+    else if (alpha > SGL_ALPHA_MIN) {
         sgl_draw_icon_with_alpha(surf, &clip, icon_pos.x, icon_pos.y, desc->color, alpha, desc->icon);
     }
     else {
