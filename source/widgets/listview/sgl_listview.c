@@ -134,9 +134,48 @@ size_t sgl_listview_get_style(sgl_obj_t *obj, sgl_style_type_t type)
 }
 
 
+static void sgl_listview_event_cb(sgl_event_t *event)
+{
+    sgl_listview_t *listview = (sgl_listview_t*)event->param;
+    sgl_obj_t *parent = &listview->obj;
+    sgl_obj_t *child = NULL;
+    int16_t item_height = 0;
+
+    if(event->type == SGL_EVENT_RELEASED) {
+
+        item_height = listview->item_count * listview->item_height;
+        //int diff = item_height + listview->coords_offset;
+        child = parent->child;
+        SGL_LOG_INFO("sgl_listview_event_cb: released %d  child->coords.y2 = %d  item_height = %d", listview->coords_offset, child->coords.y2, item_height);
+        if(listview->coords_offset > 0) {
+            sgl_obj_for_each_child(child, parent) {
+                child->coords.y1 -= listview->coords_offset;
+                child->coords.y2 -= listview->coords_offset;
+                child->area.y1 -= listview->coords_offset;
+                child->area.y2 -= listview->coords_offset;
+            }
+            listview->coords_offset = 0;
+        }
+        // else if(child->coords.y2 < item_height) {
+        //     diff = item_height - child->coords.y2;
+        //     sgl_obj_for_each_child(child, parent) {
+        //         child->coords.y1 += diff;
+        //         child->coords.y2 += diff;
+        //         child->area.y1 += diff;
+        //         child->area.y2 += diff;
+        //     }
+        //     listview->coords_offset = (-diff);
+        // }
+        sgl_obj_set_dirty(parent);
+    }
+}
+
+
 static void sgl_listview_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *evt)
 {
     sgl_listview_t *listview = (sgl_listview_t*)obj;
+    //int coords_end = 0;
+
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
         sgl_draw_rect(surf, &obj->area, &obj->coords, &listview->desc);
     }
@@ -145,9 +184,9 @@ static void sgl_listview_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_even
     }
     else if(evt->move == SGL_EVENT_MOVE_DOWN) {
         sgl_listview_set_offset(obj, evt->distance);
-        if((listview->item_count * listview->item_height) < (obj->coords.y2 - obj->coords.y1)) {
-            SGL_LOG_WARN("sgl_listview_construct_cb: listview out of range");
-        }
+    }
+    else if(evt->move == SGL_EVENT_RELEASED) {
+
     }
 
     if(obj->event_fn) {
@@ -189,7 +228,8 @@ sgl_obj_t* sgl_listview_create(sgl_obj_t* parent)
     listview->item_count = 0;
     listview->item_height = 23;
     listview->item_selected = -1;
-    listview->coords_offset = 10;
+
+    sgl_obj_set_event_cb(obj, sgl_listview_event_cb, (size_t)listview);
 
     return obj;
 }
@@ -217,6 +257,8 @@ sgl_obj_t* sgl_listview_add_item(sgl_obj_t *listview, sgl_icon_pixmap_t *icon, c
     sgl_button_set_style(new_obj, SGL_STYLE_BORDER_COLOR, SGL_COLOR(SGL_BLACK));
     sgl_button_set_style(new_obj, SGL_STYLE_COLOR, SGL_COLOR(SGL_BLUE));
 
+    sgl_obj_set_event_cb(new_obj, sgl_listview_event_cb, (size_t)plistview);
+
     plistview->item_count ++;
 
     return new_obj;
@@ -236,8 +278,7 @@ void sgl_listview_set_child_style(sgl_obj_t *listview, sgl_style_type_t type, si
 void sgl_listview_set_offset(sgl_obj_t *listview, int16_t offset)
 {
     sgl_listview_t *plistview = (sgl_listview_t *)listview;
-    plistview->coords_offset = offset;
-
+    plistview->coords_offset += offset;
     sgl_obj_t *child = NULL;
 
     sgl_obj_for_each_child(child, listview) {

@@ -17,11 +17,11 @@ void sgl_port_sdl2_deinit(sgl_port_sdl2_t* sdl2_dev);
 void flush_window_callback(void *param);
 
 
-extern const unsigned char gImage_bg[272640];
-sgl_pixmap_t bg_pixmap = {
-    .width = 213,
-    .height = 320,
-    .bitmap = gImage_bg,
+extern const unsigned char gImage_btn[230400];
+sgl_pixmap_t keyboard_pixmap = {
+    .width = 64,
+    .height = 64,
+    .bitmap = gImage_btn,
 };
 
 extern const unsigned char gImage_test[1440000];
@@ -133,7 +133,7 @@ static sgl_icon_pixmap_t cancel_icon = {
 
 static int x_ps = 0, y_ps = 0;
 static int msgbox_inx = 0;
-sgl_obj_t* msgbox[20];
+sgl_obj_t* msgbox[100];
 
 void button_callback(sgl_event_t *event) 
 {
@@ -173,10 +173,13 @@ void button_callback(sgl_event_t *event)
 }
 
 
+void switch_callback(sgl_event_t *event)
+{
+    sgl_obj_move_down((sgl_obj_t*)event->param);
+}
+
 int main(int argc, char *argv[])
 {
-
-
     SGL_UNUSED(argc);
     SGL_UNUSED(argv);
 
@@ -189,77 +192,84 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    //sgl_obj_set_pixmap(sgl_screen_act(), &test_pixmap);
+    //sgl_obj_t *desktop2 = sgl_obj_create(NULL);
 
-    // sgl_obj_t *rect = sgl_rect_create(NULL);
-    // sgl_obj_set_style(rect, SGL_STYLE_POS_X, 20);
-    // sgl_obj_set_style(rect, SGL_STYLE_POS_Y, 20);
-    // sgl_obj_set_style(rect, SGL_STYLE_SIZE_W, 480);
-    // sgl_obj_set_style(rect, SGL_STYLE_SIZE_H, 200);
-    // sgl_obj_set_clickable(rect);
-    // sgl_obj_set_alpha(rect, 128);
+    sgl_obj_set_pixmap(sgl_screen_act(), &test_pixmap);
 
-    sgl_obj_t *checkbox = sgl_checkbox_create(NULL);
-    sgl_obj_set_pos_x(checkbox, 110);
-    sgl_obj_set_pos_y(checkbox, 220);
-    sgl_obj_set_style(checkbox, SGL_STYLE_FONT, SGL_FONT(song23));
-    sgl_obj_set_style(checkbox, SGL_STYLE_TEXT, SGL_TEXT("Checkbox"));
+    sgl_obj_t *rect = sgl_rect_create(NULL);
+    sgl_obj_set_style(rect, SGL_STYLE_POS_X, 20);
+    sgl_obj_set_style(rect, SGL_STYLE_POS_Y, 20);
+    sgl_obj_set_style(rect, SGL_STYLE_SIZE_W, 480);
+    sgl_obj_set_style(rect, SGL_STYLE_SIZE_H, 200);
+    sgl_obj_set_alpha(rect, 255);
+    sgl_obj_set_clickable(rect);
 
+    sgl_obj_t *rect2 = sgl_rect_create(rect);
+    sgl_obj_set_pos(rect2, 20, 20);
+    sgl_obj_set_size(rect2, 400, 400);
+    sgl_obj_set_color(rect2, SGL_BLUE);
+    sgl_obj_set_clickable(rect2);
+    sgl_obj_set_radius(rect2, 0);
+    sgl_obj_set_border_width(rect2, 5);
+    sgl_obj_set_border_color(rect2, SGL_RED);
 
-    // sgl_obj_t *rect2 = sgl_rect_create(rect);
-    // sgl_obj_set_pos(rect2, 20, 20);
-    // sgl_obj_set_size(rect2, 300, 200);
-    // sgl_obj_set_color(rect2, SGL_BLUE);
-    // sgl_obj_set_clickable(rect2);
-    // sgl_obj_set_radius(rect2, 20);
-    // sgl_obj_set_alpha(rect2, 128);
-    // sgl_obj_set_border_width(rect2, 4);
-    // sgl_obj_set_border_color(rect2, SGL_RED);
+    sgl_obj_t *rect3 = sgl_rect_create(NULL);
+    sgl_obj_set_pos(rect3, 220, 128);
+    sgl_obj_set_size(rect3, 220, 100);
+    sgl_obj_set_clickable(rect3);
+    sgl_obj_set_alpha(rect3, 128);
+    sgl_obj_set_color(rect3, SGL_GRAY);
 
-    // sgl_obj_t *rect3 = sgl_rect_create(rect2);
-    // sgl_obj_set_pos(rect3, 20, 128);
-    // sgl_obj_set_size(rect3, 20, 100);
-    // sgl_obj_set_clickable(rect3);
-    // sgl_obj_set_alpha(rect3, 128);
-    // sgl_obj_set_color(rect3, SGL_GRAY);
+    sgl_obj_t *rect4 = sgl_rect_create(NULL);
+    sgl_obj_set_pos(rect4, 100, 0);
+    sgl_obj_set_size(rect4, 220, 100);
+    sgl_obj_set_clickable(rect4);
+    sgl_obj_set_alpha(rect4, 255);
+    sgl_obj_set_color(rect4, SGL_GRAY);
 
-    // sgl_obj_t *label = sgl_label_create(rect);
-    // sgl_obj_set_font(label, &song23);
-    // sgl_obj_set_color(label, SGL_RED);
-    // sgl_obj_set_radius(label, 10);
-    // sgl_obj_set_style(label, SGL_STYLE_TEXT, SGL_TEXT("Hello World!"));
-    // sgl_obj_set_style(label, SGL_STYLE_ICON, SGL_ICON(ok_icon));
-    // //sgl_obj_set_style(label, SGL_STYLE_ALIGN, SGL_ALIGN_TOP_LEFT);
+    sgl_obj_t *label = sgl_label_create(rect);
+    sgl_obj_set_font(label, &song23);
+    sgl_obj_set_color(label, SGL_RED);
+    sgl_obj_set_radius(label, 10);
+    sgl_obj_set_style(label, SGL_STYLE_TEXT, SGL_TEXT("Hello World!"));
+    sgl_obj_set_style(label, SGL_STYLE_ICON, SGL_ICON(ok_icon));
+    //sgl_obj_set_style(label, SGL_STYLE_ALIGN, SGL_ALIGN_TOP_LEFT);
 
-    // sgl_obj_t *button = sgl_button_create(NULL);
-    // sgl_obj_set_pos(button, 499, 300);
-    // sgl_obj_set_size(button, 200, 100);
-    // sgl_obj_set_font(button, &song23);
-    // sgl_obj_set_radius(button, 60);
-    // sgl_obj_set_border_width(button, 0);
-    // sgl_obj_set_style(button, SGL_STYLE_TEXT_COLOR, 0x5de);
-    // sgl_obj_set_style(button, SGL_STYLE_TEXT, SGL_TEXT("Delete"));
-    // sgl_obj_set_style(button, SGL_STYLE_TEXT, SGL_TEXT("012454"));
-    // sgl_obj_set_alpha(button, 255);
-    // sgl_obj_set_style(button, SGL_STYLE_ICON, SGL_ICON(delete_icon));
+    sgl_obj_t *button = sgl_button_create(NULL);
+    sgl_obj_set_pos(button, 320, 120);
+    sgl_obj_set_size(button, 200, 100);
+    sgl_obj_set_font(button, &consolas23);
+    sgl_obj_set_radius(button, 60);
+    sgl_obj_set_border_width(button, 0);
+    sgl_obj_set_style(button, SGL_STYLE_TEXT_COLOR, 0x5de);
+    sgl_obj_set_style(button, SGL_STYLE_TEXT, SGL_TEXT("Delete me"));
+    sgl_obj_set_alpha(button, 255);
+    sgl_obj_set_style(button, SGL_STYLE_ICON, SGL_ICON(delete_icon));
 
-    // sgl_obj_t *circle = sgl_circle_create(NULL);
-    // sgl_obj_set_pos(circle, 100, 100);
-    // sgl_obj_set_size(circle, 100, 100);
-    // sgl_obj_set_border_width(circle, 0);
-    // sgl_obj_set_radius(circle, 49);
-    // sgl_obj_set_pixmap(circle, &test_pixmap);
+    sgl_obj_t *circle = sgl_circle_create(NULL);
+    sgl_obj_set_pos(circle, 100, 100);
+    sgl_obj_set_size(circle, 100, 100);
+    sgl_obj_set_border_width(circle, 0);
+    sgl_obj_set_radius(circle, 49);
+    sgl_obj_set_pixmap(circle, &test_pixmap);
 
-    // sgl_obj_t *switch_obj = sgl_switch_create(NULL);
-    // sgl_obj_set_pos(switch_obj, 250, 100);
-    // sgl_obj_set_size(switch_obj, 100, 40);
-    // sgl_obj_set_radius(switch_obj, 20);
-    // sgl_obj_set_alpha(switch_obj, 255);
-    // sgl_obj_set_color(switch_obj, SGL_LIGHT_GRAY);
-    // sgl_obj_set_bg_color(switch_obj, SGL_BLACK);
-    // sgl_obj_set_style(switch_obj, SGL_STYLE_KNOB_COLOR, SGL_COLOR(SGL_GREEN));
-    // sgl_obj_set_border_width(switch_obj, 2);
-    // sgl_obj_set_border_color(switch_obj, SGL_BLUE);
+    sgl_obj_t *numbberkbd = sgl_numberkbd_create(NULL);
+    sgl_obj_set_pos(numbberkbd, 400, 110);
+    sgl_obj_set_size(numbberkbd, 300, 200);
+    sgl_obj_set_font(numbberkbd, &song23);
+    sgl_obj_set_style(numbberkbd, SGL_STYLE_NUMBERKBD_BTN_RADIUS, 10);
+
+    sgl_obj_t *switch_obj = sgl_switch_create(NULL);
+    sgl_obj_set_pos(switch_obj, 500, 100);
+    sgl_obj_set_size(switch_obj, 100, 40);
+    sgl_obj_set_radius(switch_obj, 20);
+    sgl_obj_set_alpha(switch_obj, 255);
+    sgl_obj_set_color(switch_obj, SGL_LIGHT_GRAY);
+    sgl_obj_set_bg_color(switch_obj, SGL_BLACK);
+    sgl_obj_set_style(switch_obj, SGL_STYLE_KNOB_COLOR, SGL_COLOR(SGL_GREEN));
+    sgl_obj_set_border_width(switch_obj, 0);
+    sgl_obj_set_border_color(switch_obj, SGL_BLUE);
+    sgl_obj_set_event_cb(switch_obj, switch_callback, (size_t)numbberkbd);
 
     // sgl_obj_t *switch_obj2 = sgl_switch_create(rect);
     // sgl_obj_set_pos(switch_obj2, 150, 380);
@@ -272,39 +282,43 @@ int main(int argc, char *argv[])
     // sgl_obj_set_border_width(switch_obj2, 2);
     // sgl_obj_set_border_color(switch_obj2, SGL_BLUE);
 
-    // sgl_obj_t *ring = sgl_ring_create(NULL);
-    // sgl_obj_set_pos(ring, 200, 100);
-    // sgl_obj_set_size(ring, 100, 100);
+    sgl_obj_t *ring = sgl_ring_create(NULL);
+    sgl_obj_set_pos(ring, 200, 100);
+    sgl_obj_set_size(ring, 100, 100);
 
-    // sgl_obj_set_radius(ring, 49);
-    // sgl_obj_set_style(ring, SGL_STYLE_RING_WIDTH, 5);
-    // sgl_obj_set_color(ring, SGL_LIGHT_GRAY);
-    // sgl_obj_set_alpha(ring, 128);
+    sgl_obj_set_radius(ring, 49);
+    sgl_obj_set_style(ring, SGL_STYLE_RING_WIDTH, 5);
+    sgl_obj_set_color(ring, SGL_LIGHT_GRAY);
+    sgl_obj_set_alpha(ring, 128);
 
-    // sgl_obj_t *slider = sgl_slider_create(NULL);
-    // sgl_obj_set_pos(slider, 300, 250);
-    // sgl_obj_set_size(slider, 50, 200);
-    // sgl_obj_set_style(slider, SGL_STYLE_DIRECTION, SGL_DIRECT_VERTICAL);
-    // sgl_obj_set_color(slider, SGL_RED);
-    // sgl_obj_set_bg_color(slider, SGL_GRAY);
-    // sgl_obj_set_alpha(slider, 255);
-    // sgl_obj_set_border_width(slider, 2);
+    sgl_obj_t *slider = sgl_slider_create(NULL);
+    sgl_obj_set_pos(slider, 300, 250);
+    sgl_obj_set_size(slider, 50, 200);
+    sgl_obj_set_style(slider, SGL_STYLE_DIRECTION, SGL_DIRECT_VERTICAL);
+    sgl_obj_set_color(slider, SGL_RED);
+    sgl_obj_set_bg_color(slider, SGL_GRAY);
+    sgl_obj_set_alpha(slider, 255);
+    sgl_obj_set_border_width(slider, 2);
+
+    sgl_obj_t *labeldede = sgl_label_create(slider);
+    sgl_obj_set_font(labeldede, &consolas23);
+    sgl_obj_set_text(labeldede, "10%");
 
     // sgl_obj_t *label2 = sgl_label_create(slider);
     // sgl_obj_set_font(label2, &consolas23);
     // sgl_label_set_text(label2, "10%");
 
-    // sgl_obj_t *textline = sgl_textline_create(NULL);
-    // sgl_obj_set_pos(textline, 400, 100);
-    // sgl_obj_set_size(textline, 200, 200);
-    // sgl_obj_set_radius(textline, 10);
-    // sgl_obj_set_style(textline, SGL_STYLE_TEXT, SGL_TEXT("012345784785754"));
-    // sgl_obj_set_style(textline, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_BLUE));
-    // sgl_obj_set_font(textline, &consolas23);
-    // sgl_obj_set_border_width(textline, 2);
-    // sgl_obj_set_border_color(textline, SGL_LIGHT_GRAY);
-    //sgl_textline_set_text(textline, "Text Line dhekdhefkjehfkjqhfjkqehfkejqfheqkjlfqbekjfbqjklfbqejkfbnqejkfbqjkfnqejkfqefjk");
-    //sgl_obj_set_clickable(textline);
+    sgl_obj_t *textline = sgl_textline_create(NULL);
+    sgl_obj_set_pos(textline, 0, 0);
+    sgl_obj_set_size(textline, 100, 300);
+    sgl_obj_set_radius(textline, 10);
+    //sgl_obj_set_style(textline, SGL_STYLE_TEXT, SGL_TEXT("012345784785754"));
+    sgl_obj_set_style(textline, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_BLUE));
+    sgl_obj_set_font(textline, &consolas23);
+    sgl_obj_set_border_width(textline, 2);
+    sgl_obj_set_border_color(textline, SGL_LIGHT_GRAY);
+    sgl_obj_set_text(textline, "Text Line dhekdhefkjehfkjqhfjkqehfkejqfheqkjlfqbekjfbqjklfbqejkfbnqejkfbqjkfnqejkfqefjk");
+    sgl_obj_set_clickable(textline);
 
     // rect43 = sgl_rect_create(NULL);
     // sgl_obj_set_pos(rect43, 0, 0);
@@ -312,17 +326,14 @@ int main(int argc, char *argv[])
     // sgl_obj_set_clickable(rect43);
     // sgl_obj_set_alpha(rect43, 128);
 
-    //sgl_obj_set_event_cb(button, button_callback, (size_t)rect43);
+    sgl_obj_set_event_cb(button, button_callback, (size_t)rect43);
 
-    // sgl_obj_t *checkbox = sgl_checkbox_create(NULL);
-    // sgl_obj_set_pos(checkbox, 200, 350);
-    // sgl_obj_set_size(checkbox, 200, 23);
-    // sgl_obj_set_font(checkbox, &song23);
-    // sgl_obj_set_radius(checkbox, 5);
-    // sgl_obj_set_style(checkbox, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_BLUE));
-    // sgl_obj_set_style(checkbox, SGL_STYLE_TEXT, SGL_TEXT("Check Box Test"));
-    // sgl_obj_set_color(checkbox, SGL_RED);
-    //sgl_obj_set_color(checkbox, SGL_LIGHT_GRAY);
+    sgl_obj_t *checkbox = sgl_checkbox_create(NULL);
+    sgl_obj_set_pos(checkbox, 200, 350);
+    sgl_obj_set_size(checkbox, 200, 23);
+    sgl_obj_set_font(checkbox, &song23);
+    sgl_obj_set_style(checkbox, SGL_STYLE_TEXT, SGL_TEXT("Check Box Test"));
+    sgl_obj_set_style(checkbox, SGL_STYLE_CHECKBOX_STATUS, 1);
 
     //sgl_obj_set_align(msgbox, SGL_ALIGN_CENTER);
     // sgl_obj_set_event_cb(msgbox, msgbox_callback, (size_t)rect43);
@@ -332,39 +343,86 @@ int main(int argc, char *argv[])
     // sgl_obj_set_size(icon, 100, 100);
     // sgl_obj_set_alpha(icon, 255);
 
+    sgl_obj_t *listview = sgl_listview_create(NULL);
+    sgl_obj_set_pos(listview, 0, 0);
+    sgl_obj_set_size(listview, 200, 300);
+    sgl_obj_set_font(listview, &song23);
+    sgl_obj_set_color(listview, SGL_WHITE);
+    //sgl_obj_set_style(listview, SGL_STYLE_BORDER_WIDTH, 3);
+    //sgl_obj_set_style(listview, SGL_STYLE_BORDER_COLOR, SGL_COLOR(SGL_GRAY));
 
-    // sgl_obj_t *listview = sgl_listview_create(NULL);
-    // sgl_obj_set_pos(listview, 50, 100);
-    // sgl_obj_set_size(listview, 200, 290);
-    // sgl_obj_set_font(listview, &song23);
-    // sgl_obj_set_color(listview, SGL_WHITE);
-    // //sgl_obj_set_style(listview, SGL_STYLE_BORDER_WIDTH, 3);
-    // //sgl_obj_set_style(listview, SGL_STYLE_BORDER_COLOR, SGL_COLOR(SGL_GRAY));
+    sgl_listview_add_item(listview, &ok_icon, "Hello World!");
+    sgl_listview_add_item(listview, &ok_icon, "Item 2");
+    sgl_listview_add_item(listview, &ok_icon, "Item 3");
+    sgl_listview_add_item(listview, &ok_icon, "Item 4");
+    sgl_listview_add_item(listview, &ok_icon, "Item 5");
+    sgl_listview_add_item(listview, &ok_icon, "Item 6");
+    sgl_listview_add_item(listview, &ok_icon, "Item 7");
+    sgl_listview_add_item(listview, &ok_icon, "Item 8");
+    sgl_listview_add_item(listview, &ok_icon, "Item 9");
+    sgl_listview_add_item(listview, &ok_icon, "Item 10");
+    sgl_listview_add_item(listview, &ok_icon, "Item 11");
+    sgl_listview_add_item(listview, &ok_icon, "Item 12");
+    sgl_listview_add_item(listview, &ok_icon, "Item 13");
+    sgl_listview_add_item(listview, &ok_icon, "Item 2");
+    sgl_listview_add_item(listview, &ok_icon, "Item 3");
+    sgl_listview_add_item(listview, &ok_icon, "Item 4");
+    sgl_listview_add_item(listview, &ok_icon, "Item 5");
+    sgl_listview_add_item(listview, &ok_icon, "Item 6");
+    sgl_listview_add_item(listview, &ok_icon, "Item 7");
+    sgl_listview_add_item(listview, &ok_icon, "Item 8");
+    sgl_listview_add_item(listview, &ok_icon, "Item 9");
+    sgl_listview_add_item(listview, &ok_icon, "Item 10");
+    sgl_listview_add_item(listview, &ok_icon, "Item 11");
+    sgl_listview_add_item(listview, &ok_icon, "Item 12");
+    sgl_listview_add_item(listview, &ok_icon, "Item 13");
+    sgl_listview_add_item(listview, &ok_icon, "Item 2");
+    sgl_listview_add_item(listview, &ok_icon, "Item 3");
+    sgl_listview_add_item(listview, &ok_icon, "Item 4");
+    sgl_listview_add_item(listview, &ok_icon, "Item 5");
+    sgl_listview_add_item(listview, &ok_icon, "Item 6");
+    sgl_listview_add_item(listview, &ok_icon, "Item 7");
+    sgl_listview_add_item(listview, &ok_icon, "Item 8");
+    sgl_listview_add_item(listview, &ok_icon, "Item 9");
+    sgl_listview_add_item(listview, &ok_icon, "Item 10");
+    sgl_listview_add_item(listview, &ok_icon, "Item 11");
+    sgl_listview_add_item(listview, &ok_icon, "Item 12");
+    sgl_listview_add_item(listview, &ok_icon, "Item 13");
+    sgl_listview_add_item(listview, &ok_icon, "Item 2");
+    sgl_listview_add_item(listview, &ok_icon, "Item 3");
+    sgl_listview_add_item(listview, &ok_icon, "Item 4");
+    sgl_listview_add_item(listview, &ok_icon, "Item 5");
+    sgl_listview_add_item(listview, &ok_icon, "Item 6");
+    sgl_listview_add_item(listview, &ok_icon, "Item 7");
+    sgl_listview_add_item(listview, &ok_icon, "Item 8");
+    sgl_listview_add_item(listview, &ok_icon, "Item 9");
+    sgl_listview_add_item(listview, &ok_icon, "Item 10");
+    sgl_listview_add_item(listview, &ok_icon, "Item 11");
+    sgl_listview_add_item(listview, &ok_icon, "Item 12");
+    sgl_listview_add_item(listview, &ok_icon, "Item 13");
+    sgl_listview_add_item(listview, &ok_icon, "Item 2");
+    sgl_listview_add_item(listview, &ok_icon, "Item 3");
+    sgl_listview_add_item(listview, &ok_icon, "Item 4");
+    sgl_listview_add_item(listview, &ok_icon, "Item 5");
+    sgl_listview_add_item(listview, &ok_icon, "Item 6");
+    sgl_listview_add_item(listview, &ok_icon, "Item 7");
+    sgl_listview_add_item(listview, &ok_icon, "Item 8");
+    sgl_listview_add_item(listview, &ok_icon, "Item 9");
+    sgl_listview_add_item(listview, &ok_icon, "Item 10");
+    sgl_listview_add_item(listview, &ok_icon, "Item 11");
+    sgl_listview_add_item(listview, &ok_icon, "Item 12");
+    sgl_listview_add_item(listview, &ok_icon, "Item 13");
 
-    // sgl_listview_add_item(listview, &ok_icon, "Item 1");
-    // sgl_listview_add_item(listview, &ok_icon, "Item 2");
-    // sgl_listview_add_item(listview, &ok_icon, "Item 3");
-    // sgl_listview_add_item(listview, &ok_icon, "Item 4");
-    // sgl_listview_add_item(listview, &ok_icon, "Item 5");
-    // sgl_listview_add_item(listview, &ok_icon, "Item 6");
-    // sgl_listview_add_item(listview, &ok_icon, "Item 7");
-    // sgl_listview_add_item(listview, &ok_icon, "Item 8");
-    // sgl_listview_add_item(listview, &ok_icon, "Item 9");
-    // sgl_listview_add_item(listview, &ok_icon, "Item 10");
-    // sgl_listview_add_item(listview, &ok_icon, "Item 11");
-    // sgl_listview_add_item(listview, &ok_icon, "Item 12");
-    // sgl_listview_add_item(listview, &ok_icon, "Item 13");
+    sgl_obj_set_pixmap(listview, &test_pixmap);
 
-    // sgl_obj_set_pixmap(listview, &bg_pixmap);
+    sgl_listview_set_child_style(listview, SGL_STYLE_RADIUS, 6);
+    sgl_listview_set_child_style(listview, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_GREEN));
+    sgl_listview_set_child_style(listview, SGL_STYLE_ALPHA, 150);
+    sgl_listview_set_child_style(listview, SGL_STYLE_TEXT_ALPHA, 255);
 
-    // sgl_listview_set_child_style(listview, SGL_STYLE_RADIUS, 6);
-    // sgl_listview_set_child_style(listview, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_GREEN));
-    // sgl_listview_set_child_style(listview, SGL_STYLE_ALPHA, 150);
-    // sgl_listview_set_child_style(listview, SGL_STYLE_TEXT_ALPHA, 255);
+    //sgl_obj_delete(rect);
 
-    // sgl_listview_set_offset(listview, -10);
-
-    uint64_t x = 0;
+    //uint8_t x = 0;
     while (!quit) {
         //SDL_Delay(10);
         SDL_PollEvent(&MouseEvent);
@@ -380,10 +438,9 @@ int main(int argc, char *argv[])
 
         sgl_task_handle();
 
-        //sgl_obj_set_dirty(sgl_src_act());
-        x++;
+        //sgl_obj_set_dirty(sgl_screen_act());
+        // x +=1;
         // sgl_obj_set_pos(rect, x, x);
-        // sgl_obj_set_dirty(rect);
 
         sgl_port_sdl2_increase_frame_count(sdl2_dev);
     }

@@ -100,6 +100,9 @@ typedef enum sgl_style_type {
     SGL_STYLE_NUMBERKBD_BTN_BORDER_COLOR,
     SGL_STYLE_NUMBERKBD_OPCODE,
 
+    /* keyboard style */
+    SGL_STYLE_KEYBOARD_OPCODE,
+
     SGL_STYLE_MAX
 } sgl_style_type_t;
 

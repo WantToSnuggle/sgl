@@ -815,6 +815,21 @@ void sgl_draw_string_on_bg(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_
 
 
 /**
+ * @brief Draw a string on the surface with alpha blending
+ * @param surf Pointer to the surface where the string will be drawn
+ * @param area Pointer to the area where the string will be drawn
+ * @param x X coordinate of the top-left corner of the string
+ * @param y Y coordinate of the top-left corner of the string
+ * @param str Pointer to the string to be drawn
+ * @param color Foreground color of the string
+ * @param alpha Alpha value for blending
+ * @param font Pointer to the font structure containing character data
+ * @return none
+ */
+void sgl_draw_string_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str, sgl_color_t color, uint8_t alpha, sgl_font_t *font, int16_t margin);
+
+
+/**
  * @brief Draw a string on the surface that will draw multiple lines
  * @param surf Pointer to the surface where the string will be drawn
  * @param area Pointer to the area where the string will be drawn

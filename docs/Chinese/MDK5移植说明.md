@@ -68,10 +68,9 @@
         //USART1_GPIO_Config();
         //USART1_Config();
 
-            /* init sgl */
+        /* init sgl */
         sgl_init();
-            
-        
+
         while(1) {
             sgl_task_handle();
         }

@@ -171,17 +171,17 @@ void tft_write_data(uint16_t data)
 
 static void tft_set_win(u16 xStar, u16 yStar, u16 xEnd, u16 yEnd)
 {
-    tft_write_cmd(0x2a);
+    tft_write_cmd(0x002a);
     //tft_write_data((xStar >> 8) & 0xff);
 	tft_write_data(xStar & 0xffff);
    // tft_write_data((xEnd >> 8) & 0xff);
 	tft_write_data(xEnd & 0xffff);
-    tft_write_cmd(0x2b);
+    tft_write_cmd(0x002b);
     //tft_write_data((yStar >> 8) & 0xff);
 	tft_write_data(yStar & 0xffff );
     //tft_write_data((yEnd >> 8) & 0xff);
 	tft_write_data(yEnd & 0xffff);
-    tft_write_cmd(0x2c); 
+    tft_write_cmd(0x002c); 
 }
 
 
@@ -278,7 +278,6 @@ void st7789_init(int rotation)
 
 void tft_init(void)
 {
-
     tft_gpio_init();
     GPIO_WriteBit(SPI_RST_PORT, SPI_RST_PIN, 1);
     tft_delay(200000);
@@ -286,6 +285,8 @@ void tft_init(void)
     tft_delay(200000);
     GPIO_WriteBit(SPI_RST_PORT, SPI_RST_PIN, 1);
     tft_delay(200000);
+
+	SPI1_Init();
 
     st7789_init(0);
     tft_delay(20);

@@ -362,6 +362,7 @@ static void sgl_numberkbd_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_eve
             numberkbd->opcode = (uint8_t)kbd_digits[btn_row][btn_col];
         }
         else {
+            sgl_obj_clear_dirty(obj);
             return;
         }
 

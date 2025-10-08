@@ -125,8 +125,8 @@ extern "C" {
 #endif
 
 
-#define  sgl_check_ptr_break(ptr)               if(unlikely((ptr) == NULL)) { SGL_LOG_ERROR("Function: %s, Line: %d, "#ptr" is NULL", __func__, __LINE__); return;}
-#define  sgl_check_ptr_return(ptr, r)           if(unlikely((ptr) == NULL)) { SGL_LOG_ERROR("Function: %s, Line: %d, "#ptr" is NULL", __func__, __LINE__); return (r);}
+#define  sgl_check_ptr_break(ptr)               if (unlikely((ptr) == NULL)) { SGL_LOG_ERROR("Function: %s, Line: %d, "#ptr" is NULL", __func__, __LINE__); return;}
+#define  sgl_check_ptr_return(ptr, r)           if (unlikely((ptr) == NULL)) { SGL_LOG_ERROR("Function: %s, Line: %d, "#ptr" is NULL", __func__, __LINE__); return (r);}
 
 
 /**

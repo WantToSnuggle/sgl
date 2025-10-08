@@ -1057,8 +1057,7 @@ void sgl_obj_free(sgl_obj_t *obj)
 }
 
 
-#if(CONFIG_SGL_TEXT_UTF8 == 1)
-
+#if (CONFIG_SGL_TEXT_UTF8)
 /**
  * @brief Convert UTF-8 string to Unicode
  * @param utf8_str Pointer to the UTF-8 string to be converted
@@ -1109,7 +1108,6 @@ uint32_t sgl_search_unicode_ch_index(sgl_font_t *font, uint32_t unicode)
     }
     return 0;
 }
-
 #endif // !CONFIG_SGL_TEXT_UTF8
 
 
@@ -1388,7 +1386,7 @@ static inline bool sgl_dirty_area_calculate(sgl_obj_t *obj)
             sgl_obj_set_layout(obj->parent, (sgl_layout_type_t)obj->parent->layout);
 
             need_draw = true;
-            /* obj is destroyed, skip */
+            /* object is destroyed, skip */
             continue;
         }
 
@@ -1424,6 +1422,13 @@ static inline bool sgl_dirty_area_calculate(sgl_obj_t *obj)
 
             /* clear dirty flag */
             sgl_obj_clear_dirty(obj);
+
+            /* if sibling exists, push it to stack and directly go to next sibling */
+            if (obj->sibling != NULL) {
+                stack[top++] = obj->sibling;
+            }
+            /* ignore all child of the object  */
+            continue;
         }
 
 		if (obj->sibling != NULL) {

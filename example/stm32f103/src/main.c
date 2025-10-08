@@ -15,7 +15,6 @@
 #include "stm32f10x_gpio.h"
 #include "sgl.h"
 #include "tft.h"
-#include <sgl_font.h>
 
 #define LED_PERIPH RCC_APB2Periph_GPIOC
 #define LED_PORT GPIOC
@@ -124,7 +123,6 @@ int main(void)
 
     sgl_init();
 
-    SPI1_Init();
     tft_init();
 
     sgl_obj_t *msgbox = sgl_msgbox_create(NULL);
@@ -133,21 +131,25 @@ int main(void)
     sgl_obj_set_style(msgbox, SGL_STYLE_FONT, SGL_FONT(song23));
     sgl_obj_set_style(msgbox, SGL_STYLE_MSGBOX_TITLE, SGL_TEXT("Message Box"));
     sgl_obj_set_style(msgbox, SGL_STYLE_MSGBOX_TEXT, SGL_TEXT("SGL (Small Graphics Library) is a lightweight and fast graphics library"));
-    //sgl_obj_set_style(msgbox, SGL_STYLE_RADIUS, 10);
-    sgl_obj_set_style(msgbox, SGL_STYLE_MSGBOX_APPLY_TEXT, SGL_TEXT("OK"));
-    sgl_obj_set_style(msgbox, SGL_STYLE_MSGBOX_CLOSE_TEXT, SGL_TEXT("NO"));
-    sgl_obj_set_style(msgbox, SGL_STYLE_BORDER_WIDTH, 2);
-    sgl_obj_set_style(msgbox, SGL_STYLE_BORDER_COLOR, SGL_COLOR(SGL_LIGHT_GRAY));
     sgl_obj_set_alpha(msgbox, 255);
 
     sgl_obj_t *button = sgl_button_create(NULL);
     sgl_obj_set_pos(button, 20, 20);
     sgl_obj_set_size(button, 200, 100);
-    sgl_obj_set_style(button, SGL_STYLE_RADIUS, 50);
-    sgl_obj_set_style(button, SGL_STYLE_BORDER_WIDTH, 2);
-    sgl_obj_set_style(button, SGL_STYLE_BORDER_COLOR, SGL_COLOR(SGL_BLACK));
     sgl_obj_set_font(button, &song23);
     sgl_obj_set_style(button, SGL_STYLE_TEXT ,SGL_TEXT("click me"));
+
+    sgl_obj_t *numbberkbd = sgl_numberkbd_create(NULL);
+    sgl_obj_set_pos(numbberkbd, 10, 10);
+    sgl_obj_set_size(numbberkbd, 200, 150);
+    sgl_obj_set_font(numbberkbd, &song23);
+    sgl_obj_set_radius(numbberkbd, 5);
+    //sgl_obj_set_style(numbberkbd, SGL_STYLE_NUMBERKBD_BTN_MARGIN, 3);
+    // sgl_obj_set_style(numbberkbd, SGL_STYLE_NUMBERKBD_BTN_COLOR, SGL_COLOR(SGL_BLACK));
+    // sgl_obj_set_style(numbberkbd, SGL_STYLE_NUMBERKBD_BTN_BORDER_COLOR, SGL_COLOR(SGL_WHITE));
+    sgl_obj_set_style(numbberkbd, SGL_STYLE_NUMBERKBD_BTN_BORDER_WIDTH, 1);
+    // sgl_obj_set_style(numbberkbd, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_RED));
+    sgl_obj_set_style(numbberkbd, SGL_STYLE_NUMBERKBD_BTN_RADIUS, 5);
 
     // sgl_obj_t *label2 = sgl_label_create(NULL);
     // // sgl_obj_set_pos(label2, 300, 200);
@@ -262,7 +264,7 @@ int main(void)
         // sgl_task_handle();
         // delay(1000);
         sgl_obj_set_pos(rect, x, x);
-        sgl_obj_set_pos(rect2, x + 60, x + 60);
+        sgl_obj_set_pos(rect2, 240 - x, x);
         // sgl_obj_set_dirty(rect);
         // sgl_obj_set_dirty(rect2);
         // sgl_obj_set_pos(rect3, 150 - x, x / 2);
