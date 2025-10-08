@@ -280,8 +280,8 @@ typedef struct sgl_icon_pixmap {
 */
 typedef struct sgl_font_table {
     const uint32_t bitmap_index;
-    const int8_t box_h;
-    const int8_t box_w;
+    const uint8_t box_h;
+    const uint8_t box_w;
     const int8_t ofs_x;
     const int8_t ofs_y;
 
