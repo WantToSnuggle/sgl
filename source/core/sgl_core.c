@@ -66,7 +66,8 @@ int sgl_device_fb_register(sgl_device_fb_t *fb_dev)
     sgl_check_ptr_return(fb_dev, -1);
 
     if (fb_dev->framebuffer == NULL || fb_dev->flush_area == NULL) {
-        SGL_LOG_ERROR("framebuffer or flush_area is null");
+        SGL_LOG_ERROR("framebuffer pointer or flush_area function pointer is null");
+        SGL_ASSERT(0);
         return -1;
     }
 
@@ -80,6 +81,7 @@ int sgl_device_fb_register(sgl_device_fb_t *fb_dev)
 
     if ((sgl_ctx.fb_dev.framebuffer_size) < (size_t)fb_dev->xres) {
         SGL_LOG_ERROR("framebuffer size is too small");
+        SGL_ASSERT(0);
         return -1;
     }
 
