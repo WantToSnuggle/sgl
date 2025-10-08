@@ -245,7 +245,6 @@ static void sgl_msgbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
         }
 
         if(msgbox->status & SGL_MSGBOX_STATUS_EXIT) {
-            SGL_LOG_WARN("MsgBox: Exit %d", msgbox->status & SGL_MSGBOX_STATUS_APPLY);
             sgl_obj_set_destroyed(&msgbox->obj);
         }
     }
