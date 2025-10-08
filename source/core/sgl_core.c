@@ -348,9 +348,9 @@ void sgl_obj_move_down(sgl_obj_t *obj)
  */
 void sgl_obj_move_foreground(sgl_obj_t *obj)
 {
-   SGL_ASSERT(obj != NULL);
+    SGL_ASSERT(obj != NULL && obj->parent != NULL);
+
     sgl_obj_t *parent = obj->parent;
-    SGL_ASSERT(parent != NULL);
     sgl_obj_t *last = NULL;
     sgl_obj_t *prev = NULL;
 
