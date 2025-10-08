@@ -29,8 +29,7 @@
 #define  SGL_MSGBOX_STATUS_NORMAL               (1 << 7)
 #define  SGL_MSGBOX_STATUS_APPLY                (1 << 0)
 #define  SGL_MSGBOX_STATUS_CLOSE                (1 << 1)
-#define  SGL_MSGBOX_STATUS_CLICK                (1 << 2)
-#define  SGL_MSGBOX_STATUS_EXIT                 (1 << 3)
+#define  SGL_MSGBOX_STATUS_EXIT                 (1 << 2)
 
 
 /**
@@ -250,11 +249,9 @@ static void sgl_msgbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
     }
     else if(evt->type == SGL_EVENT_PRESSED) {
         if(evt->pos.y > (obj->coords.y2 - font_height - 2) && evt->pos.x < ((obj->coords.x1 + obj->coords.x2) / 2)) {
-            msgbox->status |= SGL_MSGBOX_STATUS_CLICK;
             msgbox->status |= SGL_MSGBOX_STATUS_APPLY;
         }
         else if(evt->pos.y > (obj->coords.y2 - font_height - 2) && evt->pos.x > ((obj->coords.x1 + obj->coords.x2) / 2)) {
-            msgbox->status |= SGL_MSGBOX_STATUS_CLICK;
             msgbox->status |= SGL_MSGBOX_STATUS_CLOSE;
         }
         else {
