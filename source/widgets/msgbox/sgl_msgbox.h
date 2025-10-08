@@ -51,7 +51,7 @@ typedef struct sgl_msgbox {
     sgl_draw_text_t  text_desc;
     sgl_rect_t       text_coords;
 
-    bool             exit_flag;
+    uint8_t          status;
 
     sgl_draw_text_t  apply_text;
     sgl_rect_t       apply_coords;

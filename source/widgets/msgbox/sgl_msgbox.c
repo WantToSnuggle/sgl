@@ -26,6 +26,13 @@
 #include <sgl_theme.h>
 
 
+#define  SGL_MSGBOX_STATUS_NORMAL               (1 << 7)
+#define  SGL_MSGBOX_STATUS_APPLY                (1 << 0)
+#define  SGL_MSGBOX_STATUS_CLOSE                (1 << 1)
+#define  SGL_MSGBOX_STATUS_CLICK                (1 << 2)
+#define  SGL_MSGBOX_STATUS_EXIT                 (1 << 3)
+
+
 /**
  * @brief Set style of message box
  * @param obj pointer to message box object
@@ -190,10 +197,10 @@ size_t sgl_msgbox_get_style(sgl_obj_t *obj, sgl_style_type_t type)
         return (size_t)msgbox->title_desc.font;
 
     case SGL_STYLE_STATUS:
-        return msgbox->exit_flag;;
+        return (msgbox->status & SGL_MSGBOX_STATUS_APPLY);
 
     case SGL_STYLE_MSGBOX_ANSWER:
-        return msgbox->exit_flag;
+        return (msgbox->status & SGL_MSGBOX_STATUS_APPLY);
 
     default:
         SGL_LOG_WARN("sgl_msgbox_get_style: unsupported style type %d", type);
@@ -209,6 +216,7 @@ static void sgl_msgbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
     sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
     sgl_font_t *font = msgbox->title_desc.font;
     int32_t font_height = sgl_font_get_height(font) + 8;
+    sgl_color_t tmp_color = SGL_BLACK;
 
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
         sgl_draw_rect(surf, &obj->area, &obj->coords, &msgbox->body_desc);
@@ -217,19 +225,38 @@ static void sgl_msgbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
 
         sgl_draw_text(surf, &obj->area, &msgbox->text_coords, &msgbox->text_desc);
 
+        if(msgbox->status & SGL_MSGBOX_STATUS_APPLY) {
+            tmp_color = msgbox->apply_text.color;
+            msgbox->apply_text.bg_color = sgl_color_mixer(msgbox->apply_text.color, msgbox->body_desc.color, 128);
+        }
+        else if(msgbox->status & SGL_MSGBOX_STATUS_CLOSE) {
+            tmp_color = msgbox->close_text.color;
+            msgbox->close_text.bg_color = sgl_color_mixer(msgbox->close_text.color, msgbox->body_desc.color, 128);
+        }
+
         sgl_draw_text(surf, &msgbox->button_coords, &msgbox->apply_coords, &msgbox->apply_text);
         sgl_draw_text(surf, &msgbox->button_coords, &msgbox->close_coords, &msgbox->close_text);
+
+        if(msgbox->status & SGL_MSGBOX_STATUS_APPLY) {
+            msgbox->apply_text.color = tmp_color;
+        }
+        else if(msgbox->status & SGL_MSGBOX_STATUS_CLOSE) {
+            msgbox->close_text.color = tmp_color;
+        }
+
+        if(msgbox->status & SGL_MSGBOX_STATUS_EXIT) {
+            SGL_LOG_WARN("MsgBox: Exit %d", msgbox->status & SGL_MSGBOX_STATUS_APPLY);
+            sgl_obj_set_destroyed(&msgbox->obj);
+        }
     }
     else if(evt->type == SGL_EVENT_PRESSED) {
         if(evt->pos.y > (obj->coords.y2 - font_height - 2) && evt->pos.x < ((obj->coords.x1 + obj->coords.x2) / 2)) {
-            SGL_LOG_INFO("Apply button pressed");
-            msgbox->exit_flag = true;
-            sgl_obj_set_destroyed(obj);
+            msgbox->status |= SGL_MSGBOX_STATUS_CLICK;
+            msgbox->status |= SGL_MSGBOX_STATUS_APPLY;
         }
         else if(evt->pos.y > (obj->coords.y2 - font_height - 2) && evt->pos.x > ((obj->coords.x1 + obj->coords.x2) / 2)) {
-            SGL_LOG_INFO("Close button pressed");
-            msgbox->exit_flag = false;
-            sgl_obj_set_destroyed(obj);
+            msgbox->status |= SGL_MSGBOX_STATUS_CLICK;
+            msgbox->status |= SGL_MSGBOX_STATUS_CLOSE;
         }
         else {
             sgl_obj_clear_dirty(obj);
@@ -241,7 +268,16 @@ static void sgl_msgbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
         }
     }
     else if(evt->type == SGL_EVENT_RELEASED) {
-        sgl_obj_clear_dirty(obj);
+        if(evt->pos.y > (obj->coords.y2 - font_height - 2) && evt->pos.x < ((obj->coords.x1 + obj->coords.x2) / 2)) {
+            msgbox->status |= SGL_MSGBOX_STATUS_EXIT;
+        }
+        else if(evt->pos.y > (obj->coords.y2 - font_height - 2) && evt->pos.x > ((obj->coords.x1 + obj->coords.x2) / 2)) {
+            msgbox->status |= SGL_MSGBOX_STATUS_EXIT;
+        }
+        else {
+            sgl_obj_clear_dirty(obj);
+            return;
+        }
     }
     else if(evt->type == SGL_EVENT_DRAW_INIT) {
         msgbox->title_line_desc.width = 2;
@@ -349,6 +385,8 @@ sgl_obj_t* sgl_msgbox_create(sgl_obj_t* parent)
 
     msgbox->apply_text.bg_color = sgl_color_mixer(SGL_THEME_COLOR, SGL_THEME_TEXT_COLOR, 200);
     msgbox->close_text.bg_color = sgl_color_mixer(SGL_THEME_COLOR, SGL_THEME_TEXT_COLOR, 200);
+
+    msgbox->status = SGL_MSGBOX_STATUS_NORMAL;
 
     sgl_obj_set_clickable(obj);
 
