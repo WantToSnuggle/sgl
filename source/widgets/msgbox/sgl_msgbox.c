@@ -218,6 +218,10 @@ static void sgl_msgbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
     sgl_color_t tmp_color = SGL_BLACK;
 
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
+        if(msgbox->status & SGL_MSGBOX_STATUS_EXIT) {
+            sgl_obj_set_destroyed(&msgbox->obj);
+        }
+
         sgl_draw_rect(surf, &obj->area, &obj->coords, &msgbox->body_desc);
         sgl_draw_text(surf, &obj->area, &msgbox->title_coords, &msgbox->title_desc);
         sgl_draw_line(surf, &obj->area, &msgbox->title_line_desc);
@@ -241,10 +245,6 @@ static void sgl_msgbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
         }
         else if(msgbox->status & SGL_MSGBOX_STATUS_CLOSE) {
             msgbox->close_text.color = tmp_color;
-        }
-
-        if(msgbox->status & SGL_MSGBOX_STATUS_EXIT) {
-            sgl_obj_set_destroyed(&msgbox->obj);
         }
     }
     else if(evt->type == SGL_EVENT_PRESSED) {
