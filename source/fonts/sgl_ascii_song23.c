@@ -1826,11 +1826,12 @@ static const uint16_t unicode_list_1[] = {
 sgl_font_t song23 = {
     .bitmap = sgl_ascii_song23_bitmap,
     .table = sgl_ascii_song23_tab,
+    .font_table_size = SGL_ARRAY_SIZE(sgl_ascii_song23_tab),
     .font_height = 23,
     .bpp = 4,
 #if (CONFIG_SGL_TEXT_UTF8)
     .unicode_list = unicode_list_1,
-    .unicode_list_len = sizeof(unicode_list_1) / sizeof(unicode_list_1[0])
+    .unicode_list_len = SGL_ARRAY_SIZE(unicode_list_1),
 #endif        
 };
 

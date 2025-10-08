@@ -2511,11 +2511,12 @@ static const uint16_t unicode_list_1[] = {
 sgl_font_t kai33 = {
     .bitmap = glyph_bitmap,
     .table = glyph_dsc,
+    .font_table_size = SGL_ARRAY_SIZE(glyph_dsc),
     .font_height = 33,
     .bpp = 4,
 #if (CONFIG_SGL_TEXT_UTF8)
     .unicode_list = unicode_list_1,
-    .unicode_list_len = sizeof(unicode_list_1) / sizeof(unicode_list_1[0])
+    .unicode_list_len = SGL_ARRAY_SIZE(unicode_list_1),
 #endif
 };
 

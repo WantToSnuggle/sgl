@@ -1101,11 +1101,23 @@ uint32_t sgl_utf8_to_unicode(const char *utf8_str, uint32_t *p_unicode_buffer)
  */
 uint32_t sgl_search_unicode_ch_index(sgl_font_t *font, uint32_t unicode)
 {
-    for (uint32_t i = 0; i < font->unicode_list_len; i++){
-        if (font->unicode_list[i] == unicode) {
-            return i;
+    uint32_t left = 0;
+    uint32_t right = font->unicode_list_len;
+
+    while (left < right) {
+        uint32_t mid = left + (right - left) / 2;
+
+        if (font->unicode_list[mid] == unicode) {
+            return mid;
+        }
+        else if (font->unicode_list[mid] < unicode) {
+            left = mid + 1;
+        }
+        else {
+            right = mid;
         }
     }
+
     return 0;
 }
 #endif // !CONFIG_SGL_TEXT_UTF8
