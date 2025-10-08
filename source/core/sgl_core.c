@@ -1379,6 +1379,12 @@ static inline bool sgl_dirty_area_calculate(sgl_obj_t *obj)
         SGL_ASSERT(top < SGL_OBJ_DEPTH_MAX);
 		obj = stack[--top];
 
+        /* if sibling exists, push it to stack, it will be pop in next loop */
+		if (obj->sibling != NULL) {
+			stack[top++] = obj->sibling;
+		}
+
+        /* if object is hidden, skip it */
         if (unlikely(sgl_obj_is_hidden(obj))) {
             continue;
         }
@@ -1435,17 +1441,9 @@ static inline bool sgl_dirty_area_calculate(sgl_obj_t *obj)
             /* clear dirty flag */
             sgl_obj_clear_dirty(obj);
 
-            /* if sibling exists, push it to stack and directly go to next sibling */
-            if (obj->sibling != NULL) {
-                stack[top++] = obj->sibling;
-            }
             /* ignore all child of the object  */
             continue;
         }
-
-		if (obj->sibling != NULL) {
-			stack[top++] = obj->sibling;
-		}
 
 		if (obj->child != NULL) {
 			stack[top++] = obj->child;
