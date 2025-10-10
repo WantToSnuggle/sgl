@@ -308,20 +308,20 @@ static void sgl_numberkbd_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_eve
                         sgl_draw_rect(surf, &btn, &btn, &numberkbd->btn_desc);
                         text_x = btn.x1 + ((box_w -  backspace_icon.width) / 2);
                         text_y = btn.y1 + ((box_h - backspace_icon.height + 1) / 2);
-                        sgl_draw_icon_with_alpha(surf, &btn, text_x, text_y, numberkbd->text_color, numberkbd->btn_desc.alpha, &backspace_icon);
+                        sgl_draw_icon_on_bg(surf, &btn, text_x, text_y, numberkbd->text_color, &backspace_icon);
                     }
                     else if (btn_row == 3) {
                         btn.y2 += (numberkbd->margin + box_h);
                         sgl_draw_rect(surf, &btn, &btn, &numberkbd->btn_desc);
                         text_x = btn.x1 + ((box_w -  enter_icon.width) / 2);
                         text_y = btn.y1 + ((2 * box_h - enter_icon.height) / 2);
-                        sgl_draw_icon_with_alpha(surf, &btn, text_x, text_y, numberkbd->text_color, numberkbd->btn_desc.alpha, &enter_icon);
+                        sgl_draw_icon_on_bg(surf, &btn, text_x, text_y, numberkbd->text_color, &enter_icon);
                     }
                 }
                 else {
                     sgl_draw_rect(surf, &btn, &btn, &numberkbd->btn_desc);
                     text_x = btn.x1 + ((box_w -  sgl_font_get_string_width("0", numberkbd->font)) / 2);
-                    sgl_draw_character_with_alpha(surf, &obj->area, text_x, text_y, kbd_digits[btn_row][btn_col] - 32, numberkbd->text_color, numberkbd->btn_desc.alpha, numberkbd->font);
+                    sgl_draw_character_on_bg(surf, &obj->area, text_x, text_y, kbd_digits[btn_row][btn_col] - 32, numberkbd->text_color, numberkbd->font);
                 }
                 btn_col ++;
             }
