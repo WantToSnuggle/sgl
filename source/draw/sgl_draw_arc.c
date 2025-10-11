@@ -28,7 +28,6 @@
 #include <sgl_math.h>
 
 
-/* This algorithm is based on the algorithm from SCGUI. Special thanks to the author of SCGUI. */
 typedef struct sgl_arc_dot
 {
     int16_t  cx;

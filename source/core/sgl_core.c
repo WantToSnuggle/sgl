@@ -1396,14 +1396,14 @@ static inline bool sgl_dirty_area_calculate(sgl_obj_t *obj)
             /* merge destroy area */
             sgl_obj_dirty_merge(obj);
 
-            /* free obj resource */
-            sgl_obj_free(obj);
+            /* update parent layout */
+            sgl_obj_set_layout(obj->parent, (sgl_layout_type_t)obj->parent->layout);
 
             /* remove obj from parent */
             sgl_obj_remove(obj);
 
-            /* update parent layout */
-            sgl_obj_set_layout(obj->parent, (sgl_layout_type_t)obj->parent->layout);
+            /* free obj resource */
+            sgl_obj_free(obj);
 
             need_draw = true;
             /* object is destroyed, skip */
