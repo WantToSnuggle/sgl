@@ -130,7 +130,7 @@ extern "C" {
 
 
 /**
- * @brief  Run once function
+ * @brief Run once function
  * @note you must sure the statement is thread safe
  */
 #define  SGL_RUN_ONCE(statement)                do { \

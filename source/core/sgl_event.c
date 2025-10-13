@@ -38,7 +38,7 @@
  * @brief event lost object
  * @note this object is used to recode event lost object
  */
-static sgl_obj_t *event_lost = NULL;
+static struct sgl_obj *event_lost = NULL;
 
 static sgl_event_pos_t touch_atc_pos[2] = {
     {-1, -1}, {-1, -1},
@@ -180,9 +180,9 @@ static bool pos_is_focus_on_obj(sgl_event_pos_t *pos, sgl_rect_t *rect, int16_t 
  * @param pos The position to be clicked
  * @return The object that is clicked on, NULL if no object is clicked
  */
-static sgl_obj_t* click_detect_object(sgl_event_pos_t *pos)
+static struct sgl_obj* click_detect_object(sgl_event_pos_t *pos)
 {
-    sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX], *obj = NULL, *find = NULL;
+    struct sgl_obj *stack[SGL_OBJ_DEPTH_MAX], *obj = NULL, *find = NULL;
     int top = 0;
     stack[top++] = sgl_screen_act();
 
@@ -220,9 +220,9 @@ static sgl_obj_t* click_detect_object(sgl_event_pos_t *pos)
  * @param pos The position to be motion
  * @return The object that is motion on, NULL if no object is motion
  */
-static sgl_obj_t* motion_detect_object(sgl_event_pos_t *pos)
+static struct sgl_obj* motion_detect_object(sgl_event_pos_t *pos)
 {
-    sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX], *obj = NULL;
+    struct sgl_obj *stack[SGL_OBJ_DEPTH_MAX], *obj = NULL;
     int top = 0;
     stack[top++] = sgl_screen_act();
 
@@ -276,6 +276,25 @@ void sgl_event_send_pos(sgl_event_pos_t pos, sgl_event_type_t type)
 
 
 /**
+ * @brief Send an event to the specified object
+ * @param obj The object to be sent
+ * @param type The type of the event
+ * @return none
+ */
+void sgl_event_send_obj(struct sgl_obj *obj, sgl_event_type_t type)
+{
+    SGL_ASSERT(obj != NULL);
+    sgl_event_t event = {
+        .type = type,
+        .obj = obj,
+        .param = 0,
+    };
+
+    sgl_event_queue_push(event);
+}
+
+
+/**
  * @brief get information of motion event type
  * @param evt [in][out] event to be handled
  * @return none
@@ -318,7 +337,7 @@ static void sgl_get_move_info(sgl_event_t *evt)
 void sgl_event_task(void)
 {
     sgl_event_t evt;
-    sgl_obj_t *obj = NULL;
+    struct sgl_obj *obj = NULL;
 
     /* get event from event queue */
     while (sgl_event_queue_pop(&evt) == 0) {

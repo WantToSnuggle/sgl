@@ -40,13 +40,13 @@ extern "C" {
 
 
 /* the maximum depth of object*/
-#define  SGL_OBJ_DEPTH_MAX                 32
+#define  SGL_OBJ_DEPTH_MAX                 (32)
 
 
 #if (CONFIG_SGL_DRAW_USE_DMA)
-#define SGL_DRAW_BUFFER_SIZE               2
+#define SGL_DRAW_BUFFER_SIZE               (2)
 #else
-#define SGL_DRAW_BUFFER_SIZE               1
+#define SGL_DRAW_BUFFER_SIZE               (1)
 #endif
 
 
@@ -1021,6 +1021,23 @@ void sgl_obj_set_pos(sgl_obj_t *obj, int16_t x, int16_t y);
 
 
 /**
+ * @brief Get object position
+ * @param obj point to object
+ * @return sgl_pos_t: position of object
+ * @note this function will return the top left corner position of the object
+ */
+static inline sgl_pos_t sgl_obj_get_pos(sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL);
+
+    sgl_pos_t pos;
+    pos.x = obj->coords.x1;
+    pos.y = obj->coords.y1;
+    return pos;
+}
+
+
+/**
  * @brief move object up a level layout
  * @param obj point to object
  * @return none
@@ -1054,23 +1071,6 @@ void sgl_obj_move_foreground(sgl_obj_t *obj);
  * @note Only move among sibling objects
  */
 void sgl_obj_move_background(sgl_obj_t *obj);
-
-
-/**
- * @brief Get object position
- * @param obj point to object
- * @return sgl_pos_t: position of object
- * @note this function will return the top left corner position of the object
- */
-static inline sgl_pos_t sgl_obj_get_pos(sgl_obj_t *obj)
-{
-    SGL_ASSERT(obj != NULL);
-
-    sgl_pos_t pos;
-    pos.x = obj->coords.x1;
-    pos.y = obj->coords.y1;
-    return pos;
-}
 
 
 /**

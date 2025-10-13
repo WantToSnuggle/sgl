@@ -107,6 +107,15 @@ void sgl_event_send_pos(sgl_event_pos_t pos, sgl_event_type_t type);
 
 
 /**
+ * @brief Send an event to the specified object
+ * @param obj The object to be sent
+ * @param type The type of the event
+ * @return none
+ */
+void sgl_event_send_obj(struct sgl_obj *obj, sgl_event_type_t type);
+
+
+/**
  * @brief All event task in SGL, this function will traverse all elements in the event queue, 
  *        respond to each element with an event, so that all events will trigger and point to the 
  *        corresponding callback function
