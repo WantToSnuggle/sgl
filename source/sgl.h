@@ -47,6 +47,6 @@
 #include "widgets/icon/sgl_icon.h"
 #include "widgets/listview/sgl_listview.h"
 #include "widgets/numberkbd/sgl_numberkbd.h"
-
+#include "widgets/keyboard/sgl_keyboard.h"
 
 #endif // __SGL_H__
