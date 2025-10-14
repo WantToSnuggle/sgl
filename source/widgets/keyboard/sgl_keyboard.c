@@ -119,30 +119,32 @@ static sgl_icon_pixmap_t backspace_icon = {
 
 
 static const uint8_t btn_keybd_bitmap[] = {
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x03,0x63,0x00,0x00,  //..................+....
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x5e,0xfe,0x30,0x00,  //................+@@@...
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x05,0xef,0xff,0xe5,0x00,  //...............+@@@@@+.
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x5e,0xff,0xff,0xfc,0x00,  //..............+@@@@@@%.
-0x00,0x00,0x00,0x00,0x00,0x00,0x05,0xef,0xff,0xff,0xe5,0x00,  //.............+@@@@@@@+.
-0x00,0x0a,0xca,0x00,0x00,0x00,0x5e,0xff,0xff,0xfe,0x50,0x00,  //...%%%......+@@@@@@@+..
-0x00,0xae,0xff,0xa0,0x00,0x05,0xef,0xff,0xff,0xe5,0x00,0x00,  //..%@@@%....+@@@@@@@+...
-0x08,0xef,0xff,0xfa,0x00,0x5e,0xff,0xff,0xfe,0x50,0x00,0x00,  //.+@@@@@%..+@@@@@@@+....
-0x0c,0xff,0xff,0xff,0xa5,0xef,0xff,0xff,0xe5,0x00,0x00,0x00,  //.%@@@@@@%+@@@@@@@+.....
-0x00,0xef,0xff,0xff,0xff,0xff,0xff,0xfe,0x50,0x00,0x00,0x00,  //..@@@@@@@@@@@@@@+......
-0x00,0x0e,0xff,0xff,0xff,0xff,0xff,0xe5,0x00,0x00,0x00,0x00,  //...@@@@@@@@@@@@+.......
-0x00,0x00,0xef,0xff,0xff,0xff,0xfe,0x50,0x00,0x00,0x00,0x00,  //....@@@@@@@@@@+........
-0x00,0x00,0x0e,0xff,0xff,0xff,0xe5,0x00,0x00,0x00,0x00,0x00,  //.....@@@@@@@@+.........
-0x00,0x00,0x00,0xef,0xff,0xfe,0x50,0x00,0x00,0x00,0x00,0x00,  //......@@@@@@+..........
-0x00,0x00,0x00,0x0e,0xff,0xe5,0x00,0x00,0x00,0x00,0x00,0x00,  //.......@@@@+...........
-0x00,0x00,0x00,0x00,0xcc,0x50,0x00,0x00,0x00,0x00,0x00,0x00,  //........%%+............
+0x05,0x66,0x66,0x66,0x66,0x66,0x66,0x66,0x66,0x66,0x66,0x66,0x66,0x65,0x00,  //.+++++++++++++++++++++++++++.
+0xef,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xc0,  //@@@@@@@@@@@@@@@@@@@@@@@@@@@@%
+0xee,0xca,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xce,0xe0,  //@@%%%%%%%%%%%%%%%%%%%%%%%%%@@
+0xee,0x50,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x5e,0xe0,  //@@+.......................+@@
+0xee,0x53,0xaa,0x05,0xa8,0x08,0xa8,0x08,0xa5,0x0a,0xa5,0x0a,0xa3,0x5e,0xe0,  //@@+.%%.+%+.+%+.+%+.%%+.%%.+@@
+0xee,0x58,0xee,0x3a,0xfe,0x0c,0xfc,0x0c,0xfa,0x0e,0xe8,0x3e,0xe5,0x5e,0xe0,  //@@++@@.%@@.%@%.%@%.@@+.@@++@@
+0xee,0x53,0x65,0x03,0x65,0x05,0x65,0x05,0x63,0x05,0x63,0x3e,0xe5,0x5e,0xe0,  //@@+.++..++.+++.++..++..@@++@@
+0xee,0x50,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x3e,0xe5,0x5e,0xe0,  //@@+....................@@++@@
+0xee,0x55,0xaa,0xaa,0x08,0xa8,0x08,0xa8,0x0a,0xa8,0x3a,0xae,0xe5,0x5e,0xe0,  //@@++%%%%.+%+.+%+.%%+.%%@@++@@
+0xee,0x58,0xef,0xfe,0x0a,0xfc,0x0c,0xfc,0x0e,0xfa,0x3e,0xff,0xe5,0x5e,0xe0,  //@@++@@@@.%@%.%@%.@@%.@@@@++@@
+0xee,0x50,0x33,0x33,0x00,0x33,0x03,0x33,0x03,0x30,0x03,0x33,0x30,0x5e,0xe0,  //@@+.......................+@@
+0xee,0x50,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x5e,0xe0,  //@@+.......................+@@
+0xee,0x58,0xcc,0x38,0xcc,0xcc,0xcc,0xcc,0xcc,0xcc,0xc8,0x3c,0xc5,0x5e,0xe0,  //@@++%%.+%%%%%%%%%%%%%+.%%++@@
+0xee,0x58,0xee,0x3a,0xff,0xff,0xff,0xff,0xff,0xff,0xe8,0x3e,0xe5,0x5e,0xe0,  //@@++@@.%@@@@@@@@@@@@@+.@@++@@
+0xee,0x50,0x33,0x00,0x33,0x33,0x33,0x33,0x33,0x33,0x30,0x03,0x30,0x5e,0xe0,  //@@+.......................+@@
+0xee,0x50,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x5e,0xe0,  //@@+.......................+@@
+0xef,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xe0,  //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+0xae,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xfe,0xa0,  //%@@@@@@@@@@@@@@@@@@@@@@@@@@@%
 };
 
 
 static sgl_icon_pixmap_t keybd_icon = {
     .bitmap = btn_keybd_bitmap,
     .bpp = 4,
-    .height = 16,
-    .width = 24,
+    .height = 18,
+    .width = 30,
 };
 
 
@@ -174,6 +176,62 @@ static sgl_icon_pixmap_t space_icon = {
 };
 
 
+static const uint8_t btn_left_bitmap[] = {
+0x00,0x00,0x00,0x00,0xae,0xc0,0x00,  //........%@%..
+0x00,0x00,0x00,0x0a,0xef,0xfc,0x00,  //.......%@@@%.
+0x00,0x00,0x00,0xae,0xff,0xfe,0x30,  //......%@@@@@.
+0x00,0x00,0x0a,0xef,0xff,0xe3,0x00,  //.....%@@@@@..
+0x00,0x00,0xae,0xff,0xfe,0x30,0x00,  //....%@@@@@...
+0x00,0x0a,0xef,0xff,0xe3,0x00,0x00,  //...%@@@@@....
+0x00,0xae,0xff,0xfe,0x30,0x00,0x00,  //..%@@@@@.....
+0x0a,0xef,0xff,0xe3,0x00,0x00,0x00,  //.%@@@@@......
+0x08,0xef,0xff,0xe5,0x00,0x00,0x00,  //.+@@@@@+.....
+0x00,0x8e,0xff,0xfe,0x50,0x00,0x00,  //..+@@@@@+....
+0x00,0x08,0xef,0xff,0xe5,0x00,0x00,  //...+@@@@@+...
+0x00,0x00,0x8e,0xff,0xfe,0x50,0x00,  //....+@@@@@+..
+0x00,0x00,0x08,0xef,0xff,0xe5,0x00,  //.....+@@@@@+.
+0x00,0x00,0x00,0x8e,0xff,0xfe,0x50,  //......+@@@@@+
+0x00,0x00,0x00,0x08,0xef,0xfc,0x00,  //.......+@@@%.
+0x00,0x00,0x00,0x00,0x8e,0xc0,0x00,  //........+@%..
+};
+
+
+static sgl_icon_pixmap_t left_icon = {
+    .bitmap = btn_left_bitmap,
+    .bpp = 4,
+    .height = 16,
+    .width = 14,
+};
+
+
+static const uint8_t btn_right_bitmap[] = {
+0x03,0xee,0x80,0x00,0x00,0x00,0x00,  //..@@+........
+0x3e,0xff,0xe8,0x00,0x00,0x00,0x00,  //.@@@@+.......
+0x5e,0xff,0xfe,0x80,0x00,0x00,0x00,  //+@@@@@+......
+0x05,0xef,0xff,0xe8,0x00,0x00,0x00,  //.+@@@@@+.....
+0x00,0x5e,0xff,0xfe,0x80,0x00,0x00,  //..+@@@@@+....
+0x00,0x05,0xef,0xff,0xe8,0x00,0x00,  //...+@@@@@+...
+0x00,0x00,0x5e,0xff,0xfe,0x80,0x00,  //....+@@@@@+..
+0x00,0x00,0x05,0xef,0xff,0xe8,0x00,  //.....+@@@@@+.
+0x00,0x00,0x08,0xef,0xff,0xe5,0x00,  //.....+@@@@@+.
+0x00,0x00,0x8e,0xff,0xfe,0x50,0x00,  //....+@@@@@+..
+0x00,0x08,0xef,0xff,0xe5,0x00,0x00,  //...+@@@@@+...
+0x00,0x8e,0xff,0xfe,0x50,0x00,0x00,  //..+@@@@@+....
+0x08,0xef,0xff,0xe5,0x00,0x00,0x00,  //.+@@@@@+.....
+0x5e,0xff,0xfe,0x50,0x00,0x00,0x00,  //+@@@@@+......
+0x0c,0xff,0xe5,0x00,0x00,0x00,0x00,  //.%@@@+.......
+0x00,0xce,0x50,0x00,0x00,0x00,0x00,  //..%@+........
+};
+
+
+static sgl_icon_pixmap_t right_icon = {
+    .bitmap = btn_right_bitmap,
+    .bpp = 4,
+    .height = 16,
+    .width = 14,
+};
+
+
 static bool keyboard_flush = true;
 
 #define  KEYBOARD_KEYMODE_UPPER                  (0)
@@ -192,10 +250,17 @@ static bool keyboard_flush = true;
 #define KEYBOARD_KEY_TO_SPEC                     (253)
 #define KEYBOARD_KEY_TO_CLOSE                    (252)
 
+#define KEYBOARD_KEY_MODE(x)                     ((x) >> 1)
 
-#define ACTUAL_WIETH(w)                          (w) / 1024
-#define VIRTUAL_WIETH(w)                         (w) * 1024
-#define BTN_W(index)                             keybd_btn_width[index]
+#define KEYBOARD_KEY_BACKSPACE                   (11)
+#define KEYBOARD_KEY_NUMBER_BACKSPACE            (10)
+#define KEYBOARD_KEY_SPACE                       (37)
+#define KEYBOARD_KEY_NEWLINE                     (22)
+#define KEYBOARD_KEY_ENTER                       (39)
+#define KEYBOARD_KEY_CLOSE                       (35)
+#define KEYBOARD_KEY_LEFT                        (36)
+#define KEYBOARD_KEY_RIGHT                       (38)
+
 
 
 static const char keyboard_key_ascii[KEYBOARD_KEYMODE_MAX][KEYBOARD_BTN_NUM] = {
@@ -285,18 +350,15 @@ static inline uint8_t keyboard_index_to_ascii(uint8_t keymode, uint8_t index)
 
 void distribute_pos(const uint8_t *scale_width, int n, int16_t total_width, int16_t gap, int16_t *out_width) 
 {
-    int total_scale = 0;
+    int total_scale = 0, span = 0, accumulated = 0, error = 0;
     for (int i = 0; i < n; i++) {
         total_scale += scale_width[i];
     }
 
-    int total_area = total_width - gap * (n + 1);
-
-    int accumulated = 0;
-    int error = 0;
+    span = total_width - gap * (n + 1);
 
     for (int i = 0; i < n; i++) {
-        int numerator = scale_width[i] * total_area;
+        int numerator = scale_width[i] * span;
         out_width[i] = numerator / total_scale;
         
         error += numerator % total_scale;
@@ -308,26 +370,68 @@ void distribute_pos(const uint8_t *scale_width, int n, int16_t total_width, int1
         accumulated += out_width[i];
     }
 
-    int diff = total_area - accumulated;
+    error = span - accumulated;
 
-    for (int i = 0; i < n && diff > 0; i++) {
+    for (int i = 0; i < n && error > 0; i++) {
         out_width[i] += 1;
-        diff--;
+        error --;
     }
 
-    for (int i = 0; i < n && diff < 0; i++) {
+    for (int i = 0; i < n && error < 0; i++) {
         out_width[i] -= 1;
-        diff++;
+        error ++;
     }
 }
 
 
-static int8_t keyboard_pos_to_index(int16_t x, int16_t y, sgl_keyboard_t *keyboard, int16_t btn_h)
+static int8_t keyboard_pos_to_index(int16_t x, int16_t y, sgl_keyboard_t *keyboard, int16_t width, int16_t height)
 {
     sgl_obj_t *obj = &keyboard->obj;
-    int16_t index = 0, y_index = 0, btn_w = 0;
+    int16_t index = 0, x_index = -1, y_index = -1, key_mode = KEYBOARD_KEY_MODE(keyboard->key_mode);
+    int16_t btn_width[KEYBOARD_BTN_COLUMNS] = {0};
+    int16_t btn_height[KEYBOARD_BTN_LINES] = {0};
+    sgl_rect_t btn = {0};
 
-    return -1;
+    /* calculate button height */
+    distribute_pos(keybd_btn_height, KEYBOARD_BTN_LINES, height, keyboard->key_margin, btn_height);
+    btn.y1 = obj->coords.y1;
+    for(int i = 0; i < KEYBOARD_BTN_LINES; i++) {
+        btn.y1 += keyboard->key_margin;
+        btn.y2 = btn.y1 + btn_height[i] - 1;
+
+        if(y >= btn.y1 && y <= btn.y2) {
+            y_index = i;
+            break;
+        }
+        btn.y1 += btn_height[i];
+    }
+
+    if(y_index < 0 || y_index >= KEYBOARD_BTN_LINES) {
+        return -1;
+    }
+
+    distribute_pos(keybd_btn_width[key_mode][y_index], keyboard_btn_count[key_mode][y_index], width, keyboard->key_margin, btn_width);
+
+    btn.x1 = obj->coords.x1;
+    for(int i = 0; i < keyboard_btn_count[key_mode][y_index]; i++) {
+        btn.x1 += keyboard->key_margin;
+        btn.x2 = btn.x1 + btn_width[i] - 1;
+        if(x >= btn.x1 && x <= btn.x2) {
+            x_index = i;
+            break;
+        }
+        btn.x1 += btn_width[i];
+    }
+
+    if(x_index < 0 || x_index >= keyboard_btn_count[key_mode][y_index]) {
+        return -1;
+    }
+
+    for(int i = 0; i < y_index; i ++) {
+        index += keyboard_btn_count[key_mode][i];
+    }
+
+    return (index + x_index);
 }
 
 
@@ -461,7 +565,7 @@ static void sgl_keyboard_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_even
     int16_t body_w = obj->coords.x2 - obj->coords.x1 + 1;
     int16_t body_h = obj->coords.y2 - obj->coords.y1 + 1;
 
-    uint8_t index = 0;
+    int8_t index = 0, key_mode = KEYBOARD_KEY_MODE(keyboard->key_mode);
     sgl_color_t btn_color = keyboard->btn_desc.color;
     int16_t text_x = 0, text_y = 0;
     int16_t btn_width[KEYBOARD_BTN_COLUMNS] = {0};
@@ -477,21 +581,64 @@ static void sgl_keyboard_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_even
         btn.y1 = obj->coords.y1;
 
         for(int i = 0; i < KEYBOARD_BTN_LINES; i++) {
-            distribute_pos(keybd_btn_width[keyboard->key_mode >> 1][i], keyboard_btn_count[keyboard->key_mode >> 1][i], body_w, keyboard->key_margin, btn_width);
+            distribute_pos(keybd_btn_width[key_mode][i], keyboard_btn_count[key_mode][i], body_w, keyboard->key_margin, btn_width);
 
             btn.x1 = obj->coords.x1;
             btn.y1 += keyboard->key_margin;
             btn.y2 = btn.y1 + btn_height[i] - 1;
 
-            for(int j = 0; j < keyboard_btn_count[keyboard->key_mode >> 1][i]; j++) {
+            for(int j = 0; j < keyboard_btn_count[key_mode][i]; j++) {
                 btn.x1 += keyboard->key_margin;
                 btn.x2 = btn.x1 + btn_width[j] - 1;
 
+                if(index == keyboard->key_index) {
+                    keyboard->btn_desc.color = sgl_color_mixer(btn_color, keyboard->text_color, 128);
+                }
+                else {
+                    keyboard->btn_desc.color = btn_color;
+                }
                 sgl_draw_rect(surf, &btn, &btn, &keyboard->btn_desc);
 
-                text_x = btn.x1 + (btn_width[j] - sgl_font_get_string_width(keybd_btn_map[keyboard->key_mode][index], keyboard->font)) / 2;
-                text_y = btn.y1 + (btn_height[i] - keyboard->font->font_height) / 2;
-                sgl_draw_string_on_bg(surf, &btn, text_x, text_y, keybd_btn_map[keyboard->key_mode][index], keyboard->text_color, keyboard->font, 0);
+                if(index == KEYBOARD_KEY_NUMBER_BACKSPACE && (keyboard->key_mode == KEYBOARD_KEYMODE_SPEC)) {
+                    text_x = btn.x1 + (btn_width[j] - backspace_icon.width) / 2;
+                    text_y = btn.y1 + (btn_height[i] - backspace_icon.height) / 2;
+                    sgl_draw_icon_on_bg(surf, &btn, text_x, text_y, keyboard->text_color, &backspace_icon);
+                }
+                else if(index == KEYBOARD_KEY_BACKSPACE && (keyboard->key_mode < KEYBOARD_KEYMODE_SPEC)) {
+                    text_x = btn.x1 + (btn_width[j] - backspace_icon.width) / 2;
+                    text_y = btn.y1 + (btn_height[i] - backspace_icon.height) / 2;
+                    sgl_draw_icon_on_bg(surf, &btn, text_x, text_y, keyboard->text_color, &backspace_icon);
+                }
+                else if(index == KEYBOARD_KEY_ENTER) {
+                    text_x = btn.x1 + (btn_width[j] - ok_icon.width) / 2;
+                    text_y = btn.y1 + (btn_height[i] - ok_icon.height) / 2;
+                    sgl_draw_icon_on_bg(surf, &btn, text_x, text_y, keyboard->text_color, &ok_icon);
+                }
+                else if(index == KEYBOARD_KEY_NEWLINE && (keyboard->key_mode != KEYBOARD_KEYMODE_SPEC)) {
+                    text_x = btn.x1 + (btn_width[j] - newline_icon.width) / 2;
+                    text_y = btn.y1 + (btn_height[i] - newline_icon.height) / 2;
+                    sgl_draw_icon_on_bg(surf, &btn, text_x, text_y, keyboard->text_color, &newline_icon);
+                }
+                else if(index == KEYBOARD_KEY_CLOSE) {
+                    text_x = btn.x1 + (btn_width[j] - keybd_icon.width) / 2;
+                    text_y = btn.y1 + (btn_height[i] - keybd_icon.height) / 2;
+                    sgl_draw_icon_on_bg(surf, &btn, text_x, text_y, keyboard->text_color, &keybd_icon);
+                }
+                else if(index == KEYBOARD_KEY_LEFT) {
+                    text_x = btn.x1 + (btn_width[j] - left_icon.width) / 2;
+                    text_y = btn.y1 + (btn_height[i] - left_icon.height) / 2;
+                    sgl_draw_icon_on_bg(surf, &btn, text_x, text_y, keyboard->text_color, &left_icon);
+                }
+                else if(index == KEYBOARD_KEY_RIGHT) {
+                    text_x = btn.x1 + (btn_width[j] - right_icon.width) / 2;
+                    text_y = btn.y1 + (btn_height[i] - right_icon.height) / 2;
+                    sgl_draw_icon_on_bg(surf, &btn, text_x, text_y, keyboard->text_color, &right_icon);
+                }
+                else {
+                    text_x = btn.x1 + (btn_width[j] - sgl_font_get_string_width(keybd_btn_map[keyboard->key_mode][index], keyboard->font)) / 2;
+                    text_y = btn.y1 + (btn_height[i] - keyboard->font->font_height) / 2;
+                    sgl_draw_string_on_bg(surf, &btn, text_x, text_y, keybd_btn_map[keyboard->key_mode][index], keyboard->text_color, keyboard->font, 0);
+                }
 
                 btn.x1 += btn_width[j];
                 index ++;
@@ -499,8 +646,31 @@ static void sgl_keyboard_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_even
 
             btn.y1 += btn_height[i];
         }
+
+        keyboard->btn_desc.color = btn_color;
     }
     else if(evt->type == SGL_EVENT_PRESSED) {
+        index = keyboard_pos_to_index(evt->pos.x, evt->pos.y, keyboard, body_w, body_h);
+        if(index < 0) {
+            return;
+        }
+
+        keyboard->key_index = index;
+
+        uint8_t key_ascii = keyboard_index_to_ascii(keyboard->key_mode, index);
+        if(key_ascii == KEYBOARD_KEY_TO_UPPER) {
+            keyboard->key_mode = KEYBOARD_KEYMODE_UPPER;
+            keyboard->key_index = KEYBOARD_KEY_INVALID;
+        }
+        else if(key_ascii == KEYBOARD_KEY_TO_LOWER) {
+            keyboard->key_mode = KEYBOARD_KEYMODE_LOWER;
+            keyboard->key_index = KEYBOARD_KEY_INVALID;
+        }
+        else if(key_ascii == KEYBOARD_KEY_TO_SPEC) {
+            keyboard->key_mode = KEYBOARD_KEYMODE_SPEC;
+            keyboard->key_index = KEYBOARD_KEY_INVALID;
+        }
+
         if(obj->event_fn) {
             obj->event_fn(evt);
         }
@@ -514,6 +684,10 @@ static void sgl_keyboard_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_even
 
         if(keyboard->key_margin == 0) {
             keyboard->key_margin = sgl_max(body_w / 128, 1);
+        }
+
+        if(keyboard->btn_desc.radius == 0) {
+            keyboard->btn_desc.radius = sgl_max(keyboard->key_margin, 2);
         }
 
         SGL_ASSERT(keyboard->font != NULL);
@@ -557,8 +731,8 @@ sgl_obj_t* sgl_keyboard_create(sgl_obj_t* parent)
 
     keyboard->btn_desc.alpha = SGL_THEME_ALPHA;
     keyboard->btn_desc.color = SGL_THEME_COLOR;
-    keyboard->btn_desc.radius = 2;
-    keyboard->btn_desc.border = 1;
+    keyboard->btn_desc.radius = 0;
+    keyboard->btn_desc.border = SGL_THEME_BORDER_WIDTH;
     keyboard->btn_desc.border_color = SGL_THEME_BORDER_COLOR;
     keyboard->btn_desc.pixmap = NULL;
 
