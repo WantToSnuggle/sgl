@@ -724,7 +724,7 @@ sgl_obj_t* sgl_keyboard_create(sgl_obj_t* parent)
     keyboard->body_desc.alpha = SGL_THEME_ALPHA;
     keyboard->body_desc.color = SGL_THEME_COLOR;
     keyboard->body_desc.radius = SGL_THEME_RADIUS;
-    keyboard->body_desc.border = SGL_THEME_BORDER_WIDTH;
+    keyboard->body_desc.border = 1;
     keyboard->body_desc.border_color = SGL_THEME_BORDER_COLOR;
     keyboard->body_desc.pixmap = NULL;
     keyboard->text_color = SGL_THEME_TEXT_COLOR;
@@ -732,11 +732,11 @@ sgl_obj_t* sgl_keyboard_create(sgl_obj_t* parent)
     keyboard->btn_desc.alpha = SGL_THEME_ALPHA;
     keyboard->btn_desc.color = SGL_THEME_COLOR;
     keyboard->btn_desc.radius = 0;
-    keyboard->btn_desc.border = SGL_THEME_BORDER_WIDTH;
+    keyboard->btn_desc.border = 1;
     keyboard->btn_desc.border_color = SGL_THEME_BORDER_COLOR;
     keyboard->btn_desc.pixmap = NULL;
 
-    keyboard->key_mode = KEYBOARD_KEYMODE_SPEC;
+    keyboard->key_mode = KEYBOARD_KEYMODE_LOWER;
 
     keyboard->key_margin = 0;
 
