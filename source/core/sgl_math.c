@@ -333,3 +333,48 @@ uint16_t sgl_atan2_angle(int x, int y)
     }
     return degree;
 }
+
+
+/**
+ * @brief Split the length into n parts, with the weight of each part.
+ * @param weight: The weight of each part.
+ * @param count: The count of parts.
+ * @param length: The length to split.
+ * @param gap: The gap between each part.
+ * @param out: The length of each part.
+ * @note The error accumulation method of Bresenham's algorithm
+ */
+void sgl_split_len(const uint8_t *weight, int count, int16_t length, int16_t gap, int16_t *out)
+{
+    int total_w = 0, span = 0, accumulated = 0, error = 0;
+    for (int i = 0; i < count; i++) {
+        total_w += weight[i];
+    }
+
+    span = length - gap * (count + 1);
+
+    for (int i = 0; i < count; i++) {
+        int numerator = weight[i] * span;
+        out[i] = numerator / total_w;
+        
+        error += numerator % total_w;
+        if (error >= total_w) {
+            out[i] += 1;
+            error -= total_w;
+        }
+
+        accumulated += out[i];
+    }
+
+    error = span - accumulated;
+
+    for (int i = 0; i < count && error > 0; i++) {
+        out[i] += 1;
+        error --;
+    }
+
+    for (int i = 0; i < count && error < 0; i++) {
+        out[i] -= 1;
+        error ++;
+    }
+}

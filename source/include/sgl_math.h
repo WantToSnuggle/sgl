@@ -113,6 +113,18 @@ uint16_t sgl_atan2_angle(int x, int y);
 
 
 /**
+ * @brief Split the length into n parts, with the weight of each part.
+ * @param weight: The weight of each part.
+ * @param count: The count of parts.
+ * @param length: The length to split.
+ * @param gap: The gap between each part.
+ * @param out: The length of each part.
+ * @note The error accumulation method of Bresenham's algorithm
+ */
+void sgl_split_len(const uint8_t *weight, int count, int16_t length, int16_t gap, int16_t *out);
+
+
+/**
  * @brief Calculate whether the x and y coordinates have a component.
  * @param x:  The x coordinate on a circle
  * @param y:  The y coordinate on a circle
