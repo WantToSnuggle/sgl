@@ -43,6 +43,10 @@ extern sgl_font_t song23;
 extern sgl_font_t consolas23;
 #endif
 
+#if CONFIG_SGL_FONT_CONSOLAS14
+extern sgl_font_t consolas14;
+#endif
+
 #if CONFIG_SGL_FONT_KAI33
 extern sgl_font_t kai33;
 #endif
