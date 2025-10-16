@@ -251,6 +251,19 @@ static inline void sgl_anim_tick_inc(uint32_t tick_ms)
 
 
 /**
+ * @brief set finish callback for animation
+ * @param  anim animation object
+ * @param  finish_cb finish callback
+ * @return none
+ */
+static inline void sgl_anim_set_finish_cb(sgl_anim_t *anim, void (*finish_cb)(sgl_anim_t *anim))
+{
+    SGL_ASSERT(anim != NULL);
+    anim->finish_cb = finish_cb;
+}
+
+
+/**
  * @brief set auto free flag for animation
  * @param  anim animation
  * @return none
