@@ -220,15 +220,6 @@ extern "C" {
 #define SGL_COLOR_MISTY_ROSE                    sgl_rgb(0xFF, 0xE4, 0xE1)
 #define SGL_COLOR_SEASHELL                      sgl_rgb(0xFF, 0xF5, 0xEE)
 #define SGL_COLOR_FLORAL_WHITE                  sgl_rgb(0xFF, 0xFA, 0xF0)
-#define SGL_COLOR_TAN                           sgl_rgb(0xD2, 0xB4, 0x8C)
-#define SGL_COLOR_WHEAT                         sgl_rgb(0xF5, 0xDE, 0xB3)
-#define SGL_COLOR_SAND                          sgl_rgb(0xC2, 0xB2, 0x90)
-#define SGL_COLOR_BEIGE                         sgl_rgb(0xF5, 0xF5, 0xDC)
-#define SGL_COLOR_IVORY                         sgl_rgb(0xFF, 0xFF, 0xF0)
-#define SGL_COLOR_LAVENDER                      sgl_rgb(0xE6, 0xE6, 0xFA)
-#define SGL_COLOR_MISTY_ROSE                    sgl_rgb(0xFF, 0xE4, 0xE1)
-#define SGL_COLOR_SEASHELL                      sgl_rgb(0xFF, 0xF5, 0xEE)
-#define SGL_COLOR_FLORAL_WHITE                  sgl_rgb(0xFF, 0xFA, 0xF0)
 
 
 #ifdef __cplusplus
