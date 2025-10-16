@@ -397,10 +397,10 @@ typedef struct sgl_obj {
  *   bg_img     - Pointer to the background pixmap; NULL if no background image is set.
  */
 typedef struct sgl_page {
-    sgl_obj_t       obj;
-    sgl_surf_t      surf;
-    sgl_color_t     color;
-    sgl_pixmap_t    *bg_img;
+    sgl_obj_t          obj;
+    sgl_surf_t         surf;
+    sgl_color_t        color;
+    const sgl_pixmap_t *bg_img;
 }sgl_page_t;
 
 
@@ -1380,7 +1380,7 @@ static inline void sgl_area_init(sgl_area_t *area)
  * @param y: y position
  * @return sgl_color_t: pixel color
  */
-static inline sgl_color_t sgl_pixmap_get_pixel(sgl_pixmap_t *pixmap, int16_t x, int16_t y)
+static inline sgl_color_t sgl_pixmap_get_pixel(const sgl_pixmap_t *pixmap, int16_t x, int16_t y)
 {
     SGL_ASSERT(pixmap != NULL);
     return ((sgl_color_t*)pixmap->bitmap)[y * pixmap->width + x];
@@ -1394,7 +1394,7 @@ static inline sgl_color_t sgl_pixmap_get_pixel(sgl_pixmap_t *pixmap, int16_t x, 
  * @param y: y position
  * @return sgl_color_t: pixel color address
  */
-static inline sgl_color_t* sgl_pixmap_get_buf(sgl_pixmap_t *pixmap, int16_t x, int16_t y)
+static inline sgl_color_t* sgl_pixmap_get_buf(const sgl_pixmap_t *pixmap, int16_t x, int16_t y)
 {
     SGL_ASSERT(pixmap != NULL);
     return &((sgl_color_t*)pixmap->bitmap)[y * pixmap->width + x];
@@ -1606,7 +1606,7 @@ sgl_pos_t sgl_get_text_pos(sgl_area_t *area, const sgl_font_t *font, const char 
  * @param offset offset
  * @param type align type
  */
-sgl_pos_t sgl_get_icon_pos(sgl_area_t *area, sgl_icon_pixmap_t *icon, int16_t offset, sgl_align_type_t type);
+sgl_pos_t sgl_get_icon_pos(sgl_area_t *area, const sgl_icon_pixmap_t *icon, int16_t offset, sgl_align_type_t type);
 
 
 /**
@@ -1800,7 +1800,7 @@ static inline int16_t sgl_obj_get_radius(sgl_obj_t *obj)
  * @param pixmap The pixmap to set.
  * @return None
  */
-static inline void sgl_obj_set_pixmap(sgl_obj_t *obj, sgl_pixmap_t *pixmap)
+static inline void sgl_obj_set_pixmap(sgl_obj_t *obj, const sgl_pixmap_t *pixmap)
 {
     sgl_obj_set_style(obj, SGL_STYLE_PIXMAP, (size_t)pixmap);
 }

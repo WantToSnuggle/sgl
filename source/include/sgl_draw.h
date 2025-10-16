@@ -57,12 +57,12 @@ extern "C" {
  * @border_color: border color of rectangle
  */
 typedef struct sgl_draw_rect {
-    sgl_color_t    color;
-    int16_t        radius;
-    uint8_t        alpha;
-    uint8_t        border;
-    sgl_color_t    border_color;
-    sgl_pixmap_t   *pixmap;
+    sgl_color_t        color;
+    int16_t            radius;
+    uint8_t            alpha;
+    uint8_t            border;
+    sgl_color_t        border_color;
+    const sgl_pixmap_t *pixmap;
 }sgl_draw_rect_t;
 
 
@@ -78,14 +78,14 @@ typedef struct sgl_draw_rect {
  * @pixmap: pixmap of rectangle
  */
 typedef struct sgl_draw_circle {
-    int16_t         cx;
-    int16_t         cy;
-    sgl_color_t     color;
-    int16_t         radius;
-    uint8_t         alpha;
-    uint8_t         border;
-    sgl_color_t     border_color;
-    sgl_pixmap_t    *pixmap;
+    int16_t            cx;
+    int16_t            cy;
+    sgl_color_t        color;
+    int16_t            radius;
+    uint8_t            alpha;
+    uint8_t            border;
+    sgl_color_t        border_color;
+    const sgl_pixmap_t *pixmap;
 }sgl_draw_circle_t;
 
 
@@ -99,16 +99,16 @@ typedef struct sgl_draw_circle {
  * @pixmap: pixmap of bar
  */
 typedef struct sgl_draw_bar {
-    int16_t         radius;
-    sgl_color_t     color;
-    sgl_color_t     bg_color;
-    int16_t         knob_offset;
+    int16_t            radius;
+    sgl_color_t        color;
+    sgl_color_t        bg_color;
+    int16_t            knob_offset;
     /* 0: horizontal, 1: vertical */
-    uint8_t         direct;
-    uint8_t         alpha;
-    uint8_t         border;
-    sgl_color_t     border_color;
-    sgl_pixmap_t    *pixmap;
+    uint8_t            direct;
+    uint8_t            alpha;
+    uint8_t            border;
+    sgl_color_t        border_color;
+    const sgl_pixmap_t *pixmap;
 }sgl_draw_bar_t;
 
 
@@ -132,7 +132,7 @@ typedef struct sgl_draw_bar {
 typedef struct sgl_draw_text {
     const char       *text;
     const sgl_font_t *font;
-    sgl_icon_pixmap_t *icon;
+    const sgl_icon_pixmap_t *icon;
     sgl_color_t      color;
     sgl_color_t      bg_color;
     int16_t          radius;
@@ -190,7 +190,7 @@ typedef struct sgl_draw_ring {
  * @alpha: alpha of icon
  */
 typedef struct sgl_draw_icon {
-    sgl_icon_pixmap_t *icon;
+    const sgl_icon_pixmap_t *icon;
     sgl_color_t       color;
     uint8_t           alpha;
     uint8_t           align: 5;
@@ -523,7 +523,7 @@ void sgl_draw_fill_rect_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_area_
  * @param pixmap pixmap pointer
  * @return none
  */
-void sgl_draw_fill_rect_pixmap(sgl_surf_t *surf, sgl_area_t *area, sgl_rect_t *rect, sgl_pixmap_t *pixmap);
+void sgl_draw_fill_rect_pixmap(sgl_surf_t *surf, sgl_area_t *area, sgl_rect_t *rect, const sgl_pixmap_t *pixmap);
 
 
 /**
@@ -535,7 +535,7 @@ void sgl_draw_fill_rect_pixmap(sgl_surf_t *surf, sgl_area_t *area, sgl_rect_t *r
  * @param alpha alpha
  * @return none
  */
-void sgl_draw_fill_rect_pixmap_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_rect_t *rect, sgl_pixmap_t *pixmap, uint8_t alpha);
+void sgl_draw_fill_rect_pixmap_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_rect_t *rect, const sgl_pixmap_t *pixmap, uint8_t alpha);
 
 
 /**
@@ -601,7 +601,7 @@ void sgl_draw_fill_round_rect_with_border(sgl_surf_t *surf, sgl_area_t *area, sg
  * @param pixmap pointer to pixmap
  * @return none
  */
-void sgl_draw_fill_round_rect_pixmap(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, int16_t radius, sgl_pixmap_t *pixmap);
+void sgl_draw_fill_round_rect_pixmap(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, int16_t radius, const sgl_pixmap_t *pixmap);
 
 
 /**
@@ -614,7 +614,7 @@ void sgl_draw_fill_round_rect_pixmap(sgl_surf_t *surf, sgl_area_t *area, sgl_are
  * @param alpha alpha of rectangle
  * @return none
  */
-void sgl_draw_fill_round_rect_pixmap_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, int16_t radius, sgl_pixmap_t *pixmap, uint8_t alpha);
+void sgl_draw_fill_round_rect_pixmap_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, int16_t radius, const sgl_pixmap_t *pixmap, uint8_t alpha);
 
 
 /**
@@ -658,7 +658,7 @@ void sgl_draw_fill_circle_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t
  * @param py  center Y coordinate of the pixmap
  * @return none
  */
-void sgl_draw_fill_circle_pixmap(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_t cy, int16_t radius, sgl_pixmap_t *pixmap, int16_t px, int16_t py);
+void sgl_draw_fill_circle_pixmap(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_t cy, int16_t radius, const sgl_pixmap_t *pixmap, int16_t px, int16_t py);
 
 
 /**
@@ -674,7 +674,7 @@ void sgl_draw_fill_circle_pixmap(sgl_surf_t *surf, sgl_area_t *area, int16_t cx,
  * @param py  center Y coordinate of the pixmap
  * @return none
  */
-void sgl_draw_fill_circle_pixmap_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_t cy, int16_t radius, sgl_pixmap_t *pixmap, uint8_t alpha, int16_t px, int16_t py);
+void sgl_draw_fill_circle_pixmap_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_t cy, int16_t radius, const sgl_pixmap_t *pixmap, uint8_t alpha, int16_t px, int16_t py);
 
 
 /**
@@ -889,7 +889,7 @@ void sgl_draw_string_lines_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_
  * @param bg_color  background color
  * @param icon   icon pixmap
  */
-void sgl_draw_one_icon( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, sgl_color_t color, sgl_color_t bg_color, sgl_icon_pixmap_t *icon);
+void sgl_draw_one_icon( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, sgl_color_t color, sgl_color_t bg_color, const sgl_icon_pixmap_t *icon);
 
 
 /**
@@ -901,7 +901,7 @@ void sgl_draw_one_icon( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y
  * @param color  color of icon
  * @param icon   icon pixmap
  */
-void sgl_draw_icon_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, sgl_color_t color, sgl_icon_pixmap_t *icon);
+void sgl_draw_icon_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, sgl_color_t color, const sgl_icon_pixmap_t *icon);
 
 
 /**
@@ -914,7 +914,7 @@ void sgl_draw_icon_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t
  * @param alpha  alpha of icon
  * @param icon   icon pixmap
  */
-void sgl_draw_icon_with_alpha( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, sgl_color_t color, uint8_t alpha, sgl_icon_pixmap_t *icon);
+void sgl_draw_icon_with_alpha( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, sgl_color_t color, uint8_t alpha, const sgl_icon_pixmap_t *icon);
 
 
 /**

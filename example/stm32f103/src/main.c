@@ -180,6 +180,11 @@ int main(void)
     // sgl_obj_set_style(textbox, SGL_STYLE_BG_TRANSPARENT, 1);
     //sgl_obj_set_style(textbox, SGL_STYLE_PIXMAP, SGL_PIXMAP(bg_pixmap));
 
+    sgl_obj_t *keyboard = sgl_keyboard_create(NULL);
+    sgl_obj_set_size(keyboard, 240, 150);
+    sgl_obj_set_font(keyboard, &song23);
+    sgl_obj_set_align(keyboard, SGL_ALIGN_BOT_MID);
+
     sgl_obj_t *rect = sgl_rect_create(NULL);
     sgl_obj_set_pos(rect, 20, 20);
     sgl_obj_set_size(rect, 50, 100);
@@ -202,6 +207,8 @@ int main(void)
     sgl_obj_set_radius(rect2, 10);
     sgl_obj_set_alpha(rect2, 150);
 
+
+    
     // sgl_obj_t *rect3 = sgl_rect_create(NULL);
     // sgl_obj_set_pos(rect3, 20, 20);
     // sgl_obj_set_size(rect3, 50, 50);

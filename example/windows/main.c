@@ -18,14 +18,14 @@ void flush_window_callback(void *param);
 
 
 extern const unsigned char gImage_btn[230400];
-sgl_pixmap_t keyboard_pixmap = {
+const sgl_pixmap_t keyboard_pixmap = {
     .width = 64,
     .height = 64,
     .bitmap = gImage_btn,
 };
 
 extern const unsigned char gImage_test[1440000];
-sgl_pixmap_t test_pixmap = {
+const sgl_pixmap_t test_pixmap = {
     .width = 800,
     .height = 480,
     .bitmap = gImage_test,
@@ -147,16 +147,8 @@ void button_callback(sgl_event_t *event)
         sgl_obj_set_border_color(msgbox[msgbox_inx], SGL_RED);
         sgl_obj_set_border_width(msgbox[msgbox_inx], 2);
         sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_TEXT, SGL_TEXT("The Federal Bureau of Investigation (FBI) has seized this domain because it is involved in facilitating the illegal distribution of copyrighted materials, including movies, music, software, and games. Engaging in the unauthorized reproduction, distribution, or exhibition of copyrighted material is a violation of federal law."));
-        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_TEXT_COLOR, SGL_COLOR(SGL_BLUE));
-        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_TITLE_COLOR, SGL_COLOR(SGL_BLUE));
-        sgl_obj_set_bg_color(msgbox[msgbox_inx], SGL_BLACK);
         sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_APPLY_TEXT, SGL_TEXT("GOT"));
         sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_CLOSE_TEXT, SGL_TEXT("CANCEL"));
-        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_BUTTON_COLOR, SGL_COLOR(SGL_RED));
-        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_CLOSE_TEXT_COLOR, SGL_COLOR(SGL_BLACK));
-        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_APPLY_TEXT_COLOR, SGL_COLOR(SGL_BLACK));
-        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_TITLE_COLOR, SGL_COLOR(SGL_RED));
-        sgl_obj_set_alpha(msgbox[msgbox_inx], 255);
         sgl_obj_set_radius(msgbox[msgbox_inx], 8);
 
         sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_APPLY_ICON, SGL_ICON(ok_icon));
@@ -177,6 +169,13 @@ void switch_callback(sgl_event_t *event)
 {
     sgl_obj_move_down((sgl_obj_t*)event->param);
 }
+
+
+void keyboard_callback(sgl_event_t *event)
+{
+    SGL_LOG_INFO("keyboard clicked ascii = %d", sgl_obj_get_style(event->obj, SGL_STYLE_KEYBOARD_OPCODE));
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -420,9 +419,15 @@ int main(int argc, char *argv[])
     sgl_listview_set_child_style(listview, SGL_STYLE_ALPHA, 150);
     sgl_listview_set_child_style(listview, SGL_STYLE_TEXT_ALPHA, 255);
 
+    sgl_obj_t *keyboard = sgl_keyboard_create(NULL);
+    sgl_obj_set_size(keyboard, 800, 200);
+    sgl_obj_set_font(keyboard, &consolas23);
+    sgl_obj_set_align(keyboard, SGL_ALIGN_BOT_MID);
+    // sgl_obj_set_event_cb(keyboard, keyboard_callback, (size_t)keyboard);
+
     //sgl_obj_delete(rect);
 
-    //uint8_t x = 0;
+    uint32_t x = 0;
     while (!quit) {
         //SDL_Delay(10);
         SDL_PollEvent(&MouseEvent);
@@ -439,7 +444,12 @@ int main(int argc, char *argv[])
         sgl_task_handle();
 
         //sgl_obj_set_dirty(sgl_screen_act());
-        // x +=1;
+        x +=1;
+        if(x > 1000000) {
+            x = 0;
+            sgl_event_send_obj(keyboard, SGL_EVENT_OPTION_WALK);
+        }
+
         // sgl_obj_set_pos(rect, x, x);
 
         sgl_port_sdl2_increase_frame_count(sdl2_dev);

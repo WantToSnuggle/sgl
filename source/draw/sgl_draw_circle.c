@@ -157,7 +157,7 @@ void sgl_draw_fill_circle_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t
  * @param py  center Y coordinate of the pixmap
  * @return none
  */
-void sgl_draw_fill_circle_pixmap(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_t cy, int16_t radius, sgl_pixmap_t *pixmap, int16_t px, int16_t py)
+void sgl_draw_fill_circle_pixmap(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_t cy, int16_t radius, const sgl_pixmap_t *pixmap, int16_t px, int16_t py)
 {
     int y2 = 0, real_r2 = 0, alpha = 0;
     int r2 = radius * radius;
@@ -217,7 +217,7 @@ void sgl_draw_fill_circle_pixmap(sgl_surf_t *surf, sgl_area_t *area, int16_t cx,
  * @param py  center Y coordinate of the pixmap
  * @return none
  */
-void sgl_draw_fill_circle_pixmap_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_t cy, int16_t radius, sgl_pixmap_t *pixmap, uint8_t alpha, int16_t px, int16_t py)
+void sgl_draw_fill_circle_pixmap_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_t cy, int16_t radius, const sgl_pixmap_t *pixmap, uint8_t alpha, int16_t px, int16_t py)
 {
     int y2 = 0, real_r2 = 0;
     int r2 = radius * radius;

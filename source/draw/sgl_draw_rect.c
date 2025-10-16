@@ -184,7 +184,7 @@ void sgl_draw_fill_rect_with_alpha_border(sgl_surf_t *surf, sgl_area_t *area, sg
  * @param pixmap pixmap pointer
  * @return none
  */
-void sgl_draw_fill_rect_pixmap(sgl_surf_t *surf, sgl_area_t *area, sgl_rect_t *rect, sgl_pixmap_t *pixmap)
+void sgl_draw_fill_rect_pixmap(sgl_surf_t *surf, sgl_area_t *area, sgl_rect_t *rect, const sgl_pixmap_t *pixmap)
 {
     sgl_area_t clip;
     sgl_color_t *buf = NULL;
@@ -222,7 +222,7 @@ void sgl_draw_fill_rect_pixmap(sgl_surf_t *surf, sgl_area_t *area, sgl_rect_t *r
  * @param alpha alpha
  * @return none
  */
-void sgl_draw_fill_rect_pixmap_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_rect_t *rect, sgl_pixmap_t *pixmap, uint8_t alpha)
+void sgl_draw_fill_rect_pixmap_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_rect_t *rect, const sgl_pixmap_t *pixmap, uint8_t alpha)
 {
     sgl_area_t clip;
     sgl_color_t *buf = NULL;
@@ -593,7 +593,7 @@ void sgl_draw_fill_round_rect_with_alpha_border(sgl_surf_t *surf, sgl_area_t *ar
  * @param pixmap pointer to pixmap
  * @return none
  */
-void sgl_draw_fill_round_rect_pixmap(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, int16_t radius, sgl_pixmap_t *pixmap)
+void sgl_draw_fill_round_rect_pixmap(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, int16_t radius, const sgl_pixmap_t *pixmap)
 {
     sgl_area_t clip;
     sgl_color_t *buf = NULL;
@@ -668,7 +668,7 @@ void sgl_draw_fill_round_rect_pixmap(sgl_surf_t *surf, sgl_area_t *area, sgl_are
  * @param alpha alpha of rectangle
  * @return none
  */
-void sgl_draw_fill_round_rect_pixmap_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, int16_t radius, sgl_pixmap_t *pixmap, uint8_t alpha)
+void sgl_draw_fill_round_rect_pixmap_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, int16_t radius, const sgl_pixmap_t *pixmap, uint8_t alpha)
 {
     sgl_area_t clip;
     sgl_color_t *buf = NULL;

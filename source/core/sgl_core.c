@@ -472,7 +472,7 @@ void sgl_obj_print_name(sgl_obj_t *obj)
 static void sgl_page_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *evt)
 {
     sgl_page_t *page = (sgl_page_t *)obj;
-    sgl_pixmap_t *pixmap = page->bg_img;
+    const sgl_pixmap_t *pixmap = page->bg_img;
 
     if (evt->type == SGL_EVENT_DRAW_MAIN) {
         if (pixmap == NULL) {
@@ -1254,7 +1254,7 @@ sgl_pos_t sgl_get_text_pos(sgl_area_t *area, const sgl_font_t *font, const char 
  * @param offset offset
  * @param type align type
  */
-sgl_pos_t sgl_get_icon_pos(sgl_area_t *area, sgl_icon_pixmap_t *icon, int16_t offset, sgl_align_type_t type)
+sgl_pos_t sgl_get_icon_pos(sgl_area_t *area, const sgl_icon_pixmap_t *icon, int16_t offset, sgl_align_type_t type)
 {
     SGL_ASSERT(area != NULL && icon != NULL);
     sgl_pos_t ret = {.x = 0, .y = 0};

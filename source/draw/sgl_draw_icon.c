@@ -39,7 +39,7 @@
  * @param bg_color  background color
  * @param icon   icon pixmap
  */
-void sgl_draw_one_icon( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, sgl_color_t color, sgl_color_t bg_color, sgl_icon_pixmap_t *icon)
+void sgl_draw_one_icon( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, sgl_color_t color, sgl_color_t bg_color, const sgl_icon_pixmap_t *icon)
 {
     const uint8_t *dot = icon->bitmap;
     sgl_area_t clip;
@@ -112,7 +112,7 @@ void sgl_draw_one_icon( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y
  * @param color  color of icon
  * @param icon   icon pixmap
  */
-void sgl_draw_icon_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, sgl_color_t color, sgl_icon_pixmap_t *icon)
+void sgl_draw_icon_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, sgl_color_t color, const sgl_icon_pixmap_t *icon)
 {
     const uint8_t *dot = icon->bitmap;
     sgl_area_t clip;
@@ -186,7 +186,7 @@ void sgl_draw_icon_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t
  * @param alpha  alpha of icon
  * @param icon   icon pixmap
  */
-void sgl_draw_icon_with_alpha( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, sgl_color_t color, uint8_t alpha, sgl_icon_pixmap_t *icon)
+void sgl_draw_icon_with_alpha( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, sgl_color_t color, uint8_t alpha, const sgl_icon_pixmap_t *icon)
 {
     const uint8_t *dot = icon->bitmap;
     sgl_color_t color_mix;
