@@ -1550,7 +1550,7 @@ uint32_t sgl_utf8_to_unicode(const char *utf8_str, uint32_t *p_unicode_buffer);
  * @param unicode Unicode of the character to be searched
  * @return Index of the character in the font table
  */
-uint32_t sgl_search_unicode_ch_index(sgl_font_t *font, uint32_t unicode);
+uint32_t sgl_search_unicode_ch_index(const sgl_font_t *font, uint32_t unicode);
 
 #endif // !CONFIG_SGL_TEXT_UTF8
 
@@ -1561,7 +1561,7 @@ uint32_t sgl_search_unicode_ch_index(sgl_font_t *font, uint32_t unicode);
  * @return height of font, -1 means error
  * @note this function is used to get the height of a character in a font
  */
-static inline int16_t sgl_font_get_height(sgl_font_t *font)
+static inline int16_t sgl_font_get_height(const sgl_font_t *font)
 {
     SGL_ASSERT(font != NULL);
     return font->font_height;
@@ -1574,7 +1574,7 @@ static inline int16_t sgl_font_get_height(sgl_font_t *font)
  * @param font sgl font
  * @return width of string
  */
-int32_t sgl_font_get_string_width(const char *str, sgl_font_t *font);
+int32_t sgl_font_get_string_width(const char *str, const sgl_font_t *font);
 
 
 /**
@@ -1596,7 +1596,7 @@ sgl_pos_t sgl_get_align_pos(sgl_size_t *parent_size, sgl_size_t *size, sgl_align
  * @param type alignment type
  * @return sgl_pos_t position of text
  */
-sgl_pos_t sgl_get_text_pos(sgl_area_t *area, sgl_font_t *font, const char *text, int16_t offset, sgl_align_type_t type);
+sgl_pos_t sgl_get_text_pos(sgl_area_t *area, const sgl_font_t *font, const char *text, int16_t offset, sgl_align_type_t type);
 
 
 /**
@@ -1870,7 +1870,7 @@ static inline sgl_color_t sgl_obj_get_border_color(sgl_obj_t *obj)
  * @param font The font to set.
  * @return None.
  */
-static inline void sgl_obj_set_font(sgl_obj_t *obj, sgl_font_t *font)
+static inline void sgl_obj_set_font(sgl_obj_t *obj, const sgl_font_t *font)
 {
     sgl_obj_set_style(obj, SGL_STYLE_FONT, (size_t)font);
 }

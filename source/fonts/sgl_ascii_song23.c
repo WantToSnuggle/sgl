@@ -1823,7 +1823,7 @@ static const uint16_t unicode_list_1[] = {
 
 #endif // !CONFIG_SGL_TEXT_UTF8
 
-sgl_font_t song23 = {
+const sgl_font_t song23 = {
     .bitmap = sgl_ascii_song23_bitmap,
     .table = sgl_ascii_song23_tab,
     .font_table_size = SGL_ARRAY_SIZE(sgl_ascii_song23_tab),

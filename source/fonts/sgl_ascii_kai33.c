@@ -2508,7 +2508,7 @@ static const uint16_t unicode_list_1[] = {
 #endif
 
 
-sgl_font_t kai33 = {
+const sgl_font_t kai33 = {
     .bitmap = glyph_bitmap,
     .table = glyph_dsc,
     .font_table_size = SGL_ARRAY_SIZE(glyph_dsc),

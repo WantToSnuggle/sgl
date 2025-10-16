@@ -213,7 +213,7 @@ size_t sgl_msgbox_get_style(sgl_obj_t *obj, sgl_style_type_t type)
 static void sgl_msgbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *evt)
 {
     sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
-    sgl_font_t *font = msgbox->title_desc.font;
+    const sgl_font_t *font = msgbox->title_desc.font;
     int32_t font_height = sgl_font_get_height(font) + 8;
     sgl_color_t tmp_color = SGL_BLACK;
 

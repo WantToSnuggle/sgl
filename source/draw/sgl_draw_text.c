@@ -67,7 +67,7 @@
  * @note this function is only support bpp:4
  */
 void sgl_draw_character( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, uint32_t ch_index,
-                        sgl_color_t color, sgl_color_t bg_color, sgl_font_t *font)
+                        sgl_color_t color, sgl_color_t bg_color, const sgl_font_t *font)
 {
     int offset_y2 = font->font_height - font->table[ch_index].ofs_y;
     const uint8_t *dot = &font->bitmap[font->table[ch_index].bitmap_index];
@@ -128,7 +128,7 @@ void sgl_draw_character( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t 
  * @note this function is only support bpp:4
  */
 void sgl_draw_character_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, uint32_t ch_index,
-                              sgl_color_t color, sgl_font_t *font)
+                              sgl_color_t color, const sgl_font_t *font)
 {
     int offset_y2 = font->font_height - font->table[ch_index].ofs_y;
     const uint8_t *dot = &font->bitmap[font->table[ch_index].bitmap_index];
@@ -190,7 +190,7 @@ void sgl_draw_character_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, in
  * @note this function is only support bpp:4
  */
 void sgl_draw_character_with_alpha( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, uint32_t ch_index,
-                                   sgl_color_t color, uint8_t alpha, sgl_font_t *font)
+                                   sgl_color_t color, uint8_t alpha, const sgl_font_t *font)
 {
     int offset_y2 = font->font_height - font->table[ch_index].ofs_y;
     const uint8_t *dot = &font->bitmap[font->table[ch_index].bitmap_index];
@@ -253,7 +253,7 @@ void sgl_draw_character_with_alpha( sgl_surf_t *surf, sgl_area_t *area, int16_t 
  * @return none
  */
 void sgl_draw_string(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str,
-                    sgl_color_t color, sgl_color_t bg_color, sgl_font_t *font)
+                    sgl_color_t color, sgl_color_t bg_color, const sgl_font_t *font)
 {
     int16_t offset_x = x;
     uint32_t ch_index;
@@ -288,7 +288,7 @@ void sgl_draw_string(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, c
  * @return none
  */
 void sgl_draw_string_on_bg(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str,
-                          sgl_color_t color, sgl_font_t *font, int16_t margin)
+                          sgl_color_t color, const sgl_font_t *font, int16_t margin)
 {
     int16_t offset_x = x + margin;
     uint32_t ch_index;
@@ -324,7 +324,7 @@ void sgl_draw_string_on_bg(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_
  * @return none
  */
 void sgl_draw_string_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str,
-                               sgl_color_t color, uint8_t alpha, sgl_font_t *font, int16_t margin)
+                               sgl_color_t color, uint8_t alpha, const sgl_font_t *font, int16_t margin)
 {
     int16_t offset_x = x + margin;
     uint32_t ch_index;
@@ -361,7 +361,7 @@ void sgl_draw_string_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t x, i
  * @return none
  */
 void sgl_draw_string_lines(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str,
-                    sgl_color_t color, sgl_color_t bg_color, sgl_font_t *font, uint8_t line_space, int16_t margin)
+                    sgl_color_t color, sgl_color_t bg_color, const sgl_font_t *font, uint8_t line_space, int16_t margin)
 {
     int16_t offset_x = x + margin;
     int16_t ch_index;
@@ -407,7 +407,7 @@ void sgl_draw_string_lines(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_
  * @return none
  */
 void sgl_draw_string_lines_on_bg(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str,
-                          sgl_color_t color, sgl_font_t *font, uint8_t line_space, int16_t margin)
+                          sgl_color_t color, const sgl_font_t *font, uint8_t line_space, int16_t margin)
 {
     int16_t offset_x = x + margin;
     int16_t ch_index;
@@ -454,7 +454,7 @@ void sgl_draw_string_lines_on_bg(sgl_surf_t *surf, sgl_area_t *area, int16_t x, 
  * @return none
  */
 void sgl_draw_string_lines_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str,
-                               sgl_color_t color, uint8_t alpha, sgl_font_t *font, uint8_t line_space, int16_t margin)
+                               sgl_color_t color, uint8_t alpha, const sgl_font_t *font, uint8_t line_space, int16_t margin)
 {
     int16_t offset_x = x + margin;
     int16_t ch_index;
@@ -500,7 +500,7 @@ void sgl_draw_text(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_dra
     sgl_area_t clip;
     sgl_pos_t align_pos;
     uint8_t alpha = desc->alpha;
-    sgl_font_t *font = desc->font;
+    const sgl_font_t *font = desc->font;
     int text_x = 0, icon_y = 0;
 
     SGL_ASSERT(desc->text != NULL);

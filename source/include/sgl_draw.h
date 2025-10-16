@@ -131,7 +131,7 @@ typedef struct sgl_draw_bar {
  */
 typedef struct sgl_draw_text {
     const char       *text;
-    sgl_font_t       *font;
+    const sgl_font_t *font;
     sgl_icon_pixmap_t *icon;
     sgl_color_t      color;
     sgl_color_t      bg_color;
@@ -750,7 +750,7 @@ void sgl_draw_fill_ring_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t c
  * @return none
  * @note this function is only support bpp:4
  */
-void sgl_draw_character(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, uint32_t ch_index, sgl_color_t color, sgl_color_t bg_color, sgl_font_t *font);
+void sgl_draw_character(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, uint32_t ch_index, sgl_color_t color, sgl_color_t bg_color, const sgl_font_t *font);
 
 
 /**
@@ -765,7 +765,7 @@ void sgl_draw_character(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y
  * @return none
  * @note this function is only support bpp:4
  */
-void sgl_draw_character_on_bg(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, uint32_t ch_index, sgl_color_t color, sgl_font_t *font);
+void sgl_draw_character_on_bg(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, uint32_t ch_index, sgl_color_t color, const sgl_font_t *font);
 
 
 /**
@@ -781,7 +781,7 @@ void sgl_draw_character_on_bg(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int
  * @return none
  * @note this function is only support bpp:4
  */
-void sgl_draw_character_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, uint32_t ch_index, sgl_color_t color, uint8_t alpha, sgl_font_t *font);
+void sgl_draw_character_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, uint32_t ch_index, sgl_color_t color, uint8_t alpha, const sgl_font_t *font);
 
 
 /**
@@ -796,7 +796,7 @@ void sgl_draw_character_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t x
  * @param font Pointer to the font structure containing character data
  * @return none
  */
-void sgl_draw_string(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str, sgl_color_t color, sgl_color_t bg_color, sgl_font_t *font);
+void sgl_draw_string(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str, sgl_color_t color, sgl_color_t bg_color, const sgl_font_t *font);
 
 
 /**
@@ -811,7 +811,7 @@ void sgl_draw_string(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, c
  * @param margin Margin between x and y edge
  * @return none
  */
-void sgl_draw_string_on_bg(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str, sgl_color_t color, sgl_font_t *font, int16_t margin);
+void sgl_draw_string_on_bg(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str, sgl_color_t color, const sgl_font_t *font, int16_t margin);
 
 
 /**
@@ -826,7 +826,7 @@ void sgl_draw_string_on_bg(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_
  * @param font Pointer to the font structure containing character data
  * @return none
  */
-void sgl_draw_string_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str, sgl_color_t color, uint8_t alpha, sgl_font_t *font, int16_t margin);
+void sgl_draw_string_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str, sgl_color_t color, uint8_t alpha, const sgl_font_t *font, int16_t margin);
 
 
 /**
@@ -843,7 +843,7 @@ void sgl_draw_string_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t x, i
  * @param margin Margin between x and y edge
  * @return none
  */
-void sgl_draw_string_lines(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str, sgl_color_t color, sgl_color_t bg_color, sgl_font_t *font, uint8_t line_space, int16_t margin);
+void sgl_draw_string_lines(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str, sgl_color_t color, sgl_color_t bg_color, const sgl_font_t *font, uint8_t line_space, int16_t margin);
 
 
 /**
@@ -859,7 +859,7 @@ void sgl_draw_string_lines(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_
  * @param margin Margin between x and y edge
  * @return none
  */
-void sgl_draw_string_lines_on_bg(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str, sgl_color_t color, sgl_font_t *font, uint8_t line_space, int16_t margin);
+void sgl_draw_string_lines_on_bg(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str, sgl_color_t color, const sgl_font_t *font, uint8_t line_space, int16_t margin);
 
 
 /**
@@ -876,7 +876,7 @@ void sgl_draw_string_lines_on_bg(sgl_surf_t *surf, sgl_area_t *area, int16_t x, 
  * @param margin Margin between x and y edge
  * @return none
  */
-void sgl_draw_string_lines_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str, sgl_color_t color, uint8_t alpha, sgl_font_t *font, uint8_t line_space, int16_t margin);
+void sgl_draw_string_lines_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str, sgl_color_t color, uint8_t alpha, const sgl_font_t *font, uint8_t line_space, int16_t margin);
 
 
 /**

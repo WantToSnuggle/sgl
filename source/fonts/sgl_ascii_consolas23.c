@@ -1686,7 +1686,7 @@ static const uint16_t unicode_list_1[] = {
 };
 #endif //!CONFIG_SGL_TEXT_UTF8
 
-sgl_font_t consolas23 = {
+const sgl_font_t consolas23 = {
     .bitmap = sgl_ascii_consolas23_bitmap,
     .table = sgl_ascii_consolas23_tab,
     .font_table_size = SGL_ARRAY_SIZE(sgl_ascii_consolas23_tab),

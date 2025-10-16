@@ -1101,7 +1101,7 @@ uint32_t sgl_utf8_to_unicode(const char *utf8_str, uint32_t *p_unicode_buffer)
  * @param unicode Unicode of the character to be searched
  * @return Index of the character in the font table
  */
-uint32_t sgl_search_unicode_ch_index(sgl_font_t *font, uint32_t unicode)
+uint32_t sgl_search_unicode_ch_index(const sgl_font_t *font, uint32_t unicode)
 {
     uint32_t left = 0;
     uint32_t right = font->unicode_list_len;
@@ -1131,7 +1131,7 @@ uint32_t sgl_search_unicode_ch_index(sgl_font_t *font, uint32_t unicode)
  * @param font sgl font
  * @return width of string
  */
-int32_t sgl_font_get_string_width(const char *str, sgl_font_t *font)
+int32_t sgl_font_get_string_width(const char *str, const sgl_font_t *font)
 {
     SGL_ASSERT(font != NULL);
     int32_t len = 0;
@@ -1225,7 +1225,7 @@ sgl_pos_t sgl_get_align_pos(sgl_size_t *parent_size, sgl_size_t *size, sgl_align
  * @param type alignment type
  * @return sgl_pos_t position of text
  */
-sgl_pos_t sgl_get_text_pos(sgl_area_t *area, sgl_font_t *font, const char *text, int16_t offset, sgl_align_type_t type)
+sgl_pos_t sgl_get_text_pos(sgl_area_t *area, const sgl_font_t *font, const char *text, int16_t offset, sgl_align_type_t type)
 {
     SGL_ASSERT(area != NULL && font != NULL);
     sgl_pos_t ret = {.x = 0, .y = 0};
