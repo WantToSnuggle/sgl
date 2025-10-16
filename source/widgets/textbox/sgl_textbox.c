@@ -302,17 +302,17 @@ sgl_obj_t* sgl_textbox_create(sgl_obj_t* parent)
     textbox->bg.alpha = SGL_ALPHA_MAX;
 
     textbox->scroll_bg.alpha = SGL_ALPHA_MAX;
-    textbox->scroll_bg.color = SGL_WHITE;
+    textbox->scroll_bg.color = SGL_COLOR_WHITE;
     // textbox->scroll_bg.radius = 2;
 
     textbox->scroll_fg.alpha = SGL_ALPHA_MAX;
-    textbox->scroll_fg.color = SGL_GRAY;
+    textbox->scroll_fg.color = SGL_COLOR_GRAY;
     // textbox->scroll_fg.radius = 2;
 
     textbox->desc.alpha = SGL_ALPHA_MAX;
     textbox->desc.bg_flag = true;
-    textbox->desc.bg_color = SGL_BLACK;
-    textbox->desc.color = SGL_WHITE;
+    textbox->desc.bg_color = SGL_COLOR_BLACK;
+    textbox->desc.color = SGL_COLOR_WHITE;
     textbox->desc.line_space = 1;
     textbox->desc.mode = SGL_DRAW_TEXT_LINES;
     textbox->desc.text = "textbox";

@@ -68,9 +68,9 @@ static int sdl_create_windows(SDL_Window **m_window, SDL_Renderer **m_renderer, 
 
     SDL_SetWindowTitle(*m_window, title);
 
-    // Clear the window with a SGL_WHITE background
+    // Clear the window with a SGL_COLOR_WHITE background
     for(int i = 0; i< CONFIG_SGL_PANEL_WIDTH * CONFIG_SGL_PANEL_HEIGHT; i++) {
-        sdl2_frame_buffer[i] = SGL_WHITE;
+        sdl2_frame_buffer[i] = SGL_COLOR_WHITE;
     }
 
     SDL_SetRenderDrawColor( *m_renderer, 0, 0, 0, 255);
@@ -95,7 +95,6 @@ static uint32_t system_tick(uint32_t interval, void *param)
     sgl_port_sdl2_t *sdl2_dev = (sgl_port_sdl2_t*)param;
     SGL_UNUSED(mm);
     printf("SGL SDL2 Frame = %lld\n", sdl2_dev->frame_count);
-
     printf("Memory: total: %lld used: %lld, free = %lld\n", mm.total_size, mm.used_size, mm.free_size);
     sdl2_dev->frame_count = 0;
 	return interval;

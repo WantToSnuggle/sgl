@@ -145,24 +145,24 @@ int main(void)
     sgl_obj_set_font(numbberkbd, &song23);
     sgl_obj_set_radius(numbberkbd, 5);
     //sgl_obj_set_style(numbberkbd, SGL_STYLE_NUMBERKBD_BTN_MARGIN, 3);
-    // sgl_obj_set_style(numbberkbd, SGL_STYLE_NUMBERKBD_BTN_COLOR, SGL_COLOR(SGL_BLACK));
-    // sgl_obj_set_style(numbberkbd, SGL_STYLE_NUMBERKBD_BTN_BORDER_COLOR, SGL_COLOR(SGL_WHITE));
+    // sgl_obj_set_style(numbberkbd, SGL_STYLE_NUMBERKBD_BTN_COLOR, SGL_COLOR(SGL_COLOR_BLACK));
+    // sgl_obj_set_style(numbberkbd, SGL_STYLE_NUMBERKBD_BTN_BORDER_COLOR, SGL_COLOR(SGL_COLOR_WHITE));
     sgl_obj_set_style(numbberkbd, SGL_STYLE_NUMBERKBD_BTN_BORDER_WIDTH, 1);
-    // sgl_obj_set_style(numbberkbd, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_RED));
+    // sgl_obj_set_style(numbberkbd, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_COLOR_RED));
     sgl_obj_set_style(numbberkbd, SGL_STYLE_NUMBERKBD_BTN_RADIUS, 5);
 
     // sgl_obj_t *label2 = sgl_label_create(NULL);
     // // sgl_obj_set_pos(label2, 300, 200);
     // // sgl_obj_set_size(label2, 200, 200);
     // sgl_obj_set_style(label2, SGL_STYLE_FONT, SGL_FONT(song23));
-    // sgl_obj_set_style(label2, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_BLUE));
+    // sgl_obj_set_style(label2, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_COLOR_BLUE));
     //sgl_obj_set_style(label2, SGL_STYLE_TEXT, SGL_TEXT(arcbuf));
 
     // sgl_obj_t *textbox = sgl_textline_create(NULL);
     // sgl_obj_set_pos(textbox, 20, 100);
     // sgl_obj_set_size(textbox, 200, 300);
-    // sgl_obj_set_style(textbox, SGL_STYLE_BG_COLOR, SGL_COLOR(SGL_GRAY));
-    // sgl_obj_set_style(textbox, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_BLUE));
+    // sgl_obj_set_style(textbox, SGL_STYLE_BG_COLOR, SGL_COLOR(SGL_COLOR_GRAY));
+    // sgl_obj_set_style(textbox, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_COLOR_BLUE));
     // sgl_obj_set_style(textbox, SGL_STYLE_FONT, SGL_FONT(song23));
     // sgl_obj_set_style(textbox, SGL_STYLE_TEXT_MARGIN, 10);
     // sgl_obj_set_style(textbox, SGL_STYLE_RADIUS, 10);
@@ -174,8 +174,8 @@ int main(void)
 
     // sgl_obj_set_style(textbox, SGL_STYLE_FONT, SGL_FONT(song23));
     // sgl_obj_set_style(textbox, SGL_STYLE_TEXT, SGL_TEXT("SGL (Small Graphics Library) is a lightweight and a beautiful and lightweight GUI (Graphics User Interface) for MCU-level processors.SGL (Small Graphics Library) is a lightweight and a beautiful and lightweight GUI (Graphics User Interface) for MCU-level processors."));
-    // sgl_obj_set_style(textbox, SGL_STYLE_BG_COLOR, SGL_COLOR(SGL_GREEN));
-    // sgl_obj_set_style(textbox, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_RED));
+    // sgl_obj_set_style(textbox, SGL_STYLE_BG_COLOR, SGL_COLOR(SGL_COLOR_GREEN));
+    // sgl_obj_set_style(textbox, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_COLOR_RED));
     // sgl_obj_set_style(textbox, SGL_STYLE_RADIUS, 10);
     // sgl_obj_set_style(textbox, SGL_STYLE_BG_TRANSPARENT, 1);
     //sgl_obj_set_style(textbox, SGL_STYLE_PIXMAP, SGL_PIXMAP(bg_pixmap));
@@ -190,8 +190,8 @@ int main(void)
     sgl_obj_set_size(rect, 50, 100);
     //sgl_obj_set_clickable(rect);
     sgl_obj_set_alpha(rect, 255);
-    sgl_obj_set_color(rect, SGL_GRAY);
-    sgl_obj_set_border_color(rect, SGL_GREEN);
+    sgl_obj_set_color(rect, SGL_COLOR_GRAY);
+    sgl_obj_set_border_color(rect, SGL_COLOR_GREEN);
     sgl_obj_set_border_width(rect, 3);
     sgl_obj_set_radius(rect, 10);
     sgl_obj_set_alpha(rect, 150);
@@ -202,7 +202,7 @@ int main(void)
     //sgl_obj_set_clickable(rect);
     sgl_obj_set_alpha(rect2, 255);
     sgl_obj_set_color(rect2, SGL_BRIGHT_PURPLE);
-    sgl_obj_set_border_color(rect2, SGL_GREEN);
+    sgl_obj_set_border_color(rect2, SGL_COLOR_GREEN);
     sgl_obj_set_border_width(rect2, 3);
     sgl_obj_set_radius(rect2, 10);
     sgl_obj_set_alpha(rect2, 150);
@@ -214,8 +214,8 @@ int main(void)
     // sgl_obj_set_size(rect3, 50, 50);
     // //sgl_obj_set_clickable(rect);
     // sgl_obj_set_alpha(rect3, 255);
-    // sgl_obj_set_color(rect3, SGL_RED);
-    // sgl_obj_set_border_color(rect3, SGL_BLACK);
+    // sgl_obj_set_color(rect3, SGL_COLOR_RED);
+    // sgl_obj_set_border_color(rect3, SGL_COLOR_BLACK);
     // sgl_obj_set_border_width(rect3, 3);
     // sgl_obj_set_radius(rect3, 10);
     // sgl_obj_set_alpha(rect3, 255);
@@ -225,8 +225,8 @@ int main(void)
     // sgl_obj_set_size(rect4, 50, 50);
     // //sgl_obj_set_clickable(rect);
     // sgl_obj_set_alpha(rect4, 255);
-    // sgl_obj_set_color(rect4, SGL_BLUE);
-    // sgl_obj_set_border_color(rect4, SGL_BLACK);
+    // sgl_obj_set_color(rect4, SGL_COLOR_BLUE);
+    // sgl_obj_set_border_color(rect4, SGL_COLOR_BLACK);
     // sgl_obj_set_border_width(rect4, 3);
     // sgl_obj_set_radius(rect4, 10);
     // sgl_obj_set_alpha(rect4, 255);
@@ -236,8 +236,8 @@ int main(void)
     // sgl_obj_set_size(rect5, 50, 50);
     // //sgl_obj_set_clickable(rect);
     // sgl_obj_set_alpha(rect5, 255);
-    // sgl_obj_set_color(rect5, SGL_LIGHT_GRAY);
-    // sgl_obj_set_border_color(rect5, SGL_BLACK);
+    // sgl_obj_set_color(rect5, SGL_COLOR_LIGHT_GRAY);
+    // sgl_obj_set_border_color(rect5, SGL_COLOR_BLACK);
     // sgl_obj_set_border_width(rect5, 3);
     // sgl_obj_set_radius(rect5, 10);
     // sgl_obj_set_alpha(rect5, 255);

@@ -68,9 +68,9 @@ static int sdl_create_windows(SDL_Window **m_window, SDL_Renderer **m_renderer, 
 
     SDL_SetWindowTitle(*m_window, title);
 
-    // Clear the window with a SGL_WHITE background
+    // Clear the window with a SGL_COLOR_WHITE background
     for(int i = 0; i< CONFIG_SGL_PANEL_WIDTH * CONFIG_SGL_PANEL_HEIGHT; i++) {
-        sdl2_frame_buffer[i] = SGL_WHITE;
+        sdl2_frame_buffer[i] = SGL_COLOR_WHITE;
     }
 
     SDL_SetRenderDrawColor( *m_renderer, 0, 0, 0, 255);

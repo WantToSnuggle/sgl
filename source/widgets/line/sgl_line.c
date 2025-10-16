@@ -163,7 +163,7 @@ sgl_obj_t* sgl_line_create(sgl_obj_t* parent)
 #endif
     obj->needinit = 1;
 
-    line->desc.color = SGL_BLACK;
+    line->desc.color = SGL_COLOR_BLACK;
     line->desc.alpha = SGL_ALPHA_MAX;
     line->desc.width = 1;
 

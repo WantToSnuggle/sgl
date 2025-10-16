@@ -215,7 +215,7 @@ static void sgl_msgbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
     sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
     const sgl_font_t *font = msgbox->title_desc.font;
     int32_t font_height = sgl_font_get_height(font) + 8;
-    sgl_color_t tmp_color = SGL_BLACK;
+    sgl_color_t tmp_color;
 
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
         if(msgbox->status & SGL_MSGBOX_STATUS_EXIT) {

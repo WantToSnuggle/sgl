@@ -246,7 +246,7 @@ sgl_obj_t* sgl_listview_add_item(sgl_obj_t *listview, sgl_icon_pixmap_t *icon, c
     new_obj->coords.y2 = new_obj->coords.y1 + plistview->item_height;
 
     sgl_button_set_style(new_obj, SGL_STYLE_TEXT, (size_t)text);
-    sgl_button_set_style(new_obj, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_BLACK));
+    sgl_button_set_style(new_obj, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_COLOR_BLACK));
     sgl_button_set_style(new_obj, SGL_STYLE_ALIGN, SGL_ALIGN_LEFT_MID);
     sgl_button_set_style(new_obj, SGL_STYLE_TEXT_X_OFFSET, 10);
     if(icon) {
@@ -254,8 +254,8 @@ sgl_obj_t* sgl_listview_add_item(sgl_obj_t *listview, sgl_icon_pixmap_t *icon, c
     }
     sgl_button_set_style(new_obj, SGL_STYLE_FONT, (size_t)plistview->font);
     sgl_button_set_style(new_obj, SGL_STYLE_BORDER_WIDTH, 1);
-    sgl_button_set_style(new_obj, SGL_STYLE_BORDER_COLOR, SGL_COLOR(SGL_BLACK));
-    sgl_button_set_style(new_obj, SGL_STYLE_COLOR, SGL_COLOR(SGL_BLUE));
+    sgl_button_set_style(new_obj, SGL_STYLE_BORDER_COLOR, SGL_COLOR(SGL_COLOR_BLACK));
+    sgl_button_set_style(new_obj, SGL_STYLE_COLOR, SGL_COLOR(SGL_COLOR_BLUE));
 
     sgl_obj_set_event_cb(new_obj, sgl_listview_event_cb, (size_t)plistview);
 

@@ -241,8 +241,8 @@ sgl_obj_t* sgl_textline_create(sgl_obj_t* parent)
 
     textline->desc.alpha = SGL_ALPHA_MAX;
     textline->desc.bg_flag = true;
-    textline->desc.bg_color = SGL_BLACK;
-    textline->desc.color = SGL_WHITE;
+    textline->desc.bg_color = SGL_COLOR_BLACK;
+    textline->desc.color = SGL_COLOR_WHITE;
     textline->desc.line_space = 1;
     textline->desc.mode = SGL_DRAW_TEXT_LINES;
     textline->desc.text = "textline";

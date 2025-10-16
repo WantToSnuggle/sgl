@@ -18,14 +18,14 @@ void flush_window_callback(void *param);
 
 
 extern const unsigned char gImage_bg[272640];
-sgl_pixmap_t bg_pixmap = {
+const sgl_pixmap_t bg_pixmap = {
     .width = 213,
     .height = 320,
     .bitmap = gImage_bg,
 };
 
 extern const unsigned char gImage_test[1440000];
-sgl_pixmap_t test_pixmap = {
+const sgl_pixmap_t test_pixmap = {
     .width = 800,
     .height = 480,
     .bitmap = gImage_test,
@@ -144,18 +144,18 @@ void button_callback(sgl_event_t *event)
         sgl_obj_set_size(msgbox[msgbox_inx], 300, 200);
         sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_FONT, SGL_FONT(consolas23));
         sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_TITLE, SGL_TEXT("FBI WARNING"));
-        sgl_obj_set_border_color(msgbox[msgbox_inx], SGL_RED);
+        sgl_obj_set_border_color(msgbox[msgbox_inx], SGL_COLOR_RED);
         sgl_obj_set_border_width(msgbox[msgbox_inx], 2);
         sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_TEXT, SGL_TEXT("The Federal Bureau of Investigation (FBI) has seized this domain because it is involved in facilitating the illegal distribution of copyrighted materials, including movies, music, software, and games. Engaging in the unauthorized reproduction, distribution, or exhibition of copyrighted material is a violation of federal law."));
-        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_TEXT_COLOR, SGL_COLOR(SGL_BLUE));
-        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_TITLE_COLOR, SGL_COLOR(SGL_BLUE));
-        sgl_obj_set_bg_color(msgbox[msgbox_inx], SGL_BLACK);
+        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_TEXT_COLOR, SGL_COLOR(SGL_COLOR_BLUE));
+        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_TITLE_COLOR, SGL_COLOR(SGL_COLOR_BLUE));
+        sgl_obj_set_bg_color(msgbox[msgbox_inx], SGL_COLOR_BLACK);
         sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_APPLY_TEXT, SGL_TEXT("GOT"));
         sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_CLOSE_TEXT, SGL_TEXT("CANCEL"));
-        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_BUTTON_COLOR, SGL_COLOR(SGL_RED));
-        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_CLOSE_TEXT_COLOR, SGL_COLOR(SGL_BLACK));
-        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_APPLY_TEXT_COLOR, SGL_COLOR(SGL_BLACK));
-        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_TITLE_COLOR, SGL_COLOR(SGL_RED));
+        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_BUTTON_COLOR, SGL_COLOR(SGL_COLOR_RED));
+        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_CLOSE_TEXT_COLOR, SGL_COLOR(SGL_COLOR_BLACK));
+        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_APPLY_TEXT_COLOR, SGL_COLOR(SGL_COLOR_BLACK));
+        sgl_obj_set_style(msgbox[msgbox_inx], SGL_STYLE_MSGBOX_TITLE_COLOR, SGL_COLOR(SGL_COLOR_RED));
         sgl_obj_set_alpha(msgbox[msgbox_inx], 255);
         sgl_obj_set_radius(msgbox[msgbox_inx], 8);
 
@@ -195,23 +195,23 @@ int main(int argc, char *argv[])
     sgl_obj_t *rect2 = sgl_rect_create(rect);
     sgl_obj_set_pos(rect2, 20, 20);
     sgl_obj_set_size(rect2, 300, 200);
-    sgl_obj_set_color(rect2, SGL_BLUE);
+    sgl_obj_set_color(rect2, SGL_COLOR_BLUE);
     sgl_obj_set_clickable(rect2);
     sgl_obj_set_radius(rect2, 20);
     sgl_obj_set_alpha(rect2, 128);
     sgl_obj_set_border_width(rect2, 4);
-    sgl_obj_set_border_color(rect2, SGL_RED);
+    sgl_obj_set_border_color(rect2, SGL_COLOR_RED);
 
     sgl_obj_t *rect3 = sgl_rect_create(rect2);
     sgl_obj_set_pos(rect3, 20, 128);
     sgl_obj_set_size(rect3, 20, 100);
     sgl_obj_set_clickable(rect3);
     sgl_obj_set_alpha(rect3, 128);
-    sgl_obj_set_color(rect3, SGL_GRAY);
+    sgl_obj_set_color(rect3, SGL_COLOR_GRAY);
 
     sgl_obj_t *label = sgl_label_create(rect);
     sgl_obj_set_font(label, &song23);
-    sgl_obj_set_color(label, SGL_RED);
+    sgl_obj_set_color(label, SGL_COLOR_RED);
     sgl_obj_set_radius(label, 10);
     sgl_label_set_text(label, "Hello World!");
     sgl_obj_set_style(label, SGL_STYLE_ICON, SGL_ICON(ok_icon));
@@ -241,22 +241,22 @@ int main(int argc, char *argv[])
     sgl_obj_set_size(switch_obj, 100, 40);
     sgl_obj_set_radius(switch_obj, 20);
     sgl_obj_set_alpha(switch_obj, 255);
-    sgl_obj_set_color(switch_obj, SGL_LIGHT_GRAY);
-    sgl_obj_set_bg_color(switch_obj, SGL_BLACK);
-    sgl_obj_set_style(switch_obj, SGL_STYLE_KNOB_COLOR, SGL_COLOR(SGL_GREEN));
+    sgl_obj_set_color(switch_obj, SGL_COLOR_LIGHT_GRAY);
+    sgl_obj_set_bg_color(switch_obj, SGL_COLOR_BLACK);
+    sgl_obj_set_style(switch_obj, SGL_STYLE_KNOB_COLOR, SGL_COLOR(SGL_COLOR_GREEN));
     sgl_obj_set_border_width(switch_obj, 2);
-    sgl_obj_set_border_color(switch_obj, SGL_BLUE);
+    sgl_obj_set_border_color(switch_obj, SGL_COLOR_BLUE);
 
     sgl_obj_t *switch_obj2 = sgl_switch_create(rect);
     sgl_obj_set_pos(switch_obj2, 150, 380);
     sgl_obj_set_size(switch_obj2, 100, 40);
     sgl_obj_set_radius(switch_obj2, 20);
     sgl_obj_set_alpha(switch_obj2, 255);
-    sgl_obj_set_color(switch_obj2, SGL_LIGHT_GRAY);
-    sgl_obj_set_bg_color(switch_obj2, SGL_BLACK);
-    sgl_obj_set_style(switch_obj2, SGL_STYLE_KNOB_COLOR, SGL_COLOR(SGL_GREEN));
+    sgl_obj_set_color(switch_obj2, SGL_COLOR_LIGHT_GRAY);
+    sgl_obj_set_bg_color(switch_obj2, SGL_COLOR_BLACK);
+    sgl_obj_set_style(switch_obj2, SGL_STYLE_KNOB_COLOR, SGL_COLOR(SGL_COLOR_GREEN));
     sgl_obj_set_border_width(switch_obj2, 2);
-    sgl_obj_set_border_color(switch_obj2, SGL_BLUE);
+    sgl_obj_set_border_color(switch_obj2, SGL_COLOR_BLUE);
 
     sgl_obj_t *ring = sgl_ring_create(NULL);
     sgl_obj_set_pos(ring, 200, 100);
@@ -264,15 +264,15 @@ int main(int argc, char *argv[])
 
     sgl_obj_set_radius(ring, 49);
     sgl_obj_set_style(ring, SGL_STYLE_RING_WIDTH, 5);
-    sgl_obj_set_color(ring, SGL_LIGHT_GRAY);
+    sgl_obj_set_color(ring, SGL_COLOR_LIGHT_GRAY);
     sgl_obj_set_alpha(ring, 128);
 
     sgl_obj_t *slider = sgl_slider_create(NULL);
     sgl_obj_set_pos(slider, 300, 250);
     sgl_obj_set_size(slider, 50, 200);
     sgl_obj_set_style(slider, SGL_STYLE_DIRECTION, SGL_DIRECT_VERTICAL);
-    sgl_obj_set_color(slider, SGL_RED);
-    sgl_obj_set_bg_color(slider, SGL_GRAY);
+    sgl_obj_set_color(slider, SGL_COLOR_RED);
+    sgl_obj_set_bg_color(slider, SGL_COLOR_GRAY);
     sgl_obj_set_alpha(slider, 255);
     sgl_obj_set_border_width(slider, 2);
 
@@ -285,10 +285,10 @@ int main(int argc, char *argv[])
     sgl_obj_set_size(textline, 200, 200);
     sgl_obj_set_radius(textline, 10);
     sgl_obj_set_style(textline, SGL_STYLE_TEXT, SGL_TEXT("012345784785754"));
-    sgl_obj_set_style(textline, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_BLUE));
+    sgl_obj_set_style(textline, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_COLOR_BLUE));
     sgl_obj_set_font(textline, &consolas23);
     sgl_obj_set_border_width(textline, 2);
-    sgl_obj_set_border_color(textline, SGL_LIGHT_GRAY);
+    sgl_obj_set_border_color(textline, SGL_COLOR_LIGHT_GRAY);
     //sgl_textline_set_text(textline, "Text Line dhekdhefkjehfkjqhfjkqehfkejqfheqkjlfqbekjfbqjklfbqejkfbnqejkfbqjkfnqejkfqefjk");
     //sgl_obj_set_clickable(textline);
 
@@ -305,10 +305,10 @@ int main(int argc, char *argv[])
     sgl_obj_set_size(checkbox, 200, 23);
     sgl_obj_set_font(checkbox, &song23);
     sgl_obj_set_radius(checkbox, 5);
-    // sgl_obj_set_style(checkbox, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_BLUE));
+    // sgl_obj_set_style(checkbox, SGL_STYLE_TEXT_COLOR, SGL_COLOR(SGL_COLOR_BLUE));
     // sgl_obj_set_style(checkbox, SGL_STYLE_TEXT, SGL_TEXT("Check Box Test"));
-    // sgl_obj_set_color(checkbox, SGL_RED);
-    //sgl_obj_set_color(checkbox, SGL_LIGHT_GRAY);
+    // sgl_obj_set_color(checkbox, SGL_COLOR_RED);
+    //sgl_obj_set_color(checkbox, SGL_COLOR_LIGHT_GRAY);
 
     //sgl_obj_set_align(msgbox, SGL_ALIGN_CENTER);
     // sgl_obj_set_event_cb(msgbox, msgbox_callback, (size_t)rect43);
@@ -323,9 +323,9 @@ int main(int argc, char *argv[])
     sgl_obj_set_pos(listview, 50, 100);
     sgl_obj_set_size(listview, 200, 290);
     sgl_obj_set_font(listview, &song23);
-    sgl_obj_set_color(listview, SGL_WHITE);
+    sgl_obj_set_color(listview, SGL_COLOR_WHITE);
     //sgl_obj_set_style(listview, SGL_STYLE_BORDER_WIDTH, 3);
-    //sgl_obj_set_style(listview, SGL_STYLE_BORDER_COLOR, SGL_COLOR(SGL_GRAY));
+    //sgl_obj_set_style(listview, SGL_STYLE_BORDER_COLOR, SGL_COLOR(SGL_COLOR_GRAY));
 
     sgl_listview_add_item(listview, &ok_icon, "Item 1");
     sgl_listview_add_item(listview, &ok_icon, "Item 2");
