@@ -33,13 +33,13 @@ extern "C" {
 #endif
 
 
-#define SGL_LOG_LEVEL_TRACE            0 /**< A lot of logs to give detailed information*/
-#define SGL_LOG_LEVEL_INFO             1 /**< Log important events*/
-#define SGL_LOG_LEVEL_WARN             2 /**< Log if something unwanted happened but didn't caused problem*/
-#define SGL_LOG_LEVEL_ERROR            3 /**< Only critical issue, when the system may fail*/
-#define SGL_LOG_LEVEL_USER             4 /**< Custom logs from the user*/
-#define SGL_LOG_LEVEL_NONE             5 /**< Do not log anything*/
-#define _SGL_LOG_LEVEL_NUM             6 /**< Number of log levels*/
+#define SGL_LOG_LEVEL_TRACE              0 /**< A lot of logs to give detailed information*/
+#define SGL_LOG_LEVEL_INFO               1 /**< Log important events*/
+#define SGL_LOG_LEVEL_WARN               2 /**< Log if something unwanted happened but didn't caused problem*/
+#define SGL_LOG_LEVEL_ERROR              3 /**< Only critical issue, when the system may fail*/
+#define SGL_LOG_LEVEL_USER               4 /**< Custom logs from the user*/
+#define SGL_LOG_LEVEL_NONE               5 /**< Do not log anything*/
+#define _SGL_LOG_LEVEL_NUM               6 /**< Number of log levels*/
 
 
 #if CONFIG_SGL_DEBUG
@@ -160,23 +160,23 @@ void sgl_assert_handler(const char *file, const char *func, int line);
 
 #else // if no define debug mode macro
 
-#define SGL_LOG_NONE                     0
-#define SGL_LOG_TRACE(...)               do {} while(0)
-#define SGL_LOG_INFO(...)                do {} while(0)
-#define SGL_LOG_WARN(...)                do {} while(0)
-#define SGL_LOG_ERROR(...)               do {} while(0)
-#define SGL_LOG_USER(...)                do {} while(0)
-#define SGL_LOG(...)                     do {} while(0)
+#define SGL_LOG_NONE                    0
+#define SGL_LOG_TRACE(...)              do {} while(0)
+#define SGL_LOG_INFO(...)               do {} while(0)
+#define SGL_LOG_WARN(...)               do {} while(0)
+#define SGL_LOG_ERROR(...)              do {} while(0)
+#define SGL_LOG_USER(...)               do {} while(0)
+#define SGL_LOG(...)                    do {} while(0)
 
-#define SGL_ASSERT(condition)            do {} while(0)
+#define SGL_ASSERT(condition)           do {} while(0)
 
 #endif
 
 
 #if CONFIG_SGL_DEBUG
-#define SGL_DEBUG_TRACE(...)             sgl_log(SGL_DEBUG_TRACE_FLAG, __VA_ARGS__)
+#define SGL_DEBUG_TRACE(...)            sgl_log(SGL_DEBUG_TRACE_FLAG, __VA_ARGS__)
 #else
-#define SGL_DEBUG_TRACE(...)             do {} while(0)
+#define SGL_DEBUG_TRACE(...)            do {} while(0)
 #endif
 
 

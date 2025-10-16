@@ -1898,6 +1898,7 @@ static inline void sgl_obj_set_text(sgl_obj_t *obj, const char *text)
 {
     sgl_obj_set_style(obj, SGL_STYLE_TEXT, SGL_TEXT(text));
 }
+#endif // CONFIG_SGL_USE_STYLE_UNIFIED_API
 
 
 #if (CONFIG_SGL_OBJ_USE_NAME)
@@ -1922,10 +1923,6 @@ static inline void sgl_obj_set_name(sgl_obj_t *obj, const char *name)
 void sgl_obj_print_name(sgl_obj_t *obj);
 
 #endif
-
-
-#endif // CONFIG_SGL_USE_STYLE_UNIFIED_API
-
 
 #ifdef __cplusplus
 } /*extern "C"*/

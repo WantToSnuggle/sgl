@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 #include <sgl_core.h>
 #include <sgl_draw.h>
 #include <sgl_math.h>
