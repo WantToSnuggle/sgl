@@ -15,9 +15,11 @@ Please refer to the `docs` directory for documentation.
 ## Quick Start (Based on SDL2 Simulation)
 Steps are as follows:
 1. Install gcc compiler
-2. cd to example/windows directory
-3. make config
-4. make run
+2. git clone https://github.com/sgl-org/sgl-port-windows.git    
+3. cd sgl-port-windows && git submodule init    
+4. git submodule update --remote    
+3. cd demo && make config    
+4. make run    
 
 Note: Please use git terminal or VSCode's git bash terminal to enter the above commands
 
@@ -25,11 +27,13 @@ Note: Please use git terminal or VSCode's git bash terminal to enter the above c
 Download `gcc` from this address (https://github.com/niXman/mingw-builds-binaries/releases/download/13.2.0-rt_v11-rev0/x86_64-13.2.0-release-posix-seh-ucrt-rt_v11-rev0.7z)
 Then extract to any directory and add to environment variables
 
-## 2. Pull `sgl` Source Code
-git clone https://github.com/sgl-org/sgl.git
+## 2. Pull sgl demo Source Code
+git clone https://github.com/sgl-org/sgl-port-windows.git
 
 ## 3. Configure Project
-Switch to `example/windows` directory, then execute `make config` command
+cd sgl-port-windows && git submodule init    
+git submodule update --remote    
+cd demo && make config   
 
 ## 4. Run
 Execute `make run` command to run
