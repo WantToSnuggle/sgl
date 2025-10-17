@@ -42,13 +42,11 @@ extern "C" {
 /* the maximum depth of object*/
 #define  SGL_OBJ_DEPTH_MAX                 (32)
 
-
 #if (CONFIG_SGL_DRAW_USE_DMA)
 #define SGL_DRAW_BUFFER_SIZE               (2)
 #else
 #define SGL_DRAW_BUFFER_SIZE               (1)
 #endif
-
 
 #if (CONFIG_SGL_DIRTY_AREA_THRESHOLD)
 #define SGL_DIRTY_AREA_THRESHOLD           CONFIG_SGL_DIRTY_AREA_THRESHOLD
@@ -128,7 +126,6 @@ typedef struct sgl_area {
     int16_t x2;
     int16_t y2;
 }sgl_area_t;
-
 
 #define sgl_rect_t sgl_area_t
 

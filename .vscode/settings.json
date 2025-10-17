@@ -98,7 +98,8 @@
         "bit": "c",
         "sgl_cfgfix.h": "c",
         "sgl_numberkbd.h": "c",
-        "sgl_textbox.h": "c"
+        "sgl_textbox.h": "c",
+        "sgl_keyboard.h": "c"
     },
     "esbonio.sphinx.confDir": "",
     "iis.configDir": ""

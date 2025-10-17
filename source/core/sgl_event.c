@@ -394,11 +394,6 @@ void sgl_event_task(void)
                 continue;
             }
 
-            /* print object name for debug */
-            #if CONFIG_SGL_OBJ_USE_NAME
-            SGL_LOG_TRACE("Hit object name: %s", obj->name);
-            #endif
-
             /* call the event function */
             if (obj->construct_fn) {
                 sgl_obj_set_dirty(obj);

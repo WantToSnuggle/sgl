@@ -49,15 +49,4 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-#example 
-example/common/*.lst
-example/demo/*.dll
-example/demo/*.exe
-example/demo/src/*.lst
-example/platform/sdl2/sgl_objs
-example/platform/stm32f676/OBJ
-example/platform/stm32f676/OBJ/*
-#tool
-tools/LvglFontTool/*.ini
-
 push.sh

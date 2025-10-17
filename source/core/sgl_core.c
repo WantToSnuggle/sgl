@@ -74,7 +74,7 @@ int sgl_device_fb_register(sgl_device_fb_t *fb_dev)
     sgl_ctx.fb_dev.framebuffer[0]   = fb_dev->framebuffer;
 
     /* double buffer for dma mode */
-    #if (CONFIG_SGL_DRAW_USE_DMA)
+#if (CONFIG_SGL_DRAW_USE_DMA)
     sgl_ctx.fb_swap = 0;
     sgl_ctx.fb_dev.framebuffer_size = fb_dev->framebuffer_size / 2;
     sgl_ctx.fb_dev.framebuffer[1]   = ((sgl_color_t*)fb_dev->framebuffer) + sgl_ctx.fb_dev.framebuffer_size;
@@ -85,9 +85,9 @@ int sgl_device_fb_register(sgl_device_fb_t *fb_dev)
         return -1;
     }
 
-    #else
+#else
     sgl_ctx.fb_dev.framebuffer_size = fb_dev->framebuffer_size;
-    #endif
+#endif
     sgl_ctx.fb_dev.xres             = fb_dev->xres;
     sgl_ctx.fb_dev.yres             = fb_dev->yres;
     sgl_ctx.fb_dev.xres_virtual     = fb_dev->xres_virtual;
@@ -710,9 +710,9 @@ void sgl_screen_load(sgl_obj_t *obj)
     sgl_ctx.started = false;
 
     /* initilize framebuffer swap */
-    #if (CONFIG_SGL_DRAW_USE_DMA)
+#if (CONFIG_SGL_DRAW_USE_DMA)
     sgl_ctx.fb_swap = 0;
-    #endif
+#endif
 
     /* initialize dirty area */
     sgl_dirty_area_init();
@@ -1483,9 +1483,9 @@ static inline void sgl_draw_task(sgl_area_t *dirty)
         surf->y += surf->h;
 
         /* swap buffer for dma operation, but it depends on double buffer */
-        #if (CONFIG_SGL_DRAW_USE_DMA)
+#if (CONFIG_SGL_DRAW_USE_DMA)
         sgl_surf_buffer_swap(surf);
-        #endif
+#endif
     }
 }
 
@@ -1501,9 +1501,9 @@ void sgl_task_handle(void)
     /* event task */
     sgl_event_task();
 
-    #if (CONFIG_SGL_ANIMATION)
+#if (CONFIG_SGL_ANIMATION)
     sgl_anim_task();
-    #endif // !CONFIG_SGL_ANIMATION
+#endif // !CONFIG_SGL_ANIMATION
 
     /* calculate dirty area, if no dirty area, return directly */
     if (! sgl_dirty_area_calculate(&sgl_ctx.page->obj)) {
@@ -1511,12 +1511,12 @@ void sgl_task_handle(void)
     }
 
     /* draw task  */
-    #if (CONFIG_SGL_DIRTY_AREA_THRESHOLD)
+#if (CONFIG_SGL_DIRTY_AREA_THRESHOLD)
     for (int i = 0; i < sgl_ctx.dirty_num; i++) {
         sgl_draw_task(&sgl_ctx.dirty[i]);
     }
-    #else
+#else
     sgl_draw_task(&sgl_ctx.dirty);
-    #endif
+#endif
     sgl_dirty_area_init();
 }
