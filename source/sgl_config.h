@@ -24,6 +24,7 @@
 #define    CONFIG_SGL_FONT_CONSOLAS23         1
 #define    CONFIG_SGL_FONT_KAI33              1
 #define    CONFIG_SGL_FONT_CONSOLAS14         1
+#define    CONFIG_SGL_THEME_DARK       1
 
 
 #endif  //!__CONFIG_H__
