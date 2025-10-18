@@ -362,7 +362,6 @@ void sgl_split_len(const uint8_t *weight, int count, int16_t length, int16_t gap
             out[i] += 1;
             error -= total_w;
         }
-
         accumulated += out[i];
     }
 

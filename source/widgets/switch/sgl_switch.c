@@ -238,7 +238,7 @@ sgl_obj_t* sgl_switch_create(sgl_obj_t* parent)
     p_switch->knob_desc.border = 0;
 
     p_switch->status = false;
-    p_switch->bg_color = SGL_THEME_BG_COLOR;
+    p_switch->bg_color = SGL_THEME_TEXT_COLOR;
 
     sgl_obj_set_clickable(obj);
 

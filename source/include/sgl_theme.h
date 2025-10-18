@@ -45,7 +45,7 @@ extern "C" {
 
 #elif (CONFIG_SGL_THEME_DARK)
 #define SGL_THEME_DESKTOP                    sgl_rgb(10, 10, 10)
-#define SGL_THEME_COLOR                      sgl_rgb(20, 20, 20)
+#define SGL_THEME_COLOR                      sgl_rgb(50, 50, 50)
 #define SGL_THEME_BG_COLOR                   sgl_rgb(20, 20, 20)
 #define SGL_THEME_BORDER_WIDTH               2
 #define SGL_THEME_BORDER_COLOR               sgl_rgb(200, 200, 200)
