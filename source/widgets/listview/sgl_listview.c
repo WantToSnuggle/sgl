@@ -179,13 +179,13 @@ static void sgl_listview_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_even
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
         sgl_draw_rect(surf, &obj->area, &obj->coords, &listview->desc);
     }
-    else if(evt->move == SGL_EVENT_MOVE_UP) {
+    else if(evt->type == SGL_EVENT_MOVE_UP) {
         sgl_listview_set_offset(obj, - evt->distance);
     }
-    else if(evt->move == SGL_EVENT_MOVE_DOWN) {
+    else if(evt->type == SGL_EVENT_MOVE_DOWN) {
         sgl_listview_set_offset(obj, evt->distance);
     }
-    else if(evt->move == SGL_EVENT_RELEASED) {
+    else if(evt->type == SGL_EVENT_RELEASED) {
 
     }
 

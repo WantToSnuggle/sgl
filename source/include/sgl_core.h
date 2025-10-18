@@ -1575,6 +1575,18 @@ int32_t sgl_font_get_string_width(const char *str, const sgl_font_t *font);
 
 
 /**
+ * @brief get the height of a string, which is in a rect area
+ * @param rect object rect, it is usually the parent of text 
+ * @param str string
+ * @param font sgl font of the string
+ * @param line_space peer line space 
+ * @param margin margin of left and right
+ * @return height size of string
+ */
+int32_t sgl_font_get_string_height(sgl_area_t *rect, const char *str, const sgl_font_t *font, uint8_t line_space, int16_t margin);
+
+
+/**
  * @brief get the alignment position
  * @param parent_size parent size
  * @param size object size

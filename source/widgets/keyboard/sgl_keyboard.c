@@ -448,6 +448,30 @@ void sgl_keyboard_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
         keyboard->body_desc.color = sgl_int2color(value);
         break;
 
+    case SGL_STYLE_KEYBOARD_BTN_COLOR:
+        keyboard->btn_desc.color = sgl_int2color(value);
+        break;
+
+    case SGL_STYLE_KEYBOARD_BTN_RADIUS:
+        keyboard->btn_desc.radius = sgl_obj_fix_radius(obj, value);
+        break;
+
+    case SGL_STYLE_KEYBOARD_BTN_ALPHA:
+        keyboard->btn_desc.alpha = (uint8_t)value;
+        break;
+    
+    case SGL_STYLE_KEYBOARD_BTN_BORDER_WIDTH:
+        keyboard->btn_desc.border = (uint8_t)value;
+        break;
+
+    case SGL_STYLE_KEYBOARD_BTN_BORDER_COLOR:
+        keyboard->btn_desc.color = sgl_int2color(value);
+        break;
+
+    case SGL_STYLE_KEYBOARD_BTN_PIXMAP:
+        keyboard->btn_desc.pixmap = (sgl_pixmap_t*)value;
+        break;
+
     default:
         SGL_LOG_WARN("sgl_keyboard_set_style: unsupported style type %d", type);
     }

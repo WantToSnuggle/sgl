@@ -84,8 +84,7 @@ typedef struct sgl_event {
     struct sgl_obj   *obj;
     size_t           param;
     sgl_event_pos_t  pos;
-    uint16_t         type: 8;
-    uint16_t         move: 8;
+    uint16_t         type;
     uint16_t         distance;
 }sgl_event_t;
 
@@ -100,6 +99,14 @@ int sgl_event_queue_init(void);
 
 
 /**
+ * @brief Push an event into the event queue
+ * @param event The event to be pushed
+ * @return 0 on success, -1 on failure
+ */
+void sgl_event_queue_push(sgl_event_t event);
+
+
+/**
  * @brief Handle the position event
  * @param pos The position to be handled
  * @param type The type of the event
@@ -110,11 +117,13 @@ void sgl_event_send_pos(sgl_event_pos_t pos, sgl_event_type_t type);
 
 /**
  * @brief Send an event to the specified object
- * @param obj The object to be sent
- * @param type The type of the event
+ * @param event The event to be sent
  * @return none
  */
-void sgl_event_send_obj(struct sgl_obj *obj, sgl_event_type_t type);
+static inline void sgl_event_send(sgl_event_t event)
+{
+    sgl_event_queue_push(event);
+}
 
 
 /**

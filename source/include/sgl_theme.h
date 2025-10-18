@@ -41,6 +41,9 @@ extern "C" {
 #define SGL_THEME_ALPHA                      255
 #define SGL_THEME_TEXT_COLOR                 sgl_rgb(0, 0, 0)
 #define SGL_THEME_RADIUS                     0
+#define SGL_THEME_SCROLL_RADIUS              3
+#define SGL_THEME_SCROLL_BG_COLOR            sgl_rgb(100, 100, 100)
+#define SGL_THEME_SCROLL_FG_COLOR            sgl_rgb(200, 200, 200)
 
 
 #elif (CONFIG_SGL_THEME_DARK)

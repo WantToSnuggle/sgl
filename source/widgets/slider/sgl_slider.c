@@ -167,7 +167,7 @@ static void sgl_slider_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
         sgl_draw_bar(surf, &obj->area, &obj->coords, &slider->desc);
     }
     else if(evt->type == SGL_EVENT_PRESSED ||
-        evt->move == SGL_EVENT_MOVE_DOWN || evt->move == SGL_EVENT_MOVE_UP || evt->move == SGL_EVENT_MOVE_LEFT || evt->move == SGL_EVENT_MOVE_RIGHT
+        evt->type == SGL_EVENT_MOVE_DOWN || evt->type == SGL_EVENT_MOVE_UP || evt->type == SGL_EVENT_MOVE_LEFT || evt->type == SGL_EVENT_MOVE_RIGHT
     ) {
         if(slider->desc.direct == SGL_DIRECT_HORIZONTAL) {
             slider->value = (evt->pos.x - obj->coords.x1) * 100 / (obj->coords.x2 - obj->coords.x1);

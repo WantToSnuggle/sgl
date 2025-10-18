@@ -95,7 +95,7 @@ static inline bool sgl_event_queue_is_empty(void)
  * @param event The event to be pushed
  * @return 0 on success, -1 on failure
  */
-static void sgl_event_queue_push(sgl_event_t event)
+void sgl_event_queue_push(sgl_event_t event)
 {
     if (unlikely( evtq.size == evtq.capacity )) {
         SGL_LOG_ERROR("Event queue is full, maybe system is too slow");
@@ -276,25 +276,6 @@ void sgl_event_send_pos(sgl_event_pos_t pos, sgl_event_type_t type)
 
 
 /**
- * @brief Send an event to the specified object
- * @param obj The object to be sent
- * @param type The type of the event
- * @return none
- */
-void sgl_event_send_obj(struct sgl_obj *obj, sgl_event_type_t type)
-{
-    SGL_ASSERT(obj != NULL);
-    sgl_event_t event = {
-        .type = type,
-        .obj = obj,
-        .param = 0,
-    };
-
-    sgl_event_queue_push(event);
-}
-
-
-/**
  * @brief get information of motion event type
  * @param evt [in][out] event to be handled
  * @return none
@@ -306,21 +287,21 @@ static void sgl_get_move_info(sgl_event_t *evt)
 
     if (sgl_abs(dx) > sgl_abs(dy)) {
         if (dx > 0) {
-            evt->move = SGL_EVENT_MOVE_RIGHT;
+            evt->type = SGL_EVENT_MOVE_RIGHT;
             evt->distance = dx;
         }
         else {
-            evt->move = SGL_EVENT_MOVE_LEFT;
+            evt->type = SGL_EVENT_MOVE_LEFT;
             evt->distance = -dx;
         }
     }
     else {
         if (dy > 0) {
-            evt->move = SGL_EVENT_MOVE_DOWN;
+            evt->type = SGL_EVENT_MOVE_DOWN;
             evt->distance = dy;
         }
         else {
-            evt->move = SGL_EVENT_MOVE_UP;
+            evt->type = SGL_EVENT_MOVE_UP;
             evt->distance = -dy;
         }
     }

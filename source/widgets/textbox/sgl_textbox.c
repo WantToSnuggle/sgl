@@ -28,21 +28,11 @@
 #include <sgl_log.h>
 #include <sgl_mm.h>
 #include <sgl_cfgfix.h>
-#include <string.h>
+#include <sgl_theme.h>
 #include "sgl_textbox.h"
 
 
-static void textbox_scroll_set_pos(sgl_textbox_t *textbox, int16_t pos)
-{
-    int16_t bg_h = textbox->scroll_bg_coords.y2 - textbox->scroll_bg_coords.y1 + 1;
-    int16_t scroll_h = bg_h / 8;
-    int16_t scroll_y = (bg_h - scroll_h) * pos / 100;
-
-    textbox->scroll_fg_coords.x1 = textbox->scroll_bg_coords.x1;
-    textbox->scroll_fg_coords.y1 = textbox->scroll_bg_coords.y1 + scroll_y;
-    textbox->scroll_fg_coords.x2 = textbox->scroll_bg_coords.x2;
-    textbox->scroll_fg_coords.y2 = textbox->scroll_fg_coords.y1 + scroll_h;
-}
+#define  SGL_TEXTBOX_SCROLL_WIDTH                  (4)
 
 
 /**
@@ -96,6 +86,7 @@ void sgl_textbox_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
 
     case SGL_STYLE_TEXT:
         textbox->desc.text = (char*)value;
+        textbox->text_height = sgl_font_get_string_height(&obj->coords, textbox->desc.text, textbox->desc.font, textbox->desc.line_space, textbox->desc.margin);
         break;
 
     case SGL_STYLE_ALIGN:
@@ -133,6 +124,8 @@ void sgl_textbox_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
     case SGL_STYLE_BG_TRANSPARENT:
         textbox->desc.bg_flag = (value == 1 ? 0 : 1);
         break;
+
+    
 
     default:
         SGL_LOG_WARN("sgl_textbox_set_style: unsupported style type %d", type);
@@ -217,52 +210,58 @@ size_t sgl_textbox_get_style(sgl_obj_t *obj, sgl_style_type_t type)
 }
 
 
+static int16_t textbox_scroll_get_pos(sgl_obj_t* obj, int16_t scroll_h)
+{
+    sgl_textbox_t *textbox = (sgl_textbox_t*)obj;
+    int16_t height = obj->coords.y2 - obj->coords.y1 + 1;
+
+    return (-textbox->desc.y_offset) * (height - scroll_h) / (textbox->text_height - height);
+}
+
+
 static void sgl_textbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *evt)
 {
     sgl_textbox_t *textbox = (sgl_textbox_t*)obj;
-    //int16_t height = obj->coords.y2 - obj->coords.y1 + 1;
-    int16_t width = obj->coords.x2 - obj->coords.x1 + 1;
+    int16_t height = obj->coords.y2 - obj->coords.y1 + 1;
+    int16_t scroll_height = height / 8;
 
-    sgl_rect_t text_coords = {
-        .x1 = obj->coords.x1,
+    sgl_rect_t scroll_coords = {
+        .x1 = obj->coords.x2 - SGL_TEXTBOX_SCROLL_WIDTH,
         .y1 = obj->coords.y1,
-        .x2 = obj->coords.x2 - 5,
-        .y2 = obj->coords.y2,
+        .x2 = obj->coords.x2,
+        .y2 = obj->coords.y2
     };
 
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
         sgl_draw_rect(surf, &obj->area, &obj->coords, &textbox->bg);
-        sgl_draw_text(surf, &obj->area, &text_coords, &textbox->desc);
-        sgl_draw_rect(surf, &obj->area, &textbox->scroll_bg_coords, &textbox->scroll_bg);
-        sgl_draw_rect(surf, &obj->area, &textbox->scroll_fg_coords, &textbox->scroll_fg);
-    }
-    else if(evt->move == SGL_EVENT_MOVE_UP) {
-        //SGL_LOG_INFO("sgl_textbox_construct_cb: move up == =%d", textbox->text_height);
-        // if(textbox->desc.y_offset < textbox->text_height) {
-        //     uint8_t scroll_pos = textbox->desc.y_offset  / textbox->text_height;
+        sgl_draw_text(surf, &obj->area, &obj->coords, &textbox->desc);
 
-        //     textbox->desc.y_offset -= evt->distance;
-        //     SGL_LOG_INFO("textbox->desc.y_offset == =%d", scroll_pos);
+        if(textbox->scroll_enable) {
+            sgl_draw_rect(surf, &obj->area, &scroll_coords, &textbox->scroll_bg);
 
-        //     textbox_scroll_set_pos(textbox, 50);
-        // }
+            scroll_coords.y1 = textbox_scroll_get_pos(obj, scroll_height) + obj->coords.y1;
+            scroll_coords.y2 = scroll_coords.y1 + scroll_height;
+
+            sgl_draw_rect(surf, &obj->area, &scroll_coords, &textbox->scroll_fg);
+        }
     }
-    else if(evt->move == SGL_EVENT_MOVE_DOWN) {
-        if(textbox->desc.y_offset <= 0) {
+    else if(evt->type == SGL_EVENT_MOVE_UP) {
+        textbox->scroll_enable = 1;
+        if((textbox->text_height + textbox->desc.y_offset) > height ) {
+           textbox->desc.y_offset -= evt->distance;
+        }
+    }
+    else if(evt->type == SGL_EVENT_MOVE_DOWN) {
+        textbox->scroll_enable = 1;
+        if(textbox->desc.y_offset < 0) {
             textbox->desc.y_offset += evt->distance;
         }
     }
-    else if(evt->type == SGL_EVENT_DRAW_INIT) {
-        textbox->text_height = sgl_font_get_string_width(textbox->desc.text, textbox->desc.font);
-        SGL_LOG_INFO("sgl_textbox_construct_cb: text_height == =%d", textbox->text_height);
-        textbox->text_height = textbox->text_height / width * (sgl_font_get_height(textbox->desc.font) + textbox->desc.line_space);
-
-        textbox->scroll_bg_coords.x1 = textbox->obj.coords.x2 - 5;
-        textbox->scroll_bg_coords.y1 = textbox->obj.coords.y1;
-        textbox->scroll_bg_coords.x2 = textbox->obj.coords.x2;
-        textbox->scroll_bg_coords.y2 = textbox->obj.coords.y2;
-
-        textbox_scroll_set_pos(textbox, 0);
+    else if (evt->type == SGL_EVENT_PRESSED) {
+        textbox->scroll_enable = 1;
+    }
+    else if (evt->type == SGL_EVENT_RELEASED) {
+        textbox->scroll_enable = 0;
     }
 
     if(obj->event_fn) {
@@ -295,28 +294,31 @@ sgl_obj_t* sgl_textbox_create(sgl_obj_t* parent)
     obj->set_style = sgl_textbox_set_style;
     obj->get_style = sgl_textbox_get_style;
 #endif
-    obj->needinit = 1;
     sgl_obj_set_clickable(obj);
     sgl_obj_set_movable(obj);
 
-    textbox->bg.alpha = SGL_ALPHA_MAX;
+    textbox->bg.alpha = SGL_THEME_ALPHA;
+    textbox->bg.color = SGL_THEME_COLOR;
+    textbox->bg.radius = SGL_THEME_RADIUS;
 
-    textbox->scroll_bg.alpha = SGL_ALPHA_MAX;
-    textbox->scroll_bg.color = SGL_COLOR_WHITE;
-    // textbox->scroll_bg.radius = 2;
+    textbox->scroll_bg.alpha = SGL_THEME_ALPHA;
+    textbox->scroll_bg.color = SGL_THEME_SCROLL_BG_COLOR;
 
-    textbox->scroll_fg.alpha = SGL_ALPHA_MAX;
-    textbox->scroll_fg.color = SGL_COLOR_GRAY;
-    // textbox->scroll_fg.radius = 2;
+    textbox->scroll_fg.alpha = SGL_THEME_ALPHA;
+    textbox->scroll_fg.color = SGL_THEME_SCROLL_FG_COLOR;
 
-    textbox->desc.alpha = SGL_ALPHA_MAX;
-    textbox->desc.bg_flag = true;
-    textbox->desc.bg_color = SGL_COLOR_BLACK;
-    textbox->desc.color = SGL_COLOR_WHITE;
+    textbox->desc.alpha = SGL_THEME_ALPHA;
+    textbox->desc.bg_flag = false;
+    textbox->desc.bg_color = SGL_THEME_BG_COLOR;
+    textbox->desc.color = SGL_THEME_TEXT_COLOR;
     textbox->desc.line_space = 1;
     textbox->desc.mode = SGL_DRAW_TEXT_LINES;
     textbox->desc.text = "textbox";
-    textbox->desc.margin = 2;
+    textbox->desc.margin = 3;
+
+    textbox->desc.y_offset = 0;
+    textbox->desc.x_offset = 0;
+    textbox->scroll_enable = 0;
 
     return obj;
 }

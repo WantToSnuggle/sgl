@@ -32,41 +32,6 @@
 #include "sgl_textline.h"
 
 
-static int16_t textline_get_height(sgl_area_t *coords, const char *str, const sgl_font_t *font, uint8_t line_space, int16_t margin)
-{
-    int16_t offset_x = margin;
-    int16_t width = coords->x2 - coords->x1 + 1;
-    int16_t ch_index;
-    int16_t ch_width;
-    int16_t lines = 1;
-
-    #if CONFIG_SGL_TEXT_UTF8
-    uint32_t unicode = 0;
-    #endif
-
-    while (*str) {
-        #if CONFIG_SGL_TEXT_UTF8
-        str += sgl_utf8_to_unicode(str, &unicode);
-        ch_index = sgl_search_unicode_ch_index(font, unicode);
-        #else
-        ch_index = ((uint32_t)*str) - 32;
-        str++;
-        #endif
-
-        ch_width = font->table[ch_index].box_w;
-
-        if ((offset_x + ch_width + margin) > width) {
-            offset_x = margin;
-            lines ++;
-        }
-
-        offset_x += ch_width;
-    }
-
-    return lines * (font->font_height + line_space);
-}
-
-
 /**
  * @brief set the style of the textline object
  * @param obj pointer to the textline object
@@ -114,7 +79,7 @@ void sgl_textline_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
 
     case SGL_STYLE_TEXT:
         textline->desc.text = (char*)value;
-        sgl_obj_set_height(obj, textline_get_height(&obj->coords, textline->desc.text, textline->desc.font, textline->desc.line_space, textline->desc.margin));
+        sgl_obj_set_height(obj, sgl_font_get_string_height(&obj->coords, textline->desc.text, textline->desc.font, textline->desc.line_space, textline->desc.margin));
         break;
 
     case SGL_STYLE_ALIGN:
@@ -283,7 +248,7 @@ sgl_obj_t* sgl_textline_create(sgl_obj_t* parent)
     textline->desc.mode = SGL_DRAW_TEXT_LINES;
     textline->desc.text = "textline";
     textline->desc.radius = 5;
-    textline->desc.margin = 5;
+    textline->desc.margin = 2;
 
     return obj;
 }
