@@ -28,8 +28,43 @@
 #include <sgl_log.h>
 #include <sgl_mm.h>
 #include <sgl_cfgfix.h>
-#include <string.h>
+#include <sgl_theme.h>
 #include "sgl_textline.h"
+
+
+static int16_t textline_get_height(sgl_area_t *coords, const char *str, const sgl_font_t *font, uint8_t line_space, int16_t margin)
+{
+    int16_t offset_x = margin;
+    int16_t width = coords->x2 - coords->x1 + 1;
+    int16_t ch_index;
+    int16_t ch_width;
+    int16_t lines = 1;
+
+    #if CONFIG_SGL_TEXT_UTF8
+    uint32_t unicode = 0;
+    #endif
+
+    while (*str) {
+        #if CONFIG_SGL_TEXT_UTF8
+        str += sgl_utf8_to_unicode(str, &unicode);
+        ch_index = sgl_search_unicode_ch_index(font, unicode);
+        #else
+        ch_index = ((uint32_t)*str) - 32;
+        str++;
+        #endif
+
+        ch_width = font->table[ch_index].box_w;
+
+        if ((offset_x + ch_width + margin) > width) {
+            offset_x = margin;
+            lines ++;
+        }
+
+        offset_x += ch_width;
+    }
+
+    return lines * (font->font_height + line_space);
+}
 
 
 /**
@@ -61,28 +96,24 @@ void sgl_textline_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
         break;
 
     case SGL_STYLE_COLOR:
-        textline->desc.color = sgl_int2color(value);
+        textline->bg.color = sgl_int2color(value);
         break;
-    
+
     case SGL_STYLE_BG_COLOR:
-        textline->desc.bg_flag = 1;
-        textline->desc.bg_color = sgl_int2color(value);
+        textline->bg.color = sgl_int2color(value);
         break;
 
     case SGL_STYLE_ALPHA:
-        textline->desc.alpha = (uint8_t)value;
+        textline->bg.alpha = (uint8_t)value;
         break;
-    
+
     case SGL_STYLE_RADIUS:
-        textline->desc.radius = sgl_obj_fix_radius(obj, value);
+        textline->bg.radius = sgl_obj_fix_radius(obj, value);
         break;
 
     case SGL_STYLE_TEXT:
         textline->desc.text = (char*)value;
-        break;
-
-    case SGL_STYLE_ALIGN:
-        textline->desc.align = (uint8_t)value;
+        sgl_obj_set_height(obj, textline_get_height(&obj->coords, textline->desc.text, textline->desc.font, textline->desc.line_space, textline->desc.margin));
         break;
 
     case SGL_STYLE_TEXT_COLOR:
@@ -113,8 +144,8 @@ void sgl_textline_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
         textline->desc.line_space = (int16_t)value;
         break;
 
-    case SGL_STYLE_BG_TRANSPARENT:
-        textline->desc.bg_flag = (value == 1 ? 0 : 1);
+    case SGL_STYLE_PIXMAP:
+        textline->bg.pixmap = (sgl_pixmap_t*)value;
         break;
 
     default:
@@ -164,9 +195,6 @@ size_t sgl_textline_get_style(sgl_obj_t *obj, sgl_style_type_t type)
     case SGL_STYLE_TEXT:
         return (size_t)textline->desc.text;
 
-    case SGL_STYLE_ALIGN:
-        return textline->desc.align;
-
     case SGL_STYLE_TEXT_COLOR:
         return sgl_color2int(textline->desc.color);
 
@@ -189,9 +217,6 @@ size_t sgl_textline_get_style(sgl_obj_t *obj, sgl_style_type_t type)
     case SGL_STYLE_LINE_SPACE:
         return textline->desc.line_space;
 
-    case SGL_STYLE_BG_TRANSPARENT:
-        return textline->desc.bg_flag;
-
     default:
         SGL_LOG_WARN("sgl_textline_get_style: unsupported style type %d", type);
     }
@@ -205,6 +230,7 @@ static void sgl_textline_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_even
     sgl_textline_t *textline = (sgl_textline_t*)obj;
 
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
+        sgl_draw_rect(surf, &obj->area, &obj->coords, &textline->bg);
         sgl_draw_text(surf, &obj->area, &obj->coords, &textline->desc);
     }
 
@@ -239,14 +265,22 @@ sgl_obj_t* sgl_textline_create(sgl_obj_t* parent)
     obj->get_style = sgl_textline_get_style;
 #endif
 
+    textline->bg.alpha = SGL_THEME_ALPHA;
+    textline->bg.color = SGL_THEME_COLOR;
+    textline->bg.radius = SGL_THEME_RADIUS;
+    textline->bg.pixmap = NULL;
+    textline->bg.border = SGL_THEME_BORDER_WIDTH;
+    textline->bg.border_color = SGL_THEME_BORDER_COLOR;
+
     textline->desc.alpha = SGL_ALPHA_MAX;
-    textline->desc.bg_flag = true;
-    textline->desc.bg_color = SGL_COLOR_BLACK;
-    textline->desc.color = SGL_COLOR_WHITE;
+    textline->desc.bg_flag = false;
+    textline->desc.bg_color = SGL_THEME_COLOR;
+    textline->desc.color = SGL_THEME_TEXT_COLOR;
     textline->desc.line_space = 1;
     textline->desc.mode = SGL_DRAW_TEXT_LINES;
     textline->desc.text = "textline";
-    textline->desc.margin = 2;
+    textline->desc.radius = 5;
+    textline->desc.margin = 5;
 
     return obj;
 }
