@@ -40,7 +40,6 @@
  */
 typedef struct sgl_textline {
     sgl_obj_t       obj;
-    sgl_draw_rect_t bg;
     sgl_draw_text_t desc;
 }sgl_textline_t;
 

@@ -96,24 +96,29 @@ void sgl_textline_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
         break;
 
     case SGL_STYLE_COLOR:
-        textline->bg.color = sgl_int2color(value);
+        textline->desc.color = sgl_int2color(value);
         break;
-
+    
     case SGL_STYLE_BG_COLOR:
-        textline->bg.color = sgl_int2color(value);
+        textline->desc.bg_flag = 1;
+        textline->desc.bg_color = sgl_int2color(value);
         break;
 
     case SGL_STYLE_ALPHA:
-        textline->bg.alpha = (uint8_t)value;
+        textline->desc.alpha = (uint8_t)value;
         break;
 
     case SGL_STYLE_RADIUS:
-        textline->bg.radius = sgl_obj_fix_radius(obj, value);
+        textline->desc.radius = sgl_obj_fix_radius(obj, value);
         break;
 
     case SGL_STYLE_TEXT:
         textline->desc.text = (char*)value;
         sgl_obj_set_height(obj, textline_get_height(&obj->coords, textline->desc.text, textline->desc.font, textline->desc.line_space, textline->desc.margin));
+        break;
+
+    case SGL_STYLE_ALIGN:
+        textline->desc.align = (uint8_t)value;
         break;
 
     case SGL_STYLE_TEXT_COLOR:
@@ -144,8 +149,8 @@ void sgl_textline_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
         textline->desc.line_space = (int16_t)value;
         break;
 
-    case SGL_STYLE_PIXMAP:
-        textline->bg.pixmap = (sgl_pixmap_t*)value;
+    case SGL_STYLE_BG_TRANSPARENT:
+        textline->desc.bg_flag = (value == 1 ? 0 : 1);
         break;
 
     default:
@@ -195,6 +200,9 @@ size_t sgl_textline_get_style(sgl_obj_t *obj, sgl_style_type_t type)
     case SGL_STYLE_TEXT:
         return (size_t)textline->desc.text;
 
+    case SGL_STYLE_ALIGN:
+        return textline->desc.align;
+
     case SGL_STYLE_TEXT_COLOR:
         return sgl_color2int(textline->desc.color);
 
@@ -217,6 +225,9 @@ size_t sgl_textline_get_style(sgl_obj_t *obj, sgl_style_type_t type)
     case SGL_STYLE_LINE_SPACE:
         return textline->desc.line_space;
 
+    case SGL_STYLE_BG_TRANSPARENT:
+        return textline->desc.bg_flag;
+
     default:
         SGL_LOG_WARN("sgl_textline_get_style: unsupported style type %d", type);
     }
@@ -230,7 +241,6 @@ static void sgl_textline_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_even
     sgl_textline_t *textline = (sgl_textline_t*)obj;
 
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
-        sgl_draw_rect(surf, &obj->area, &obj->coords, &textline->bg);
         sgl_draw_text(surf, &obj->area, &obj->coords, &textline->desc);
     }
 
@@ -265,15 +275,8 @@ sgl_obj_t* sgl_textline_create(sgl_obj_t* parent)
     obj->get_style = sgl_textline_get_style;
 #endif
 
-    textline->bg.alpha = SGL_THEME_ALPHA;
-    textline->bg.color = SGL_THEME_COLOR;
-    textline->bg.radius = SGL_THEME_RADIUS;
-    textline->bg.pixmap = NULL;
-    textline->bg.border = SGL_THEME_BORDER_WIDTH;
-    textline->bg.border_color = SGL_THEME_BORDER_COLOR;
-
-    textline->desc.alpha = SGL_ALPHA_MAX;
-    textline->desc.bg_flag = false;
+    textline->desc.alpha = SGL_THEME_ALPHA;
+    textline->desc.bg_flag = true;
     textline->desc.bg_color = SGL_THEME_COLOR;
     textline->desc.color = SGL_THEME_TEXT_COLOR;
     textline->desc.line_space = 1;
