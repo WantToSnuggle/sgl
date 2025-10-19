@@ -1119,6 +1119,15 @@ static inline int16_t sgl_obj_get_pos_y(sgl_obj_t *obj)
 
 
 /**
+ * @brief Set the alignment position of the object relative to its parent object.
+ * @param obj The object to set the alignment position.
+ * @param type The alignment type.
+ * @return none
+ */
+void sgl_obj_set_pos_align(sgl_obj_t *obj, sgl_align_type_t type);
+
+
+/**
  * @brief Set object size
  * @param obj point to object
  * @param width: width that you want to set
@@ -1616,15 +1625,6 @@ sgl_pos_t sgl_get_text_pos(sgl_area_t *area, const sgl_font_t *font, const char 
  * @param type align type
  */
 sgl_pos_t sgl_get_icon_pos(sgl_area_t *area, const sgl_icon_pixmap_t *icon, int16_t offset, sgl_align_type_t type);
-
-
-/**
- * @brief Set the alignment position of the object relative to its parent object.
- * @param obj The object to set the alignment position.
- * @param type The alignment type.
- * @return none
- */
-void sgl_obj_set_pos_align(sgl_obj_t *obj, sgl_align_type_t type);
 
 
 /**
