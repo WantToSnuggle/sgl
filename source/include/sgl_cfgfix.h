@@ -118,7 +118,7 @@ extern "C" {
 #define CONFIG_SGL_ANIMATION                                       (0)
 #elif(CONFIG_SGL_ANIMATION == 1)
 #   ifndef CONFIG_SGL_ANIMATION_TICK_MS
-#       define CONFIG_SGL_ANIMATION_TICK_MS                        (5)
+#       define CONFIG_SGL_ANIMATION_TICK_MS                        (20)
 #   endif
 #endif
 
