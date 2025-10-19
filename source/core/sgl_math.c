@@ -377,3 +377,30 @@ void sgl_split_len(const uint8_t *weight, int count, int16_t length, int16_t gap
         error ++;
     }
 }
+
+
+/* Random number generator */
+static size_t rand_next = 1;
+
+/**
+ * @brief Generate a random number.
+ * @param none
+ * @return Random number.
+ * @note The random number generator is in the range of [0, 32767].
+ */
+int16_t sgl_rand(void)
+{
+    rand_next = rand_next * 1103515245 + 12345;
+    return (unsigned int)(rand_next / 65536) % 32768;
+}
+
+
+/**
+ * @brief Set the seed of the random number generator.
+ * @param seed: The seed of the random number generator.
+ * @return none
+ */
+void sgl_srand(unsigned int seed)
+{
+    rand_next = seed;
+}

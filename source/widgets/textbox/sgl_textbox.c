@@ -125,8 +125,6 @@ void sgl_textbox_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
         textbox->desc.bg_flag = (value == 1 ? 0 : 1);
         break;
 
-    
-
     default:
         SGL_LOG_WARN("sgl_textbox_set_style: unsupported style type %d", type);
     }
@@ -300,6 +298,8 @@ sgl_obj_t* sgl_textbox_create(sgl_obj_t* parent)
     textbox->bg.alpha = SGL_THEME_ALPHA;
     textbox->bg.color = SGL_THEME_COLOR;
     textbox->bg.radius = SGL_THEME_RADIUS;
+    textbox->bg.border = SGL_THEME_BORDER_WIDTH;
+    textbox->bg.border_color = SGL_THEME_BORDER_COLOR;
 
     textbox->scroll_bg.alpha = SGL_THEME_ALPHA;
     textbox->scroll_bg.color = SGL_THEME_SCROLL_BG_COLOR;
@@ -322,4 +322,3 @@ sgl_obj_t* sgl_textbox_create(sgl_obj_t* parent)
 
     return obj;
 }
-

@@ -138,9 +138,25 @@ static inline int sgl_xy_has_component( int x, int y, int xv, int yv)
 }
 
 
+/**
+ * @brief Generate a random number.
+ * @param none
+ * @return Random number.
+ * @note The random number generator is in the range of [0, 32767].
+ */
+int16_t sgl_rand(void);
+
+
+/**
+ * @brief Set the seed of the random number generator.
+ * @param seed: The seed of the random number generator.
+ * @return none
+ */
+void sgl_srand(unsigned int seed);
+
+
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif // !__SGL_MATH_H__
