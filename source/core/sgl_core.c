@@ -1326,7 +1326,7 @@ sgl_pos_t sgl_get_icon_pos(sgl_area_t *area, const sgl_icon_pixmap_t *icon, int1
  * @param type The alignment type.
  * @return none
  */
-void sgl_obj_set_align(sgl_obj_t *obj, sgl_align_type_t type)
+void sgl_obj_set_pos_align(sgl_obj_t *obj, sgl_align_type_t type)
 {
     SGL_ASSERT(obj != NULL);
 
