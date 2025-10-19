@@ -99,7 +99,8 @@
         "sgl_cfgfix.h": "c",
         "sgl_numberkbd.h": "c",
         "sgl_textbox.h": "c",
-        "sgl_keyboard.h": "c"
+        "sgl_keyboard.h": "c",
+        "stm32f10x_tim.h": "c"
     },
     "esbonio.sphinx.confDir": "",
     "iis.configDir": ""

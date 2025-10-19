@@ -42,6 +42,8 @@
 
 # demo files
 demo
+stm32_demo
+tools
 
 # lite-manager files
 lite-manager

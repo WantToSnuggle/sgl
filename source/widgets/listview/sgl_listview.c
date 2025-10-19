@@ -139,14 +139,10 @@ static void sgl_listview_event_cb(sgl_event_t *event)
     sgl_listview_t *listview = (sgl_listview_t*)event->param;
     sgl_obj_t *parent = &listview->obj;
     sgl_obj_t *child = NULL;
-    int16_t item_height = 0;
 
     if(event->type == SGL_EVENT_RELEASED) {
-
-        item_height = listview->item_count * listview->item_height;
         //int diff = item_height + listview->coords_offset;
         child = parent->child;
-        SGL_LOG_INFO("sgl_listview_event_cb: released %d  child->coords.y2 = %d  item_height = %d", listview->coords_offset, child->coords.y2, item_height);
         if(listview->coords_offset > 0) {
             sgl_obj_for_each_child(child, parent) {
                 child->coords.y1 -= listview->coords_offset;
