@@ -60,6 +60,7 @@ typedef struct sgl_anim {
     sgl_anim_path_t       path;
     sgl_anim_path_algo_t  path_algo;
     void                 (*finish_cb)(struct sgl_anim *anim);
+    uint8_t               finished : 1;
     uint8_t               gapless : 1;
     uint8_t               disable : 1;
     uint8_t               auto_free : 1;
@@ -110,6 +111,14 @@ sgl_anim_t* sgl_anim_create(void);
 
 
 /**
+ * @brief add animation object to animation list
+ * @param  anim animation object
+ * @return none
+*/
+void sgl_anim_add(sgl_anim_t *anim);
+
+
+/**
  * @brief remove animation object from animation list
  * @param  anim animation object
  * @return none
@@ -122,7 +131,11 @@ void sgl_anim_remove(sgl_anim_t *anim);
  * @param  anim animation object
  * @return none
 */
-void sgl_anim_start(sgl_anim_t *anim);
+static inline void sgl_anim_start(sgl_anim_t *anim)
+{
+    anim->disable = 0;
+    sgl_anim_add(anim);
+}
 
 
 /**
@@ -130,7 +143,11 @@ void sgl_anim_start(sgl_anim_t *anim);
  * @param  anim animation object
  * @return none
 */
-void sgl_anim_stop(sgl_anim_t *anim);
+static inline void sgl_anim_stop(sgl_anim_t *anim)
+{
+    anim->disable = 1;
+    sgl_anim_remove(anim);
+}
 
 
 /**
@@ -264,6 +281,18 @@ static inline void sgl_anim_set_finish_cb(sgl_anim_t *anim, void (*finish_cb)(sg
 
 
 /**
+ * @brief check animation is finished or not
+ * @param  anim animation object
+ * @return true or false
+ */
+static inline bool sgl_anim_is_finished(sgl_anim_t *anim)
+{
+    SGL_ASSERT(anim != NULL);
+    return anim->finished == 1;
+}
+
+
+/**
  * @brief set auto free flag for animation
  * @param  anim animation
  * @return none
@@ -353,11 +382,10 @@ int32_t sgl_anim_path_ease_out(uint32_t elaps, uint32_t duration, int16_t start,
 int32_t sgl_anim_path_ease_in(uint32_t elaps, uint32_t duration, int16_t start, int16_t end);
 #define SGL_ANIM_PATH_EASE_IN  sgl_anim_path_ease_in
 
+#endif // ! CONFIG_SGL_ANIMATION
 
 #ifdef __cplusplus
 } /*extern "C"*/
 #endif
-
-#endif // ! CONFIG_SGL_ANIMATION
 
 #endif // ! __SGL_ANIM_H__
