@@ -14,7 +14,7 @@
 #define    CONFIG_SGL_ANIMATION_TICK_MS       20
 #define    CONFIG_SGL_OBJ_USE_NAME            1
 #define    CONFIG_SGL_USE_STYLE_UNIFIED_API     1
-#define    CONFIG_SGL_BOOT_LOGO               1
+#define    CONFIG_SGL_BOOT_ANIMATION               1
 #define    CONFIG_SGL_HEAP_ALGO               lwmem
 #define    CONFIG_SGL_FL_INDEX_MAX            20
 #define    CONFIG_SGL_HEAP_MEMORY_SIZE        1000000

@@ -24,7 +24,7 @@
 
 #include <sgl.h>
 
-#if (CONFIG_SGL_BOOT_LOGO)
+#if (CONFIG_SGL_BOOT_ANIMATION)
 
 sgl_obj_t *background = NULL;
 sgl_obj_t *logo = NULL;
@@ -57,11 +57,11 @@ static void finished_anim_path(struct sgl_anim *anim, int32_t value)
 
 
 /**
- * @brief sgl boot logo animation
+ * @brief sgl boot animation
  * @return none
  * @note this function will block the task, it should be called at before of sgl_task_handle and at after of sgl_init()
  */
-void sgl_boot_logo(void)
+void sgl_boot_animation(void)
 {
     sgl_anim_t *logo_anim = sgl_anim_create();
     if (logo_anim == NULL) {
@@ -149,4 +149,4 @@ void sgl_boot_logo(void)
 }
 
 
-#endif // !CONFIG_SGL_BOOT_LOGO
+#endif // !CONFIG_SGL_BOOT_ANIMATION
