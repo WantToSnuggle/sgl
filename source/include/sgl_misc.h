@@ -1,4 +1,4 @@
-/* source/sgl.h
+/* source/include/sgl_misc.h
  *
  * MIT License
  *
@@ -22,32 +22,33 @@
  * SOFTWARE.
  */
 
-#ifndef  __SGL_H__
-#define  __SGL_H__ 
+#ifndef __SGL_MISC_H__
+#define __SGL_MISC_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
+#include <sgl_cfgfix.h>
+#include <stddef.h>
 #include <sgl_list.h>
-#include <sgl_core.h>
-#include <sgl_anim.h>
-#include <sgl_misc.h>
 #include <sgl_types.h>
-#include <sgl_font.h>
-#include "widgets/line/sgl_line.h"
-#include "widgets/rectangle/sgl_rectangle.h"
-#include "widgets/circle/sgl_circle.h"
-#include "widgets/ring/sgl_ring.h"
-#include "widgets/arc/sgl_arc.h"
-#include "widgets/button/sgl_button.h"
-#include "widgets/slider/sgl_slider.h"
-#include "widgets/label/sgl_label.h"
-#include "widgets/switch/sgl_switch.h"
-#include "widgets/msgbox/sgl_msgbox.h"
-#include "widgets/textline/sgl_textline.h"
-#include "widgets/textbox/sgl_textbox.h"
-#include "widgets/checkbox/sgl_checkbox.h"
-#include "widgets/icon/sgl_icon.h"
-#include "widgets/listview/sgl_listview.h"
-#include "widgets/numberkbd/sgl_numberkbd.h"
-#include "widgets/keyboard/sgl_keyboard.h"
 
-#endif // __SGL_H__
+
+#if (CONFIG_SGL_BOOT_LOGO)
+/**
+ * @brief sgl boot logo animation
+ * @return none
+ * @note this function will block the task, it should be called at before of sgl_task_handle and at after of sgl_init()
+ */
+void sgl_boot_logo(void);
+
+
+#endif // ! CONFIG_SGL_BOOT_LOGO
+
+
+#ifdef __cplusplus
+} /*extern "C"*/
+#endif
+
+#endif // ! __SGL_MISC_H__
