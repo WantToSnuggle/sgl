@@ -34,6 +34,7 @@ extern "C" {
 #include <stddef.h>
 #include <sgl_list.h>
 #include <sgl_types.h>
+#include <sgl_mm.h>
 
 #if (CONFIG_SGL_ANIMATION)
 
@@ -147,6 +148,18 @@ static inline void sgl_anim_stop(sgl_anim_t *anim)
 {
     anim->disable = 1;
     sgl_anim_remove(anim);
+}
+
+
+/**
+ * @brief free animation object
+ * @param  anim animation object
+ * @return none
+*/
+static inline void sgl_anim_free(sgl_anim_t *anim)
+{
+    SGL_ASSERT(anim != NULL);
+    sgl_free(anim);
 }
 
 

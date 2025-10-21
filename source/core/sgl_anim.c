@@ -112,32 +112,33 @@ void sgl_anim_add(sgl_anim_t *anim)
 */
 void sgl_anim_remove(sgl_anim_t *anim)
 {
-    sgl_anim_t *prev = anim_ctx.anim_list_head;
-    sgl_anim_t *find = NULL;
+    SGL_ASSERT(anim != NULL);
+    sgl_anim_t *prev = NULL;
 
-    if (prev == NULL) {
-        return;
-    }
-
-    if (anim == anim_ctx.anim_list_head) {
+    if (anim_ctx.anim_list_head == anim) {
         anim_ctx.anim_list_head = anim->next;
+        if (anim_ctx.anim_list_head == NULL) {
+            anim_ctx.anim_list_tail = NULL;
+        }
         anim_ctx.anim_cnt--;
         return;
     }
 
-    for (find = prev->next; prev != NULL; prev = find, find = prev->next) {
-        if (find == anim) {
-            if (find == anim_ctx.anim_list_tail) {
-                anim_ctx.anim_list_tail = prev;
-                anim_ctx.anim_list_tail->next = NULL;
-            }
-            else {
-                prev->next = find->next;
-            }
-            anim_ctx.anim_cnt--;
-            return;
-        }
+    prev = anim_ctx.anim_list_head;
+    while (prev != NULL && prev->next != anim) {
+        prev = prev->next;
     }
+
+    if (prev == NULL) {
+        return;
+    }
+    prev->next = anim->next;
+
+    if (anim == anim_ctx.anim_list_tail) {
+        anim_ctx.anim_list_tail = prev;
+    }
+
+    anim_ctx.anim_cnt--;
 }
 
 
@@ -153,51 +154,53 @@ void sgl_anim_task(void)
     uint32_t elaps_time = 0;
     sgl_anim_t *anim = anim_ctx.anim_list_head, *next = NULL;
 
-    if (anim_ctx.tick_ms < SGL_ANIMATION_TICK_MS) {
-        return;
-    }
-
     /* if no anim object, do nothing */
     if (unlikely(anim_ctx.anim_cnt == 0)) {
         return;
     }
 
-    while (anim != NULL) {
+    if (anim_ctx.tick_ms < SGL_ANIMATION_TICK_MS) {
+        return;
+    }
+
+    while(anim != NULL) {
         anim->act_time += anim_ctx.tick_ms;
 
-        if (anim->act_time >= anim->act_delay) {
-            elaps_time = anim->act_time - anim->act_delay;
+        if(anim->act_time < anim->act_delay) {
+            continue;
+        }
 
-            /* check callback function for debug */
-            SGL_ASSERT(anim->path != NULL);
-            SGL_ASSERT(anim->path_algo != NULL);
-            value = anim->path_algo(sgl_min(elaps_time, anim->act_duration), anim->act_duration, anim->start_value, anim->end_value);
-            anim->path(anim, value);
+        elaps_time = anim->act_time - anim->act_delay;
 
-            if (elaps_time > anim->act_duration) {
-                if (anim->repeat_cnt != -1) {
-                    anim->repeat_cnt--;
-                }
+        /* check callback function for debug */
+        SGL_ASSERT(anim->path != NULL);
+        SGL_ASSERT(anim->path_algo != NULL);
+        value = anim->path_algo(sgl_min(elaps_time, anim->act_duration), anim->act_duration, anim->start_value, anim->end_value);
+        anim->path(anim, value);
 
-                if (anim->finish_cb) {
-                    anim->finish_cb(anim);
-                }
+        if (elaps_time > anim->act_duration) {
+            if (anim->repeat_cnt != -1) {
+                anim->repeat_cnt--;
+            }
 
-                /* reset anim active time */
-                anim->act_time = 0;
+            if (anim->finish_cb) {
+                anim->finish_cb(anim);
+            }
 
-                /* remove anim object if repeat count is 0 */
-                if (anim->repeat_cnt == 0) {
-                    anim->finished = 1;
-                    sgl_anim_stop(anim);
+            /* reset anim active time */
+            anim->act_time = 0;
 
-                    /* if animation is auto free, free it */
-                    if (anim->auto_free) {
-                        next = anim->next;
-                        sgl_free(anim);
-                        anim = next;
-                        continue;
-                    }
+            /* remove anim object if repeat count is 0 */
+            if (anim->repeat_cnt == 0) {
+                anim->finished = 1;
+                sgl_anim_stop(anim);
+
+                /* if animation is auto free, free it */
+                if (anim->auto_free) {
+                    next = anim->next;
+                    sgl_free(anim);
+                    anim = next;
+                    continue;
                 }
             }
         }

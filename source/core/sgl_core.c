@@ -186,42 +186,6 @@ void sgl_obj_remove(sgl_obj_t *obj)
 
 
 /**
- * @brief move object position
- * @param obj point to object
- * @param x: x position
- * @param y: y position
- * @return none
- */
-static void sgl_obj_move_pos(sgl_obj_t *obj, int16_t x, int16_t y)
-{
-    SGL_ASSERT(obj != NULL);
-	sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX];
-    int top = 0;
-    stack[top++] = obj;
-
-    while (top > 0) {
-		SGL_ASSERT(top < SGL_OBJ_DEPTH_MAX);
-		obj = stack[--top];
-
-        obj->dirty = 1;
-        obj->needinit = 1;
-        obj->coords.x1 += x;
-        obj->coords.x2 += x;
-        obj->coords.y1 += y;
-        obj->coords.y2 += y;
-
-		if (obj->sibling != NULL) {
-			stack[top++] = obj->sibling;
-		}
-
-		if (obj->child != NULL) {
-			stack[top++] = obj->child;
-		}
-    }
-}
-
-
-/**
  * @brief Set object position
  * @param obj point to object
  * @param x: x position
@@ -231,29 +195,44 @@ static void sgl_obj_move_pos(sgl_obj_t *obj, int16_t x, int16_t y)
 void sgl_obj_set_pos(sgl_obj_t *obj, int16_t x, int16_t y)
 {
     SGL_ASSERT(obj != NULL);
-    obj->needinit = 1;
-    obj->dirty = 1;
+	sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX];
+    int top = 0;
 
     int16_t x_inc = x - obj->coords.x1;
     int16_t y_inc = y - obj->coords.y1;
 
+    obj->dirty = 1;
+    obj->needinit = 1;
+    obj->coords.x1 = x;
+    obj->coords.x2 += x_inc;
+    obj->coords.y1 = y;
+    obj->coords.y2 += y_inc;
+
     sgl_obj_dirty_merge(obj);
 
-    if (obj->parent != NULL) {
-        obj->coords.x1 = obj->parent->coords.x1 + x;
-        obj->coords.y1 = obj->parent->coords.y1 + y;
+    if(obj->child == NULL) {
+        return;
     }
-    else {
-        obj->coords.x1 = x;
-        obj->coords.y1 = y;
-    }
+    stack[top++] = obj->child;
 
-    obj->coords.x2 = obj->coords.x2 + x_inc;
-    obj->coords.y2 = obj->coords.y2 + y_inc;
+    while (top > 0) {
+		SGL_ASSERT(top < SGL_OBJ_DEPTH_MAX);
+		obj = stack[--top];
 
-    sgl_obj_t *child = NULL;
-    sgl_obj_for_each_child(child, obj) {
-        sgl_obj_move_pos(child, x_inc, y_inc);
+        obj->dirty = 1;
+        obj->needinit = 1;
+        obj->coords.x1 += x_inc;
+        obj->coords.x2 += x_inc;
+        obj->coords.y1 += y_inc;
+        obj->coords.y2 += y_inc;
+
+		if (obj->sibling != NULL) {
+			stack[top++] = obj->sibling;
+		}
+
+		if (obj->child != NULL) {
+			stack[top++] = obj->child;
+		}
     }
 }
 
@@ -1210,12 +1189,12 @@ sgl_pos_t sgl_get_align_pos(sgl_size_t *parent_size, sgl_size_t *size, sgl_align
     sgl_pos_t ret = {.x = 0, .y = 0};
     switch (type) {
         case SGL_ALIGN_CENTER:
-            ret.x = (parent_size->w - size->w)/2;
-            ret.y = (parent_size->h - size->h)/2;
+            ret.x = (parent_size->w - size->w) / 2;
+            ret.y = (parent_size->h - size->h) / 2;
         break;
 
         case SGL_ALIGN_TOP_MID:          
-            ret.x = (parent_size->w - size->w)/2;
+            ret.x = (parent_size->w - size->w) / 2;
             ret.y = 0;
         break;
 
@@ -1230,7 +1209,7 @@ sgl_pos_t sgl_get_align_pos(sgl_size_t *parent_size, sgl_size_t *size, sgl_align
         break;
 
         case SGL_ALIGN_BOT_MID:
-            ret.x = (parent_size->w - size->w)/2;
+            ret.x = (parent_size->w - size->w) / 2;
             ret.y = parent_size->h - size->h;
         break;
 
@@ -1246,12 +1225,12 @@ sgl_pos_t sgl_get_align_pos(sgl_size_t *parent_size, sgl_size_t *size, sgl_align
 
         case SGL_ALIGN_LEFT_MID:
             ret.x = 0;
-            ret.y = (parent_size->h - size->h)/2;
+            ret.y = (parent_size->h - size->h) / 2;
         break;
 
         case SGL_ALIGN_RIGHT_MID:
             ret.x = parent_size->w - size->w;
-            ret.y = (parent_size->h - size->h)/2;
+            ret.y = (parent_size->h - size->h) / 2;
         break;
 
         default: break;
@@ -1338,26 +1317,14 @@ void sgl_obj_set_pos_align(sgl_obj_t *obj, sgl_align_type_t type)
         .h = obj->coords.y2 - obj->coords.y1 + 1,
     };
 
-    if (obj->parent == NULL) {
-        p_size = (sgl_size_t){
-            .w = sgl_ctx.fb_dev.xres,
-            .h = sgl_ctx.fb_dev.yres,
-        };
-        p_pos = (sgl_pos_t){
-            .x = 0,
-            .y = 0,
-        };
-    }
-    else {
-        p_size = (sgl_size_t){
-            .w = obj->parent->coords.x2 - obj->parent->coords.x1 + 1,
-            .h = obj->parent->coords.y2 - obj->parent->coords.y1 + 1,
-        };
-        p_pos = (sgl_pos_t){
-            .x = obj->parent->coords.x1,
-            .y = obj->parent->coords.y1,
-        };
-    }
+    p_size = (sgl_size_t){
+        .w = obj->parent->coords.x2 - obj->parent->coords.x1 + 1,
+        .h = obj->parent->coords.y2 - obj->parent->coords.y1 + 1,
+    };
+    p_pos = (sgl_pos_t){
+        .x = obj->parent->coords.x1,
+        .y = obj->parent->coords.y1,
+    };
 
     obj_pos = sgl_get_align_pos(&p_size, &obj_size, type);
 

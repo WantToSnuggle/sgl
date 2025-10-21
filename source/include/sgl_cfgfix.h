@@ -174,6 +174,10 @@ extern "C" {
 #   endif
 #endif
 
+#ifndef CONFIG_SGL_BOOT_LOGO
+#define CONFIG_SGL_BOOT_LOGO                                       (0)
+#endif
+
 
 #ifdef __cplusplus
 }
