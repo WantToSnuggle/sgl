@@ -38,8 +38,7 @@ extern "C" {
 
 #if (CONFIG_SGL_ANIMATION)
 
-/* Forward declaration of sgl_obj and sgl_pos structures */
-struct sgl_obj;
+/* Forward declaration of sgl_pos sgl_anim structures */
 struct sgl_pos;
 struct sgl_anim;
 
