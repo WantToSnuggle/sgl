@@ -68,7 +68,7 @@ typedef enum sgl_align_type {
     SGL_ALIGN_LEFT_MID,
     SGL_ALIGN_RIGHT_MID,
 
-}sgl_align_type_t;
+} sgl_align_type_t;
 
 
 /**
@@ -81,7 +81,7 @@ typedef enum sgl_layout_type {
     SGL_LAYOUT_VERTICAL = 2,
     SGL_LAYOUT_GRID = 3,
     SGL_LAYOUT_NUM = 4,
-}sgl_layout_type_t;
+} sgl_layout_type_t;
 
 
 /**
@@ -95,7 +95,7 @@ typedef enum sgl_layout_type {
 typedef struct sgl_pos {
     int16_t x;
     int16_t y;
-}sgl_pos_t;
+} sgl_pos_t;
 
 
 /**
@@ -107,7 +107,7 @@ typedef struct sgl_pos {
 typedef struct sgl_size {
     int16_t w;
     int16_t h;
-}sgl_size_t;
+} sgl_size_t;
 
 
 /**
@@ -125,7 +125,7 @@ typedef struct sgl_area {
     int16_t y1;
     int16_t x2;
     int16_t y2;
-}sgl_area_t;
+} sgl_area_t;
 
 #define sgl_rect_t sgl_area_t
 
@@ -146,7 +146,7 @@ typedef union {
         uint8_t alpha;
     } ch;
     uint32_t full;
-}sgl_color32_t;
+} sgl_color32_t;
 
 
 /**
@@ -163,7 +163,7 @@ typedef union {
         uint8_t red;
     } ch;
     uint8_t full[3];
-}sgl_color24_t;
+} sgl_color24_t;
 
 
 /**
@@ -181,7 +181,7 @@ typedef union {
         uint16_t red : 5;
     } ch;
     uint16_t full;
-}sgl_color16_t;
+} sgl_color16_t;
 
 
 /**
@@ -199,7 +199,7 @@ typedef union {
         uint8_t red : 3;
     } ch;
     uint8_t full;
-}sgl_color8_t;
+} sgl_color8_t;
 
 
 #if (CONFIG_SGL_PANEL_PIXEL_DEPTH == 32)
@@ -230,7 +230,7 @@ typedef struct sgl_surf {
     int16_t      w;
     int16_t      h;
     size_t       size;
-}sgl_surf_t;
+} sgl_surf_t;
 
 
 /**
@@ -247,7 +247,7 @@ typedef struct sgl_pixmap {
     uint32_t       width : 12;
     uint32_t       height : 12;
     uint32_t       format : 8;
-}sgl_pixmap_t;
+} sgl_pixmap_t;
 
 
 /**
@@ -262,7 +262,7 @@ typedef struct sgl_icon_pixmap {
     uint32_t       width : 12;
     uint32_t       height : 12;
     uint32_t       bpp : 8;
-}sgl_icon_pixmap_t;
+} sgl_icon_pixmap_t;
 
 
 /**
@@ -282,7 +282,7 @@ typedef struct sgl_font_table {
     const int8_t ofs_x;
     const int8_t ofs_y;
 
-}sgl_font_table_t;
+} sgl_font_table_t;
 
 
 /**
@@ -305,7 +305,7 @@ typedef struct sgl_font {
     const uint16_t *unicode_list;
     uint32_t unicode_list_len;
 #endif
-}sgl_font_t;
+} sgl_font_t;
 
 
 /**
@@ -372,7 +372,7 @@ typedef struct sgl_obj {
 #if CONFIG_SGL_OBJ_USE_NAME
     const char         *name;
 #endif
-}sgl_obj_t;
+} sgl_obj_t;
 
 
 /**
@@ -398,7 +398,7 @@ typedef struct sgl_page {
     sgl_surf_t         surf;
     sgl_color_t        color;
     const sgl_pixmap_t *bg_img;
-}sgl_page_t;
+} sgl_page_t;
 
 
 /**
@@ -419,7 +419,7 @@ typedef struct sgl_device_fb {
     int16_t    xres_virtual;
     int16_t    yres_virtual;
     void       (*flush_area)(int16_t x, int16_t y, int16_t w, int16_t h, sgl_color_t *src);
-}sgl_device_fb_t;
+} sgl_device_fb_t;
 
 
 /**
@@ -441,7 +441,7 @@ typedef struct sgl_device_fb_info {
     int16_t    xres_virtual;
     int16_t    yres_virtual;
     void       (*flush_area)(int16_t x, int16_t y, int16_t w, int16_t h, sgl_color_t *src);
-}sgl_device_fb_info_t;
+} sgl_device_fb_info_t;
 
 
 /**
@@ -450,7 +450,7 @@ typedef struct sgl_device_fb_info {
  */
 typedef struct sgl_device_log {
     void      (*log_puts)(const char *str);
-}sgl_device_log_t;
+} sgl_device_log_t;
 
 
 /* current context, page pointer, and dirty area and started flag */
@@ -469,7 +469,7 @@ typedef struct sgl_context {
 #else
     sgl_area_t           dirty;
 #endif
-}sgl_context_t;
+} sgl_context_t;
 
 
 /* dont to use this variable, it is used internally by sgl library */

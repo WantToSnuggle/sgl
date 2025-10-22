@@ -47,7 +47,7 @@ typedef struct sgl_mm_monitor {
     size_t  used_size;
     size_t  used_rate;
 
-}sgl_mm_monitor_t;
+} sgl_mm_monitor_t;
 
 
 /**

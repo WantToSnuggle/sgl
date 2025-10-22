@@ -62,7 +62,7 @@ typedef enum sgl_event_type {
     SGL_EVENT_DRAW_MAIN,
     SGL_EVENT_ALL = 255,
 
-}sgl_event_type_t;
+} sgl_event_type_t;
 
 
 /**
@@ -77,7 +77,7 @@ typedef enum sgl_event_type {
 typedef struct sgl_event_pos {
     int16_t x;
     int16_t y;
-}sgl_event_pos_t;
+} sgl_event_pos_t;
 
 
 typedef struct sgl_event {
@@ -86,7 +86,7 @@ typedef struct sgl_event {
     sgl_event_pos_t  pos;
     uint16_t         type;
     uint16_t         distance;
-}sgl_event_t;
+} sgl_event_t;
 
 
 /**

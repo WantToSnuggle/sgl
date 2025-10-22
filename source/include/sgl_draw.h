@@ -63,7 +63,7 @@ typedef struct sgl_draw_rect {
     uint8_t            border;
     sgl_color_t        border_color;
     const sgl_pixmap_t *pixmap;
-}sgl_draw_rect_t;
+} sgl_draw_rect_t;
 
 
 /**
@@ -86,7 +86,7 @@ typedef struct sgl_draw_circle {
     uint8_t            border;
     sgl_color_t        border_color;
     const sgl_pixmap_t *pixmap;
-}sgl_draw_circle_t;
+} sgl_draw_circle_t;
 
 
 /**
@@ -109,7 +109,7 @@ typedef struct sgl_draw_bar {
     uint8_t            border;
     sgl_color_t        border_color;
     const sgl_pixmap_t *pixmap;
-}sgl_draw_bar_t;
+} sgl_draw_bar_t;
 
 
 /**
@@ -144,7 +144,7 @@ typedef struct sgl_draw_text {
     uint8_t          margin;
     int16_t          x_offset;
     int16_t          y_offset;
-}sgl_draw_text_t;
+} sgl_draw_text_t;
 
 
 /**
@@ -161,7 +161,7 @@ typedef struct sgl_draw_line {
     sgl_color_t      color;
     int16_t          width;
     uint8_t          alpha;
-}sgl_draw_line_t;
+} sgl_draw_line_t;
 
 
 /**
@@ -180,7 +180,7 @@ typedef struct sgl_draw_ring {
     int16_t          radius_out;
     sgl_color_t      color;
     uint8_t          alpha;
-}sgl_draw_ring_t;
+} sgl_draw_ring_t;
 
 
 /**
@@ -194,7 +194,7 @@ typedef struct sgl_draw_icon {
     sgl_color_t       color;
     uint8_t           alpha;
     uint8_t           align: 5;
-}sgl_draw_icon_t;
+} sgl_draw_icon_t;
 
 
 /**
@@ -219,7 +219,7 @@ typedef struct sgl_draw_arc {
     uint32_t         end_angle: 9;
     uint32_t         mode: 2;
     sgl_color_t      bg_color;
-}sgl_draw_arc_t;
+} sgl_draw_arc_t;
 
 
 typedef struct sgl_draw_matrix {
@@ -232,7 +232,7 @@ typedef struct sgl_draw_matrix {
     uint8_t          row;
     uint8_t          column;
 
-}sgl_draw_matrix_t;
+} sgl_draw_matrix_t;
 
 
 /**
