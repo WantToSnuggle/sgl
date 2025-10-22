@@ -179,7 +179,6 @@ static inline void sgl_anim_set_data(sgl_anim_t *anim, void *data)
  * @brief set animation path callback function
  * @param  anim animation object
  * @param  path_cb path callback function
- * @param  path_data path parameter for path callback function
  * @param  path_algo path algo callback function
  * @return none
  */
