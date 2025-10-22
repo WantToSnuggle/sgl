@@ -197,7 +197,6 @@ void sgl_obj_set_pos(sgl_obj_t *obj, int16_t x, int16_t y)
     SGL_ASSERT(obj != NULL);
 	sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX];
     int top = 0;
-
     int16_t x_inc = x - obj->coords.x1;
     int16_t y_inc = y - obj->coords.y1;
 
@@ -210,7 +209,7 @@ void sgl_obj_set_pos(sgl_obj_t *obj, int16_t x, int16_t y)
 
     sgl_obj_dirty_merge(obj);
 
-    if(obj->child == NULL) {
+    if (obj->child == NULL) {
         return;
     }
     stack[top++] = obj->child;

@@ -31,7 +31,6 @@
 
 #if (CONFIG_SGL_ANIMATION)
 
-
 sgl_anim_ctx_t anim_ctx = {
     .anim_list_head = NULL,
     .anim_list_tail = NULL,
@@ -48,16 +47,14 @@ sgl_anim_ctx_t anim_ctx = {
 void sgl_anim_init(sgl_anim_t *anim)
 {
     anim->next = NULL;
-    anim->obj = NULL;
+    anim->data = NULL;
     anim->act_time = 0;
     anim->act_delay = 0;
     anim->act_duration = 0;
     anim->start_value = 0;
     anim->end_value = 0;
-    anim->disable = 1;
-    anim->gapless = 1;
 
-    anim->path = NULL;
+    anim->path_cb = NULL;
     anim->path_algo = NULL;
     anim->repeat_cnt = 1;
 
@@ -163,7 +160,7 @@ void sgl_anim_task(void)
         return;
     }
 
-    while(anim != NULL) {
+    while (anim != NULL) {
         anim->act_time += anim_ctx.tick_ms;
 
         if(anim->act_time < anim->act_delay) {
@@ -173,13 +170,13 @@ void sgl_anim_task(void)
         elaps_time = anim->act_time - anim->act_delay;
 
         /* check callback function for debug */
-        SGL_ASSERT(anim->path != NULL);
+        SGL_ASSERT(anim->path_cb != NULL);
         SGL_ASSERT(anim->path_algo != NULL);
         value = anim->path_algo(sgl_min(elaps_time, anim->act_duration), anim->act_duration, anim->start_value, anim->end_value);
-        anim->path(anim, value);
+        anim->path_cb(anim, value);
 
         if (elaps_time > anim->act_duration) {
-            if (anim->repeat_cnt != -1) {
+            if (anim->repeat_cnt != SGL_ANIM_REPEAT_LOOP) {
                 anim->repeat_cnt--;
             }
 

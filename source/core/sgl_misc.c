@@ -38,7 +38,8 @@ sgl_obj_t *logo = NULL;
  */
 static void logo_anim_path(struct sgl_anim *anim, int32_t value)
 {
-    sgl_obj_set_pos_x(anim->obj, value);
+    sgl_obj_t *obj = (sgl_obj_t*)anim->data;
+    sgl_obj_set_pos_x(obj, value);
 }
 
 
@@ -93,33 +94,31 @@ void sgl_boot_animation(void)
         return;
     }
 
-    sgl_obj_set_size(logo, 120, 120);
+    sgl_obj_set_size(logo, 40, 30);
     sgl_obj_set_color(logo, SGL_COLOR_ROYAL_BLUE);
     sgl_obj_set_font(logo, &song23);
     sgl_obj_set_pos_align(logo, SGL_ALIGN_LEFT_MID);
     sgl_obj_set_text(logo, "SGL");
 
-    sgl_obj_set_size(background, 120, 60);
+    sgl_obj_set_size(background, 60, 30);
     sgl_obj_set_color(background, SGL_COLOR_LIGHT_GRAY);
     sgl_obj_set_border_width(background, 0);
     sgl_obj_set_radius(background, 8);
     sgl_obj_set_pos_align(background, SGL_ALIGN_RIGHT_MID);
 
-    sgl_anim_set_obj(logo_anim, logo);
+    sgl_anim_set_data(logo_anim, logo);
     sgl_anim_set_act_duration(logo_anim, 500);
     sgl_anim_set_start_value(logo_anim, 0);
-    sgl_anim_set_end_value(logo_anim, sgl_panel_resolution_width() / 2 - 60);
-    sgl_anim_set_path(logo_anim, logo_anim_path);
-    sgl_anim_set_path_algo(logo_anim, SGL_ANIM_PATH_EASE_IN);
+    sgl_anim_set_end_value(logo_anim, sgl_panel_resolution_width() / 2 - 20);
+    sgl_anim_set_path(logo_anim, logo_anim_path, SGL_ANIM_PATH_EASE_IN);
     sgl_anim_set_repeat_cnt(logo_anim, 1);
     sgl_anim_start(logo_anim);
 
-    sgl_anim_set_obj(bg_anim, background);
+    sgl_anim_set_data(bg_anim, background);
     sgl_anim_set_act_duration(bg_anim, 500);
     sgl_anim_set_start_value(bg_anim, sgl_panel_resolution_width());
-    sgl_anim_set_end_value(bg_anim,  sgl_panel_resolution_width() / 2 - 60);
-    sgl_anim_set_path(bg_anim, logo_anim_path);
-    sgl_anim_set_path_algo(bg_anim, SGL_ANIM_PATH_EASE_IN);
+    sgl_anim_set_end_value(bg_anim,  sgl_panel_resolution_width() / 2 - 30);
+    sgl_anim_set_path(bg_anim, logo_anim_path, SGL_ANIM_PATH_EASE_IN);
     sgl_anim_set_repeat_cnt(bg_anim, 1);
     sgl_anim_start(bg_anim);
 
@@ -132,8 +131,7 @@ void sgl_boot_animation(void)
     sgl_anim_set_act_duration(finish_ainm, 500);
     sgl_anim_set_start_value(finish_ainm, 255);
     sgl_anim_set_end_value(finish_ainm,  0);
-    sgl_anim_set_path(finish_ainm, finished_anim_path);
-    sgl_anim_set_path_algo(finish_ainm, SGL_ANIM_PATH_LINEAR);
+    sgl_anim_set_path(finish_ainm, finished_anim_path, SGL_ANIM_PATH_LINEAR);
     sgl_anim_set_repeat_cnt(finish_ainm, 1);
     sgl_anim_start(finish_ainm);
 

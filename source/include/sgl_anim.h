@@ -45,27 +45,25 @@ struct sgl_anim;
 
 
 /* Anim path callback */
-typedef void (*sgl_anim_path_t)(struct sgl_anim *anim, int32_t value);
+typedef void (*sgl_anim_path_cb_t)(struct sgl_anim *anim, int32_t value);
 typedef int32_t (*sgl_anim_path_algo_t)(uint32_t elaps, uint32_t duration, int16_t start, int16_t end);
 
 
 typedef struct sgl_anim {
-    struct sgl_obj       *obj;
-    struct sgl_anim      *next;
+    void                  *data;
+    struct sgl_anim       *next;
     uint32_t              act_time;
     uint32_t              act_delay;
     uint32_t              act_duration;
     uint16_t              start_value;
     uint16_t              end_value;
-    int32_t               repeat_cnt;
-    sgl_anim_path_t       path;
+    sgl_anim_path_cb_t    path_cb;
     sgl_anim_path_algo_t  path_algo;
-    void                 (*finish_cb)(struct sgl_anim *anim);
-    uint8_t               finished : 1;
-    uint8_t               gapless : 1;
-    uint8_t               disable : 1;
-    uint8_t               auto_free : 1;
-}sgl_anim_t;
+    void                  (*finish_cb)(struct sgl_anim *anim);
+    uint32_t              repeat_cnt : 30;
+    uint32_t              finished : 1;
+    uint32_t              auto_free : 1;
+} sgl_anim_t;
 
 
 /**
@@ -85,6 +83,9 @@ typedef struct sgl_anim_ctx {
 
 #define  sgl_anim_for_each(anim, head)                 for ((anim) = (head)->anim_list_head; (anim) != NULL; (anim) = (anim)->next)
 #define  sgl_anim_for_each_safe(anim, n, head)         for (anim = (head)->anim_list_head, n = (anim) ? (anim)->next : NULL; anim != NULL; anim = n, n = (anim) ? (anim)->next : NULL)
+
+#define  SGL_ANIM_REPEAT_LOOP                          (0x3FFFFFFF)
+#define  SGL_ANIM_REPEAT_ONCE                          (1)
 
 
 /* define default animation tick ms */
@@ -134,7 +135,6 @@ void sgl_anim_remove(sgl_anim_t *anim);
 */
 static inline void sgl_anim_start(sgl_anim_t *anim)
 {
-    anim->disable = 0;
     sgl_anim_add(anim);
 }
 
@@ -146,7 +146,6 @@ static inline void sgl_anim_start(sgl_anim_t *anim)
 */
 static inline void sgl_anim_stop(sgl_anim_t *anim)
 {
-    anim->disable = 1;
     sgl_anim_remove(anim);
 }
 
@@ -164,42 +163,30 @@ static inline void sgl_anim_free(sgl_anim_t *anim)
 
 
 /**
- * @brief set animation object
+ * @brief set animation private data
  * @param  anim animation object
- * @param  obj object
+ * @param  data pointer to private data
  * @return none
  */
-static inline void sgl_anim_set_obj(sgl_anim_t *anim, struct sgl_obj *obj)
+static inline void sgl_anim_set_data(sgl_anim_t *anim, void *data)
 {
     SGL_ASSERT(anim != NULL);
-    anim->obj = obj;
+    anim->data = data;
 }
 
 
 /**
  * @brief set animation path callback function
  * @param  anim animation object
- * @param  callback callback function
- * @param  data callback function data
+ * @param  path_cb path callback function
+ * @param  path_data path parameter for path callback function
+ * @param  path_algo path algo callback function
  * @return none
  */
-static inline void sgl_anim_set_path(sgl_anim_t *anim, sgl_anim_path_t path)
+static inline void sgl_anim_set_path(sgl_anim_t *anim, sgl_anim_path_cb_t path_cb, sgl_anim_path_algo_t path_algo)
 {
-    SGL_ASSERT(anim != NULL);
-    anim->path = path;
-}
-
-
-/**
- * @brief set animation path algorithm callback function
- * @param  anim animation object
- * @param  callback callback function
- * @param  data callback function data
- * @return none
- */
-static inline void sgl_anim_set_path_algo(sgl_anim_t *anim, sgl_anim_path_algo_t path_algo)
-{
-    SGL_ASSERT(anim != NULL);
+    SGL_ASSERT(anim != NULL && path_cb != NULL && path_data != NULL && path_algo != NULL);
+    anim->path_cb = path_cb;
     anim->path_algo = path_algo;
 }
 
@@ -265,7 +252,7 @@ static inline void sgl_anim_set_act_duration(sgl_anim_t *anim, uint32_t duration
 static inline void sgl_anim_set_repeat_cnt(sgl_anim_t *anim, int32_t repeat_cnt)
 {
     SGL_ASSERT(anim != NULL);
-    anim->repeat_cnt = repeat_cnt;
+    anim->repeat_cnt = ((uint32_t)repeat_cnt) & SGL_ANIM_REPEAT_LOOP;
 }
 
 
