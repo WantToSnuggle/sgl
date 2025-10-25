@@ -93,7 +93,6 @@ extern "C" {
  * 
  */
 
-
 #ifndef CONFIG_SGL_PANEL_PIXEL_DEPTH
 #define CONFIG_SGL_PANEL_PIXEL_DEPTH                               (16)
 #endif
@@ -116,7 +115,7 @@ extern "C" {
 
 #ifndef CONFIG_SGL_ANIMATION
 #define CONFIG_SGL_ANIMATION                                       (0)
-#elif(CONFIG_SGL_ANIMATION == 1)
+#elif (CONFIG_SGL_ANIMATION == 1)
 #   ifndef CONFIG_SGL_ANIMATION_TICK_MS
 #       define CONFIG_SGL_ANIMATION_TICK_MS                        (20)
 #   endif
@@ -174,10 +173,16 @@ extern "C" {
 #   endif
 #endif
 
-#ifndef CONFIG_SGL_BOOT_ANIMATION
-#define CONFIG_SGL_BOOT_ANIMATION                                  (0)
+#ifndef CONFIG_SGL_BOOT_LOGO
+#define CONFIG_SGL_BOOT_LOGO                                       (1)
 #endif
 
+#ifndef CONFIG_SGL_BOOT_ANIMATION
+#   define CONFIG_SGL_BOOT_ANIMATION                               (0)
+#elif (CONFIG_SGL_ANIMATION == 0)
+#   undef CONFIG_SGL_BOOT_ANIMATION
+#   define CONFIG_SGL_BOOT_ANIMATION                               (0)
+#endif
 
 #ifdef __cplusplus
 }

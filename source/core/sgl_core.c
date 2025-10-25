@@ -536,7 +536,7 @@ static sgl_page_t* sgl_page_create(void)
 
     sgl_obj_t *obj = &page->obj;
 
-    if (sgl_ctx.fb_dev.framebuffer[0] == NULL)  {
+    if (sgl_ctx.fb_dev.framebuffer[0] == NULL) {
         SGL_LOG_ERROR("sgl_page_create: framebuffer is NULL");
         sgl_free(page);
         return NULL;
@@ -558,7 +558,7 @@ static sgl_page_t* sgl_page_create(void)
     obj->get_style = sgl_page_get_style;
 #endif
     obj->dirty = 1;
-    obj->coords = (sgl_area_t){
+    obj->coords = (sgl_area_t) {
         .x1 = 0,
         .y1 = 0,
         .x2 = sgl_ctx.fb_dev.xres,
@@ -1434,7 +1434,7 @@ static inline bool sgl_dirty_area_calculate(sgl_obj_t *obj)
         }
 
         /* check child dirty and merge all dirty area */
-        if (sgl_obj_is_dirty(obj)){
+        if (sgl_obj_is_dirty(obj)) {
 
             /* update obj area */
             if (unlikely(!sgl_area_clip(&obj->parent->area, &obj->coords, &obj->area))) {

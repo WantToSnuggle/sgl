@@ -24,11 +24,23 @@
 
 #include <sgl.h>
 
+#if (CONFIG_SGL_BOOT_LOGO)
+
+void sgl_boot_logo(void)
+{
+
+}
+
+
+#endif // !CONFIG_SGL_BOOT_LOGO
+
+
 #if (CONFIG_SGL_BOOT_ANIMATION)
 
-sgl_obj_t *background = NULL;
-sgl_obj_t *logo = NULL;
-
+typedef struct {
+    sgl_obj_t *background;
+    sgl_obj_t *text;
+} logo_t;
 
 /**
  * @brief logo animation path
@@ -51,9 +63,9 @@ static void logo_anim_path(struct sgl_anim *anim, int32_t value)
  */
 static void finished_anim_path(struct sgl_anim *anim, int32_t value)
 {
-    SGL_UNUSED(anim);
-    sgl_obj_set_alpha(logo, value);
-    sgl_obj_set_alpha(background, value);
+    logo_t *logo = (logo_t*)anim->data;
+    sgl_obj_set_alpha(logo->text, value);
+    sgl_obj_set_alpha(logo->background, value);
 }
 
 
@@ -82,31 +94,33 @@ void sgl_boot_animation(void)
         return;
     }
 
-    background = sgl_rect_create(NULL);
-    if (background == NULL) {
+    logo_t logo;
+
+    logo.background = sgl_rect_create(NULL);
+    if (logo.background == NULL) {
         SGL_LOG_ERROR("sgl boot background create failed");
         return;
     }
 
-    logo = sgl_label_create(NULL);
-    if (logo == NULL) {
-        SGL_LOG_ERROR("sgl boot logo create failed");
+    logo.text = sgl_label_create(NULL);
+    if (logo.text == NULL) {
+        SGL_LOG_ERROR("sgl boot text create failed");
         return;
     }
 
-    sgl_obj_set_size(logo, 40, 30);
-    sgl_obj_set_color(logo, SGL_COLOR_ROYAL_BLUE);
-    sgl_obj_set_font(logo, &song23);
-    sgl_obj_set_pos_align(logo, SGL_ALIGN_LEFT_MID);
-    sgl_obj_set_text(logo, "SGL");
+    sgl_obj_set_size(logo.text, 40, 30);
+    sgl_obj_set_color(logo.text, SGL_COLOR_ROYAL_BLUE);
+    sgl_obj_set_font(logo.text, &song23);
+    sgl_obj_set_pos_align(logo.text, SGL_ALIGN_LEFT_MID);
+    sgl_obj_set_text(logo.text, "SGL");
 
-    sgl_obj_set_size(background, 60, 30);
-    sgl_obj_set_color(background, SGL_COLOR_LIGHT_GRAY);
-    sgl_obj_set_border_width(background, 0);
-    sgl_obj_set_radius(background, 8);
-    sgl_obj_set_pos_align(background, SGL_ALIGN_RIGHT_MID);
+    sgl_obj_set_size(logo.background, 60, 30);
+    sgl_obj_set_color(logo.background, SGL_COLOR_LIGHT_GRAY);
+    sgl_obj_set_border_width(logo.background, 0);
+    sgl_obj_set_radius(logo.background, 8);
+    sgl_obj_set_pos_align(logo.background, SGL_ALIGN_RIGHT_MID);
 
-    sgl_anim_set_data(logo_anim, logo);
+    sgl_anim_set_data(logo_anim, logo.text);
     sgl_anim_set_act_duration(logo_anim, 500);
     sgl_anim_set_start_value(logo_anim, 0);
     sgl_anim_set_end_value(logo_anim, sgl_panel_resolution_width() / 2 - 20);
@@ -114,7 +128,7 @@ void sgl_boot_animation(void)
     sgl_anim_set_repeat_cnt(logo_anim, 1);
     sgl_anim_start(logo_anim);
 
-    sgl_anim_set_data(bg_anim, background);
+    sgl_anim_set_data(bg_anim, logo.background);
     sgl_anim_set_act_duration(bg_anim, 500);
     sgl_anim_set_start_value(bg_anim, sgl_panel_resolution_width());
     sgl_anim_set_end_value(bg_anim,  sgl_panel_resolution_width() / 2 - 30);
@@ -128,6 +142,7 @@ void sgl_boot_animation(void)
     sgl_anim_free(logo_anim);
     sgl_anim_free(bg_anim);
 
+    sgl_anim_set_data(finish_ainm, &logo);
     sgl_anim_set_act_duration(finish_ainm, 500);
     sgl_anim_set_start_value(finish_ainm, 255);
     sgl_anim_set_end_value(finish_ainm,  0);
@@ -139,8 +154,8 @@ void sgl_boot_animation(void)
         sgl_task_handle();
     }
 
-    sgl_obj_delete(logo);
-    sgl_obj_delete(background);
+    sgl_obj_delete(logo.text);
+    sgl_obj_delete(logo.background);
 
     sgl_anim_free(finish_ainm);
     sgl_obj_set_dirty(sgl_screen_act());
