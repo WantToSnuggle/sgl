@@ -183,7 +183,7 @@ static inline void sgl_anim_set_data(sgl_anim_t *anim, void *data)
  */
 static inline void sgl_anim_set_path(sgl_anim_t *anim, sgl_anim_path_cb_t path_cb, sgl_anim_path_algo_t path_algo)
 {
-    SGL_ASSERT(anim != NULL && path_cb != NULL && path_data != NULL && path_algo != NULL);
+    SGL_ASSERT(anim != NULL && path_cb != NULL && path_algo != NULL);
     anim->path_cb = path_cb;
     anim->path_algo = path_algo;
 }
