@@ -182,13 +182,13 @@ static bool pos_is_focus_on_obj(sgl_event_pos_t *pos, sgl_rect_t *rect, int16_t 
  */
 static struct sgl_obj* click_detect_object(sgl_event_pos_t *pos)
 {
-    struct sgl_obj *stack[SGL_OBJ_DEPTH_MAX], *obj = NULL, *find = NULL;
+    struct sgl_obj *stack[SGL_OBJ_DEPTH_MAX], *obj = sgl_screen_act()->child, *find = NULL;
     int top = 0;
 
-    if (unlikely(sgl_screen_act()->child == NULL)) {
+    if (unlikely(obj == NULL)) {
         return NULL;
     }
-    stack[top++] = sgl_screen_act()->child;
+    stack[top++] = obj;
 
     while (top > 0) {
         SGL_ASSERT(top < SGL_OBJ_DEPTH_MAX);
