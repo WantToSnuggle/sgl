@@ -6,23 +6,23 @@
 ## shotcut
 <table>
   <tr>
-    <td><img src="docs/gif/button.gif" width="390" alt="Button"></td>
-    <td><img src="docs/gif/checkbox.gif" width="390" alt="Checkbox"></td>
-    <td><img src="docs/gif/label.gif" width="390" alt="Label"></td>
+    <td><img src="docs/gif/button.gif" width="200" alt="Button"></td>
+    <td><img src="docs/gif/checkbox.gif" width="200" alt="Checkbox"></td>
+    <td><img src="docs/gif/label.gif" width="200" alt="Label"></td>
   </tr>
 </table>
 <table>
   <tr>
-    <td><img src="docs/gif/switch.gif" width="390" alt="Switch"></td>
-    <td><img src="docs/gif/msgbox.gif" width="390" alt="Msgbox"></td>
-    <td><img src="docs/gif/keyboard.gif" width="390" alt="Keyboard"></td>
+    <td><img src="docs/gif/switch.gif" width="200" alt="Switch"></td>
+    <td><img src="docs/gif/msgbox.gif" width="200" alt="Msgbox"></td>
+    <td><img src="docs/gif/keyboard.gif" width="200" alt="Keyboard"></td>
   </tr>
 </table>
 <table>
   <tr>
-    <td><img src="docs/gif/textbox.gif" width="390" alt="Textbox"></td>
-    <td><img src="docs/gif/arcbar.gif" width="390" alt="Arcbar"></td>
-    <td><img src="docs/gif/slider.gif" width="390" alt="Slider"></td>
+    <td><img src="docs/gif/textbox.gif" width="200" alt="Textbox"></td>
+    <td><img src="docs/gif/arcbar.gif" width="200" alt="Arcbar"></td>
+    <td><img src="docs/gif/slider.gif" width="200" alt="Slider"></td>
   </tr>
 </table>
 
