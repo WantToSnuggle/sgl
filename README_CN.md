@@ -6,23 +6,23 @@
 ## 快速预览
 <table>
   <tr>
-    <td><img src="docs/gif/button.gif" width="200" alt="按钮"></td>
-    <td><img src="docs/gif/checkbox.gif" width="200" alt="复选框"></td>
-    <td><img src="docs/gif/label.gif" width="200" alt="标签"></td>
+    <td><img src="docs/gif/button.gif" width="250" alt="按钮"></td>
+    <td><img src="docs/gif/checkbox.gif" width="250" alt="复选框"></td>
+    <td><img src="docs/gif/label.gif" width="250" alt="标签"></td>
   </tr>
 </table>
 <table>
   <tr>
-    <td><img src="docs/gif/switch.gif" width="200" alt="开关"></td>
-    <td><img src="docs/gif/msgbox.gif" width="200" alt="消息框"></td>
-    <td><img src="docs/gif/keyboard.gif" width="200" alt="键盘"></td>
+    <td><img src="docs/gif/switch.gif" width="250" alt="开关"></td>
+    <td><img src="docs/gif/msgbox.gif" width="250" alt="消息框"></td>
+    <td><img src="docs/gif/keyboard.gif" width="250" alt="键盘"></td>
   </tr>
 </table>
 <table>
   <tr>
-    <td><img src="docs/gif/textbox.gif" width="200" alt="文本框"></td>
-    <td><img src="docs/gif/arcbar.gif" width="200" alt="弧形进度条"></td>
-    <td><img src="docs/gif/slider.gif" width="200" alt="滑块"></td>
+    <td><img src="docs/gif/textbox.gif" width="250" alt="文本框"></td>
+    <td><img src="docs/gif/arcbar.gif" width="250" alt="弧形进度条"></td>
+    <td><img src="docs/gif/slider.gif" width="250" alt="滑块"></td>
   </tr>
 </table>
 
