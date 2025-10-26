@@ -1008,6 +1008,17 @@ void sgl_obj_dirty_merge(sgl_obj_t *obj);
 
 
 /**
+ * @brief update object area
+ * @param obj point to object
+ * @return none, this function will force update object area
+ */
+static inline void sgl_obj_update_area(sgl_obj_t *obj)
+{
+    sgl_obj_dirty_merge(obj);
+}
+
+
+/**
  * @brief Set object position
  * @param obj point to object
  * @param x: x position

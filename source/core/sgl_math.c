@@ -346,7 +346,7 @@ uint16_t sgl_atan2_angle(int x, int y)
  */
 void sgl_split_len(const uint8_t *weight, int count, int16_t length, int16_t gap, int16_t *out)
 {
-    int total_w = 0, span = 0, accumulated = 0, error = 0;
+    int16_t total_w = 0, span = 0, accumulated = 0, error = 0;
     for (int i = 0; i < count; i++) {
         total_w += weight[i];
     }
@@ -356,8 +356,8 @@ void sgl_split_len(const uint8_t *weight, int count, int16_t length, int16_t gap
     for (int i = 0; i < count; i++) {
         int numerator = weight[i] * span;
         out[i] = numerator / total_w;
-        
         error += numerator % total_w;
+
         if (error >= total_w) {
             out[i] += 1;
             error -= total_w;
@@ -375,6 +375,33 @@ void sgl_split_len(const uint8_t *weight, int count, int16_t length, int16_t gap
     for (int i = 0; i < count && error < 0; i++) {
         out[i] -= 1;
         error ++;
+    }
+}
+
+
+/**
+ * @brief Split the length into n parts, with the weight of each part.
+ * @param length: The length to split.
+ * @param count: The count of parts.
+ * @param gap: The gap between each part.
+ * @param out: The length of each part.
+ * @note The average method of Bresenham's algorithm
+ */
+void sgl_split_len_avg(int length, int count, int16_t gap, int16_t *out)
+{
+    int16_t available_length = length - (count + 1) * gap;
+    int16_t base = available_length / count;
+    int16_t remainder = available_length % count;
+
+    int16_t error = 0;
+    for (int i = 0; i < count; i++) {
+        out[i] = base;
+        error += remainder;
+
+        if (error > count / 2) {
+            out[i] += 1;
+            error -= count;
+        }
     }
 }
 

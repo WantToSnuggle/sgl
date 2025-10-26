@@ -922,37 +922,35 @@ void sgl_obj_set_layout(sgl_obj_t *obj, sgl_layout_type_t type)
 
     sgl_obj_t *child = NULL;
     size_t child_num = sgl_obj_get_child_count(obj);
-    int16_t margin = obj->margin, child_w, child_xs, child_h, child_ys;
+    int16_t child_span[128] = {0}, i = 0, child_pos = 0;
 
     /* set object to dirty flag for layout change */
     sgl_obj_set_dirty(obj);
 
     switch (obj->layout) {
     case SGL_LAYOUT_HORIZONTAL:
-        child_w  = (obj->coords.x2 - obj->coords.x1 - margin * (child_num + 1)) / child_num;
-        child_xs = obj->coords.x1 + margin;
+        sgl_split_len_avg((obj->coords.x2 - obj->coords.x1 + 1), child_num, obj->margin, child_span);
+        child_pos = obj->coords.x1 + obj->margin;
 
         sgl_obj_for_each_child(child, obj) {
-            child->coords.x1 = child_xs;
-            child->coords.x2 = child->coords.x1 + child_w;
-            child_xs += (child_w + margin);
-
-            child->coords.y1 = obj->coords.y1 + margin;
-            child->coords.y2 = obj->coords.y2 - margin;
+            child->coords.x1 = child_pos;
+            child->coords.x2 = child_pos + child_span[i] - 1;
+            child->coords.y1 = obj->coords.y1 + obj->margin;
+            child->coords.y2 = obj->coords.y2 - obj->margin;
+            child_pos += (child_span[i++] + obj->margin);
         }
         break;
 
     case SGL_LAYOUT_VERTICAL:
-        child_h  = (obj->coords.y2 - obj->coords.y1 - margin * (child_num + 1)) / child_num;
-        child_ys = obj->coords.y1 + margin;
+        sgl_split_len_avg((obj->coords.y2 - obj->coords.y1 + 1), child_num, obj->margin, child_span);
+        child_pos = obj->coords.x1 + obj->margin;
 
         sgl_obj_for_each_child(child, obj) {
-            child->coords.y1 = child_ys;
-            child->coords.y2 = child->coords.y1 + child_h;
-            child_ys += (child_h + margin);
-
-            child->coords.x1 = obj->coords.x1 + margin;
-            child->coords.x2 = obj->coords.x2 - margin;
+            child->coords.x1 = obj->coords.x1 + obj->margin;
+            child->coords.x2 = obj->coords.x2 - obj->margin;
+            child->coords.y1 = child_pos;
+            child->coords.y2 = child_pos + child_span[i] - 1;
+            child_pos += (child_span[i++] + obj->margin);
         }
         break;
 

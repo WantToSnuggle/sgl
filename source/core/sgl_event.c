@@ -212,7 +212,7 @@ static struct sgl_obj* click_detect_object(sgl_event_pos_t *pos)
      * because the object may be a label attached to the object
     */
     if (find != NULL) {
-        return sgl_obj_is_clickable(find) ? find : find->parent;
+        return sgl_obj_is_clickable(find) ? find : (sgl_obj_is_clickable(find->parent) ? find->parent : NULL);
     }
 
     return find;
