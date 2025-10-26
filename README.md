@@ -3,12 +3,38 @@
 
 ![SGL_LOGO](SGL_logo.png)
 
-#### Minimum hardware requirements
+## shotcut
+<table>
+  <tr>
+    <td><img src="docs/gif/button.gif" width="390" alt="Button"></td>
+    <td><img src="docs/gif/checkbox.gif" width="390" alt="Checkbox"></td>
+    <td><img src="docs/gif/label.gif" width="390" alt="Label"></td>
+  </tr>
+</table>
+<table>
+  <tr>
+    <td><img src="docs/gif/switch.gif" width="390" alt="Switch"></td>
+    <td><img src="docs/gif/msgbox.gif" width="390" alt="Msgbox"></td>
+    <td><img src="docs/gif/keyboard.gif" width="390" alt="Keyboard"></td>
+  </tr>
+</table>
+<table>
+  <tr>
+    <td><img src="docs/gif/textbox.gif" width="390" alt="Textbox"></td>
+    <td><img src="docs/gif/arcbar.gif" width="390" alt="Arcbar"></td>
+    <td><img src="docs/gif/slider.gif" width="390" alt="Slider"></td>
+  </tr>
+</table>
+
+### Minimum hardware requirements
 | Flash Size | Ram Size |
 | :---------:| :------: |
 | 15kB       |    3kb   |
 
-#### Introduction
+### Partial frame buffer support
+Requires only a single row of pixels for the frame buffer at minimum.
+
+### Introduction
 SGL (Small Graphics Library) is a lightweight and fast graphics library designed to provide a beautiful and lightweight GUI (Graphics User Interface) for MCU-level processors.
 Please refer to the `docs` directory for documentation.
 
