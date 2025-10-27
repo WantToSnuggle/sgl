@@ -859,8 +859,12 @@ void sgl_obj_dirty_merge(sgl_obj_t *obj)
 #if CONFIG_SGL_DIRTY_AREA_THRESHOLD
     int interval_x, interval_y;
 
-    for (int i = 0; i < sgl_ctx.dirty_num; i++) {
+    /* skip invalid area */
+    if (obj->area.x1 >= obj->area.x2 || obj->area.y1 >= obj->area.y2) {
+        return;
+    }
 
+    for (int i = 0; i < sgl_ctx.dirty_num; i++) {
         if (obj->area.x2 < sgl_ctx.dirty[i].x1) {
             interval_x = sgl_ctx.dirty[i].x1 - obj->area.x2;
         }
