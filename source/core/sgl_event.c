@@ -202,7 +202,6 @@ static struct sgl_obj* click_detect_object(sgl_event_pos_t *pos)
             find = obj;
             if (sgl_obj_has_child(obj)) {
                 stack[top++] = obj->child;
-                continue;
             }
         }
     }
@@ -244,7 +243,6 @@ static struct sgl_obj* motion_detect_object(sgl_event_pos_t *pos)
             }
             else if (sgl_obj_has_child(obj)) {
                 stack[top++] = obj->child;
-                continue;
             }
         }
     }
