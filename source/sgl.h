@@ -49,5 +49,6 @@
 #include "widgets/listview/sgl_listview.h"
 #include "widgets/numberkbd/sgl_numberkbd.h"
 #include "widgets/keyboard/sgl_keyboard.h"
+#include "widgets/unzip_image/sgl_unzip_image.h"
 
 #endif // __SGL_H__
