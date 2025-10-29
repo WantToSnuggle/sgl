@@ -1084,10 +1084,10 @@ uint32_t sgl_utf8_to_unicode(const char *utf8_str, uint32_t *p_unicode_buffer)
 uint32_t sgl_search_unicode_ch_index(const sgl_font_t *font, uint32_t unicode)
 {
     uint32_t left = 0;
-    uint32_t right = font->unicode_list_len;
+    uint32_t right = font->unicode_list_len - 1, mid = 0;
 
-    while (left < right) {
-        uint32_t mid = left + (right - left) / 2;
+    while (left <= right) {
+        mid = left + (right - left) / 2;
 
         if (font->unicode_list[mid] == unicode) {
             return mid;
@@ -1096,7 +1096,7 @@ uint32_t sgl_search_unicode_ch_index(const sgl_font_t *font, uint32_t unicode)
             left = mid + 1;
         }
         else {
-            right = mid;
+            right = mid - 1;
         }
     }
 
