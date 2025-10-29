@@ -551,7 +551,7 @@ static sgl_page_t* sgl_page_create(void)
     page->color = SGL_THEME_DESKTOP;
 
     obj->parent = obj;
-    obj->clickable = 1;
+    obj->clickable = 0;
     obj->construct_fn = sgl_page_construct_cb;
 #if CONFIG_SGL_USE_STYLE_UNIFIED_API
     obj->set_style = sgl_page_set_style;
