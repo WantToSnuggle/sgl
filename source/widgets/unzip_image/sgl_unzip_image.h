@@ -72,7 +72,7 @@ sgl_obj_t* sgl_unzip_img_create(sgl_obj_t *parent);
  * @param type Style type
  * @param value Style value
  */
-void sgl_unzip_img_set_style(sgl_obj_t *obj, uint8_t type, size_t value);
+void sgl_unzip_img_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value);
 
 /**
  * @brief Get compressed image style
@@ -80,7 +80,7 @@ void sgl_unzip_img_set_style(sgl_obj_t *obj, uint8_t type, size_t value);
  * @param type Style type
  * @return Style value
  */
-size_t sgl_unzip_img_get_style(sgl_obj_t *obj, uint8_t type);
+size_t sgl_unzip_img_get_style(sgl_obj_t *obj, sgl_style_type_t type);
 
 /**
  * @brief Draw compressed image
