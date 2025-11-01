@@ -67,6 +67,13 @@ typedef enum sgl_align_type {
     SGL_ALIGN_BOT_RIGHT,
     SGL_ALIGN_LEFT_MID,
     SGL_ALIGN_RIGHT_MID,
+    SGL_ALIGN_VERT_LEFT,
+    SGL_ALIGN_VERT_RIGHT,
+    SGL_ALIGN_VERT_MID,
+    SGL_ALIGN_HORIZ_TOP,
+    SGL_ALIGN_HORIZ_BOT,
+    SGL_ALIGN_HORIZ_MID,
+    SGL_ALIGN_NUM,
 
 } sgl_align_type_t;
 
@@ -1134,8 +1141,35 @@ static inline int16_t sgl_obj_get_pos_y(sgl_obj_t *obj)
  * @param obj The object to set the alignment position.
  * @param type The alignment type.
  * @return none
+ * @note type should be one of the sgl_align_type_t values:
+ *       - SGL_ALIGN_CENTER     : Center the object in the parent object.
+ *       - SGL_ALIGN_TOP_MID    : Align the object at the top middle of the parent object.
+ *       - SGL_ALIGN_TOP_LEFT   : Align the object at the top left of the parent object.
+ *       - SGL_ALIGN_TOP_RIGHT  : Align the object at the top right of the parent object.
+ *       - SGL_ALIGN_BOT_MID    : Align the object at the bottom middle of the parent object.
+ *       - SGL_ALIGN_BOT_LEFT   : Align the object at the bottom left of the parent object.
+ *       - SGL_ALIGN_BOT_RIGHT  : Align the object at the bottom right of the parent object.
+ *       - SGL_ALIGN_LEFT_MID   : Align the object at the left middle of the parent object.
+ *       - SGL_ALIGN_RIGHT_MID  : Align the object at the right middle of the parent object.
  */
 void sgl_obj_set_pos_align(sgl_obj_t *obj, sgl_align_type_t type);
+
+
+/**
+ * @brief Set the alignment position of the object relative to its sibling object.
+ * @param ref The reference object, it should be the sibling object.
+ * @param obj The object to set the alignment position.
+ * @param type The alignment type.
+ * @return none
+ * @note type should be one of the sgl_align_type_t values:
+ *       - SGL_ALIGN_VERT_LEFT  : Align the object at the left side of the reference object.
+ *       - SGL_ALIGN_VERT_RIGHT : Align the object at the right side of the reference object.
+ *       - SGL_ALIGN_VERT_MID   : Align the object at the middle of the reference object.
+ *       - SGL_ALIGN_HORIZ_TOP  : Align the object at the top side of the reference object.
+ *       - SGL_ALIGN_HORIZ_BOT  : Align the object at the bottom side of the reference object.
+ *       - SGL_ALIGN_HORIZ_MID  : Align the object at the middle of the reference object.
+ */
+void sgl_obj_set_pos_align_ref(sgl_obj_t *ref, sgl_obj_t *obj, sgl_align_type_t type);
 
 
 /**

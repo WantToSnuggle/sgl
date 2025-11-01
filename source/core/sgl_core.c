@@ -1305,6 +1305,16 @@ sgl_pos_t sgl_get_icon_pos(sgl_area_t *area, const sgl_icon_pixmap_t *icon, int1
  * @param obj The object to set the alignment position.
  * @param type The alignment type.
  * @return none
+ * @note type should be one of the sgl_align_type_t values:
+ *       - SGL_ALIGN_CENTER    : Center the object in the parent object.
+ *       - SGL_ALIGN_TOP_MID   : Align the object at the top middle of the parent object.
+ *       - SGL_ALIGN_TOP_LEFT  : Align the object at the top left of the parent object.
+ *       - SGL_ALIGN_TOP_RIGHT : Align the object at the top right of the parent object.
+ *       - SGL_ALIGN_BOT_MID   : Align the object at the bottom middle of the parent object.
+ *       - SGL_ALIGN_BOT_LEFT  : Align the object at the bottom left of the parent object.
+ *       - SGL_ALIGN_BOT_RIGHT : Align the object at the bottom right of the parent object.
+ *       - SGL_ALIGN_LEFT_MID  : Align the object at the left middle of the parent object.
+ *       - SGL_ALIGN_RIGHT_MID : Align the object at the right middle of the parent object.
  */
 void sgl_obj_set_pos_align(sgl_obj_t *obj, sgl_align_type_t type)
 {
@@ -1332,6 +1342,72 @@ void sgl_obj_set_pos_align(sgl_obj_t *obj, sgl_align_type_t type)
     sgl_obj_set_pos(obj, p_pos.x + obj_pos.x,
                          p_pos.y + obj_pos.y
                     );
+}
+
+
+/**
+ * @brief Set the alignment position of the object relative to sibling object.
+ * @param ref The reference object, it should be the sibling object.
+ * @param obj The object to set the alignment position.
+ * @param type The alignment type.
+ * @return none
+ * @note type should be one of the sgl_align_type_t values:
+ *       - SGL_ALIGN_VERT_LEFT  : Align the object at the left side of the reference object.
+ *       - SGL_ALIGN_VERT_RIGHT : Align the object at the right side of the reference object.
+ *       - SGL_ALIGN_VERT_MID   : Align the object at the middle of the reference object.
+ *       - SGL_ALIGN_HORIZ_TOP  : Align the object at the top side of the reference object.
+ *       - SGL_ALIGN_HORIZ_BOT  : Align the object at the bottom side of the reference object.
+ *       - SGL_ALIGN_HORIZ_MID  : Align the object at the middle of the reference object.
+ */
+void sgl_obj_set_pos_align_ref(sgl_obj_t *ref, sgl_obj_t *obj, sgl_align_type_t type)
+{
+    SGL_ASSERT(ref != NULL && obj != NULL);
+
+    if (unlikely(ref == obj->parent)) {
+        sgl_obj_set_pos_align(obj, type);
+        return;
+    }
+
+    int16_t ref_w = ref->coords.x2 - ref->coords.x1 + 1;
+    int16_t obj_w = obj->coords.x2 - obj->coords.x1 + 1;
+    int16_t ref_h = ref->coords.y2 - ref->coords.y1 + 1;
+    int16_t obj_h = obj->coords.y2 - obj->coords.y1 + 1;
+
+    switch (type) {
+    case SGL_ALIGN_VERT_MID:
+        obj->coords.x1 = ref->coords.x1 + (ref_w - obj_w) / 2;
+        obj->coords.x2 = obj->coords.x1 + obj_w - 1;
+        break;
+
+    case SGL_ALIGN_VERT_LEFT:
+        obj->coords.x1 = ref->coords.x1;
+        obj->coords.x2 = obj->coords.x1 + obj_w - 1;
+        break;
+
+    case SGL_ALIGN_VERT_RIGHT:
+        obj->coords.x1 = ref->coords.x2 - obj_w;
+        obj->coords.x2 = obj->coords.x1 + obj_w - 1;
+        break;
+    
+    case SGL_ALIGN_HORIZ_MID:
+        obj->coords.y1 = ref->coords.y1 + (ref_h - obj_h) / 2;
+        obj->coords.y2 = obj->coords.y1 + obj_h - 1;
+        break;
+
+    case SGL_ALIGN_HORIZ_TOP:
+        obj->coords.y1 = ref->coords.y1;
+        obj->coords.y2 = obj->coords.y1 + obj_h - 1;
+        break;
+    
+    case SGL_ALIGN_HORIZ_BOT:
+        obj->coords.y1 = ref->coords.y2 - obj_h;
+        obj->coords.y2 = obj->coords.y1 + obj_h - 1;
+        break;
+
+    default: 
+        SGL_LOG_WARN("invalid align type");
+        break;
+    }
 }
 
 
