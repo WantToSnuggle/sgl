@@ -85,6 +85,7 @@ extern "C" {
 #define SGL_DIRECT_HORIZONTAL                   (0)
 #define SGL_DIRECT_VERTICAL                     (1)
 
+#define SGL_ALPHA_RANGE                         (256)
 #define SGL_ALPHA_MAX                           (255)
 #define SGL_ALPHA_MIN                           (0)
 
