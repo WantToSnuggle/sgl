@@ -247,6 +247,7 @@ sgl_obj_t* sgl_label_create(sgl_obj_t* parent)
     label->desc.margin = 0;
     label->desc.mode = SGL_DRAW_TEXT_NORMAL;
     label->desc.color = SGL_THEME_TEXT_COLOR;
+    label->desc.text = "";
 
     return obj;
 }
