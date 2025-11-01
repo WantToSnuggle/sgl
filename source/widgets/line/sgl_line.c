@@ -27,6 +27,7 @@
 #include <sgl_math.h>
 #include <sgl_log.h>
 #include <sgl_mm.h>
+#include <sgl_theme.h>
 #include <sgl_cfgfix.h>
 #include <string.h>
 #include "sgl_line.h"
@@ -130,10 +131,10 @@ static void sgl_line_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t 
         sgl_draw_line(surf, &obj->area, &line->desc);
     }
     else if(evt->type == SGL_EVENT_DRAW_INIT) {
-        line->desc.start.x = obj->coords.x1;
-        line->desc.start.y = obj->coords.y1;
-        line->desc.end.x = obj->coords.x2;
-        line->desc.end.y = obj->coords.y2;
+        obj->coords.x1 = line->desc.start.x;
+        obj->coords.y1 = line->desc.start.y;
+        obj->coords.x2 = line->desc.end.x;
+        obj->coords.y2 = line->desc.end.y;
     }
 }
 
@@ -163,9 +164,31 @@ sgl_obj_t* sgl_line_create(sgl_obj_t* parent)
 #endif
     obj->needinit = 1;
 
-    line->desc.color = SGL_COLOR_BLACK;
+    line->desc.color = SGL_THEME_BG_COLOR;
     line->desc.alpha = SGL_ALPHA_MAX;
     line->desc.width = 1;
 
     return obj;
+}
+
+
+void sgl_line_set_start_point(sgl_obj_t *obj, int16_t x, int16_t y)
+{
+    sgl_line_t *line = (sgl_line_t*)obj;
+    line->desc.start.x = x;
+    line->desc.start.y = y;
+}
+
+void sgl_line_set_end_point(sgl_obj_t *obj, int16_t x, int16_t y)
+{
+    sgl_line_t *line = (sgl_line_t*)obj;
+    line->desc.end.x = x;
+    line->desc.end.y = y;
+}
+
+
+void sgl_line_set_width(sgl_obj_t *obj, uint16_t width)
+{
+    sgl_line_t *line = (sgl_line_t*)obj;
+    line->desc.width = width;
 }

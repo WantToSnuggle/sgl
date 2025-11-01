@@ -51,17 +51,17 @@ void sgl_draw_fill_hline(sgl_surf_t *surf, sgl_area_t *area, int16_t y, int16_t 
         .y2 = y + width - 1,
     };
 
-    if(!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, area, &clip)) {
         return;
     }
 
-    if(!sgl_area_selfclip(&coords, &clip)) {
+    if (!sgl_area_selfclip(&coords, &clip)) {
         return;
     }
 
-    for(int y = coords.y1; y <= coords.y2; y++) {
+    for (int y = coords.y1; y <= coords.y2; y++) {
         buf = sgl_surf_get_buf(surf,  coords.x1 - surf->x, y - surf->y);
-        for(int x = coords.x1; x <= coords.x2; x++, buf++) {
+        for (int x = coords.x1; x <= coords.x2; x++, buf++) {
             *buf = color;
         }
     }
@@ -91,17 +91,17 @@ void sgl_draw_fill_hline_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t 
         .y2 = y + width - 1,
     };
 
-    if(!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, area, &clip)) {
         return;
     }
 
-    if(!sgl_area_selfclip(&coords, &clip)) {
+    if (!sgl_area_selfclip(&coords, &clip)) {
         return;
     }
 
-    for(int y = coords.y1; y <= coords.y2; y++) {
+    for (int y = coords.y1; y <= coords.y2; y++) {
         buf = sgl_surf_get_buf(surf,  coords.x1 - surf->x, y - surf->y);
-        for(int x = coords.x1; x <= coords.x2; x++, buf++) {
+        for (int x = coords.x1; x <= coords.x2; x++, buf++) {
             *buf = sgl_color_mixer(color, *buf, alpha);
         }
     }
@@ -129,15 +129,15 @@ void sgl_draw_fill_vline(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t 
         .y2 = y2,
     };
 
-    if(!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, area, &clip)) {
         return;
     }
 
-    if(!sgl_area_selfclip(&coords, &clip)) {
+    if (!sgl_area_selfclip(&coords, &clip)) {
         return;
     }
 
-    for(int i = coords.y1; i <= coords.y2; i++) {
+    for (int i = coords.y1; i <= coords.y2; i++) {
         sgl_surf_hline(surf, i - surf->y, coords.x1, coords.x2 + 1, color);
     }
 }
@@ -165,19 +165,43 @@ void sgl_draw_fill_vline_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t 
         .y2 = y2,
     };
 
-    if(!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, area, &clip)) {
         return;
     }
 
-    if(!sgl_area_selfclip(&coords, &clip)) {
+    if (!sgl_area_selfclip(&coords, &clip)) {
         return;
     }
 
-    for(int i = coords.y1; i <= coords.y2; i++) {
-        for(int j = coords.x1; j <= coords.x2; j++) {
+    for (int i = coords.y1; i <= coords.y2; i++) {
+        for (int j = coords.x1; j <= coords.x2; j++) {
             sgl_surf_set_pixel(surf, j, i - surf->y, sgl_color_mixer(color, sgl_surf_get_pixel(surf, j, i - surf->y), alpha));
         }
     }
+}
+
+
+void sgl_draw_fill_line_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t x1, int16_t x2, int16_t y1, int16_t y2, int16_t width, sgl_color_t color, uint8_t alpha)
+{
+    sgl_area_t clip;
+    sgl_area_t coords = {
+        .x1 = x1,
+        .y1 = y1,
+        .x2 = x2,
+        .y2 = y2,
+    };
+
+    if (!sgl_surf_clip(surf, area, &clip)) {
+        return;
+    }
+
+    if (!sgl_area_selfclip(&coords, &clip)) {
+        return;
+    }
+
+    SGL_UNUSED(width);
+    SGL_UNUSED(color);
+    SGL_UNUSED(alpha);
 }
 
 
@@ -197,22 +221,22 @@ void sgl_draw_line(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_line_t *desc)
     int16_t x2 = desc->end.x;
     int16_t y2 = desc->end.y;
 
-    if(y1 == y2) {
-        if(alpha == SGL_ALPHA_MAX) {
+    if (y1 == y2) {
+        if (alpha == SGL_ALPHA_MAX) {
             sgl_draw_fill_hline(surf, area, y1, x1, x2, desc->width, desc->color);
         }
-        else if(alpha > SGL_ALPHA_MIN) {
+        else if (alpha > SGL_ALPHA_MIN) {
             sgl_draw_fill_hline_with_alpha(surf, area, y1, x1, x2, desc->width, desc->color, alpha);
         }
         else {
             return;
         }
     }
-    else if(x1 == x2) {
-        if(alpha == SGL_ALPHA_MAX) {
+    else if (x1 == x2) {
+        if (alpha == SGL_ALPHA_MAX) {
             sgl_draw_fill_vline(surf, area, x1, y1, y2, desc->width, desc->color);
         }
-        else if(alpha > SGL_ALPHA_MIN) {
+        else if (alpha > SGL_ALPHA_MIN) {
             sgl_draw_fill_vline_with_alpha(surf, area, x1, y1, y2, desc->width, desc->color, alpha);
         }
         else {
@@ -220,6 +244,6 @@ void sgl_draw_line(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_line_t *desc)
         }
     }
     else {
-        /* TODO: draw angle line */
+        sgl_draw_fill_line_with_alpha(surf, area, x1, x2, y1, y2, desc->width, desc->color, alpha);
     }
 }

@@ -71,4 +71,9 @@ void sgl_line_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value);
 size_t sgl_line_get_style(sgl_obj_t *obj, sgl_style_type_t type);
 
 
+void sgl_line_set_start_point(sgl_obj_t *obj, int16_t x, int16_t y);
+void sgl_line_set_end_point(sgl_obj_t *obj, int16_t x, int16_t y);
+void sgl_line_set_width(sgl_obj_t *obj, uint16_t width);
+
+
 #endif // !__SGL_LINE_H__

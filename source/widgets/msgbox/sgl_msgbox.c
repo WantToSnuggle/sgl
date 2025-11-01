@@ -224,7 +224,15 @@ static void sgl_msgbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
 
         sgl_draw_rect(surf, &obj->area, &obj->coords, &msgbox->body_desc);
         sgl_draw_text(surf, &obj->area, &msgbox->title_coords, &msgbox->title_desc);
-        sgl_draw_line(surf, &obj->area, &msgbox->title_line_desc);
+
+        sgl_draw_fill_hline_with_alpha(surf, &obj->area,
+                                       obj->coords.y1 + font_height + 4,
+                                       obj->coords.x1 + msgbox->body_desc.border,
+                                       obj->coords.x2 - msgbox->body_desc.border,
+                                       msgbox->body_desc.border,
+                                       msgbox->body_desc.border_color,
+                                       msgbox->body_desc.alpha
+                                      );
 
         sgl_draw_text(surf, &obj->area, &msgbox->text_coords, &msgbox->text_desc);
 
@@ -276,13 +284,6 @@ static void sgl_msgbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
         }
     }
     else if(evt->type == SGL_EVENT_DRAW_INIT) {
-        msgbox->title_line_desc.width = 2;
-        msgbox->title_line_desc.color = msgbox->body_desc.border_color;
-        msgbox->title_line_desc.start.x = obj->coords.x1 + msgbox->body_desc.border;
-        msgbox->title_line_desc.start.y = obj->coords.y1 + font_height + 4;
-        msgbox->title_line_desc.end.x = obj->coords.x2 - msgbox->body_desc.border;
-        msgbox->title_line_desc.end.y = obj->coords.y1 + font_height + 4;
-
         msgbox->title_coords.x1 = obj->coords.x1 + 4;
         msgbox->title_coords.x2 = obj->coords.x2 - 4;
         msgbox->title_coords.y1 = obj->coords.y1 + 1;
@@ -366,9 +367,6 @@ sgl_obj_t* sgl_msgbox_create(sgl_obj_t* parent)
     msgbox->text_desc.line_space = 2;
     msgbox->text_desc.margin = 3;
     msgbox->text_desc.radius = SGL_THEME_RADIUS;
-
-    msgbox->title_line_desc.alpha = SGL_THEME_ALPHA;
-    msgbox->title_line_desc.color = SGL_THEME_COLOR;
 
     msgbox->apply_text.alpha = SGL_THEME_ALPHA;
     msgbox->apply_text.bg_flag = 1;

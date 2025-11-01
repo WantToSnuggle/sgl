@@ -185,8 +185,8 @@ static void sgl_led_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *
 
             for (int x = clip.x1; x <= clip.x2; x++, buf++) {
                 real_r2 = sgl_pow2(x - led->cx) + y2;
-                ds_alpha = real_r2 * SGL_ALPHA_RANGE / r2;
-                ds_alpha = sgl_pow2(ds_alpha) / SGL_ALPHA_RANGE ;
+                ds_alpha = real_r2 * SGL_ALPHA_NUM / r2;
+                ds_alpha = sgl_pow2(ds_alpha) / SGL_ALPHA_NUM ;
                 if (real_r2 >= r2_edge) {
                     if(x > led->cx)
                         break;
