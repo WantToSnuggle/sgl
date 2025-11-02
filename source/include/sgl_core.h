@@ -1959,6 +1959,18 @@ static inline void sgl_obj_set_text(sgl_obj_t *obj, const char *text)
 {
     sgl_obj_set_style(obj, SGL_STYLE_TEXT, SGL_TEXT(text));
 }
+
+
+/**
+ * @brief get object text
+ * @param obj The object to get the text
+ * @return The text of the object.
+ */
+static inline const char *sgl_obj_get_text(sgl_obj_t *obj)
+{
+    return (const char *)sgl_obj_get_style(obj, SGL_STYLE_TEXT);
+}
+
 #endif // CONFIG_SGL_USE_STYLE_UNIFIED_API
 
 
