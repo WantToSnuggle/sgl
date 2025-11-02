@@ -228,7 +228,7 @@ sgl_obj_t* sgl_switch_create(sgl_obj_t* parent)
     obj->get_style = sgl_switch_get_style;
 #endif
     p_switch->bg_desc.alpha = SGL_THEME_ALPHA;
-    p_switch->bg_desc.color = SGL_THEME_TEXT_COLOR;
+    p_switch->bg_desc.color = SGL_THEME_COLOR;
     p_switch->bg_desc.border_color = SGL_THEME_BORDER_COLOR;
     p_switch->bg_desc.border = SGL_THEME_BORDER_WIDTH;
     p_switch->bg_desc.radius = -1;
@@ -238,7 +238,7 @@ sgl_obj_t* sgl_switch_create(sgl_obj_t* parent)
     p_switch->knob_desc.border = 0;
 
     p_switch->status = false;
-    p_switch->bg_color = SGL_THEME_COLOR;
+    p_switch->bg_color = SGL_THEME_BG_COLOR;
 
     sgl_obj_set_clickable(obj);
 
