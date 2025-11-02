@@ -232,9 +232,9 @@ static const char keyboard_key_ascii[KEYBOARD_KEYMODE_MAX][KEYBOARD_BTN_NUM] = {
         KEYBOARD_KEY_TO_CLOSE, '<', ' ', '>', '\r'
     },
     {
-        KEYBOARD_KEY_TO_SPEC, 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '\b',
-        KEYBOARD_KEY_TO_UPPER, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', '\n',
-        '_', '-', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '.', ',', ':',
+        KEYBOARD_KEY_TO_SPEC, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '\b',
+        KEYBOARD_KEY_TO_UPPER, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', '\n',
+        '_', '-', 'z', 'x', 'c', 'v', 'b', 'n', 'm', '.', ',', ':',
         KEYBOARD_KEY_TO_CLOSE, '<', ' ', '>', '\r'
     },
     {
@@ -301,6 +301,37 @@ static const uint8_t keyboard_btn_count[2][KEYBOARD_BTN_LINES] = {
         11, 12, 12, 5
     }
 };
+
+
+static void keyboard_btn_handler(sgl_keyboard_t *keyboard)
+{
+    char *edit = keyboard->edit;
+    int index = keyboard->edit_max_len;
+    while (*edit && index) {
+        edit ++;
+        index --;
+    }
+
+    if (index == 0) {
+        SGL_LOG_ERROR("keyboard edit buffer is full\n");
+        return;
+    }
+
+    switch (keyboard->opcode) {
+    case '\b': 
+        *(--edit) = '\0';
+        break;
+    case '\n':
+    case '\r':
+        *(edit++) = '\n';
+        *(edit++) = '\0';
+        break;
+    default :
+        *(edit++) = keyboard->opcode;
+        *(edit++) = '\0';
+        break;
+    }
+}
 
 
 static int8_t keyindex_is_icon(uint8_t mode, uint8_t index)
@@ -623,6 +654,12 @@ static void sgl_keyboard_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_even
             sgl_obj_set_destroyed(obj);
             return;
         }
+        else {
+            keyboard->opcode = key_ascii;
+            if (keyboard->edit) {
+                keyboard_btn_handler(keyboard);
+            }
+        }
 
         if(obj->event_fn) {
             obj->event_fn(evt);
@@ -712,4 +749,18 @@ sgl_obj_t* sgl_keyboard_create(sgl_obj_t* parent)
 uint8_t sgl_keyboard_get_opcode(sgl_obj_t *obj)
 {
     return ((sgl_keyboard_t*)obj)->opcode;
+}
+
+
+/**
+ * @brief set keyboard text buffer
+ * @param obj keyboard object
+ * @param buffer edit buffer
+ * @param buf_max_len edit buffer max length
+ */
+void sgl_keyboard_set_textarea(sgl_obj_t *obj, char *buffer, int buf_max_len)
+{
+    sgl_keyboard_t *keyboard = (sgl_keyboard_t*)obj;
+    keyboard->edit = buffer;
+    keyboard->edit_max_len = buf_max_len;
 }

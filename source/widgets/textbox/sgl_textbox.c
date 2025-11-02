@@ -244,12 +244,14 @@ static void sgl_textbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event
         }
     }
     else if(evt->type == SGL_EVENT_MOVE_UP) {
+        textbox->text_height = sgl_font_get_string_height(&obj->coords, textbox->desc.text, textbox->desc.font, textbox->desc.line_space, textbox->desc.margin);
         textbox->scroll_enable = 1;
         if((textbox->text_height + textbox->desc.y_offset) > height ) {
            textbox->desc.y_offset -= evt->distance;
         }
     }
     else if(evt->type == SGL_EVENT_MOVE_DOWN) {
+        textbox->text_height = sgl_font_get_string_height(&obj->coords, textbox->desc.text, textbox->desc.font, textbox->desc.line_space, textbox->desc.margin);
         textbox->scroll_enable = 1;
         if(textbox->desc.y_offset < 0) {
             textbox->desc.y_offset += evt->distance;

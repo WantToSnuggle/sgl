@@ -44,11 +44,13 @@ typedef struct sgl_keyboard {
     sgl_draw_rect_t  body_desc;
     sgl_draw_rect_t  btn_desc;
     sgl_font_t       *font;
+    char             *edit;
     sgl_color_t      text_color;
     uint8_t          opcode;
     uint8_t          key_margin;
     int8_t           key_index;
     uint8_t          key_mode;
+    uint32_t         edit_max_len;
 }sgl_keyboard_t;
 
 
@@ -85,6 +87,15 @@ size_t sgl_keyboard_get_style(sgl_obj_t *obj, sgl_style_type_t type);
  * @return opcode [0 ~ 255]
  */
 uint8_t sgl_keyboard_get_opcode(sgl_obj_t *obj);
+
+
+/**
+ * @brief set keyboard text buffer
+ * @param obj keyboard object
+ * @param buffer edit buffer
+ * @param buf_max_len edit buffer max length
+ */
+void sgl_keyboard_set_textarea(sgl_obj_t *obj, char *buffer, int buf_max_len);
 
 
 #endif // !__SGL_KEYBOARD_H__

@@ -1501,9 +1501,6 @@ static inline bool sgl_dirty_area_calculate(sgl_obj_t *obj)
 
             /* clear dirty flag */
             sgl_obj_clear_dirty(obj);
-
-            /* FIXME: maybe should not ignore all child of the object */
-            //continue;
         }
 
 		if (obj->child != NULL) {
@@ -1538,9 +1535,9 @@ static inline void sgl_draw_task(sgl_area_t *dirty)
 
     SGL_LOG_TRACE("sgl_draw_task: dirty area: x: %d, w: %d, h: %d, w: %d", dirty->x1, dirty->y1, surf->w, dirty->y2 - dirty->y1 + 1);
 
-    while (surf->y < dirty->y2) {
+    while (surf->y <= dirty->y2) {
         /* cycle draw widget slice until the end of dirty area */
-        draw_obj_slice(head, surf, sgl_min(dirty->y2 - surf->y, surf->h));
+        draw_obj_slice(head, surf, sgl_min(dirty->y2 - surf->y + 1, surf->h));
         surf->y += surf->h;
 
         /* swap buffer for dma operation, but it depends on double buffer */
