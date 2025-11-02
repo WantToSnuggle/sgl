@@ -1,4 +1,4 @@
-/* source/sgl.h
+/* source/widgets/sgl_2dball.h
  *
  * MIT License
  *
@@ -22,36 +22,59 @@
  * SOFTWARE.
  */
 
-#ifndef  __SGL_H__
-#define  __SGL_H__ 
+#ifndef __SGL_2DBALL_H__
+#define __SGL_2DBALL_H__
 
-
-#include <sgl_list.h>
 #include <sgl_core.h>
-#include <sgl_anim.h>
-#include <sgl_misc.h>
-#include <sgl_types.h>
-#include <sgl_font.h>
-#include "widgets/line/sgl_line.h"
-#include "widgets/rectangle/sgl_rectangle.h"
-#include "widgets/circle/sgl_circle.h"
-#include "widgets/ring/sgl_ring.h"
-#include "widgets/arc/sgl_arc.h"
-#include "widgets/button/sgl_button.h"
-#include "widgets/slider/sgl_slider.h"
-#include "widgets/label/sgl_label.h"
-#include "widgets/switch/sgl_switch.h"
-#include "widgets/msgbox/sgl_msgbox.h"
-#include "widgets/textline/sgl_textline.h"
-#include "widgets/textbox/sgl_textbox.h"
-#include "widgets/checkbox/sgl_checkbox.h"
-#include "widgets/icon/sgl_icon.h"
-#include "widgets/listview/sgl_listview.h"
-#include "widgets/numberkbd/sgl_numberkbd.h"
-#include "widgets/keyboard/sgl_keyboard.h"
-#include "widgets/unzip_image/sgl_unzip_image.h"
-#include "widgets/led/sgl_led.h"
-#include "widgets/2dball/sgl_2dball.h"
+#include <sgl_draw.h>
+#include <sgl_math.h>
+#include <sgl_log.h>
+#include <sgl_mm.h>
+#include <sgl_cfgfix.h>
+#include <string.h>
 
 
-#endif // __SGL_H__
+/**
+ * @brief sgl 2dball struct
+ * @obj: sgl general object
+ * @desc: pointer to 2dball draw descriptor
+ */
+typedef struct sgl_2dball {
+    sgl_obj_t       obj;
+    int16_t         cx;
+    int16_t         cy;
+    int16_t         radius;
+    uint8_t         alpha;
+    sgl_color_t     color;
+    sgl_color_t     bg_color;
+
+}sgl_2dball_t;
+
+
+/**
+ * @brief create a 2dball object
+ * @param parent parent of the 2dball
+ * @return 2dball object
+ */
+sgl_obj_t* sgl_2dball_create(sgl_obj_t* parent);
+
+
+/**
+ * @brief set 2dball object style
+ * @param obj 2dball object
+ * @param type style type
+ * @param value style value
+ */
+void sgl_2dball_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value);
+
+
+/**
+ * @brief get 2dball object style
+ * @param obj 2dball object
+ * @param type style type
+ * @return style value
+ */
+size_t sgl_2dball_get_style(sgl_obj_t *obj, sgl_style_type_t type);
+
+
+#endif // !__SGL_2DBALL_H__
