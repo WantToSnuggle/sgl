@@ -69,7 +69,7 @@ void sgl_led_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
         break;
 
     case SGL_STYLE_RADIUS:
-        led->radius = value;
+        sgl_obj_fix_radius(obj, value);
         break;
 
     case SGL_STYLE_ALPHA:
@@ -128,7 +128,7 @@ size_t sgl_led_get_style(sgl_obj_t *obj, sgl_style_type_t type)
         return sgl_color2int(led->bg_color);
 
     case SGL_STYLE_RADIUS:
-        return led->radius;
+        return obj->radius;
 
     case SGL_STYLE_ALPHA:
         return led->alpha;
@@ -165,18 +165,18 @@ static void sgl_led_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *
         }
 
         sgl_area_t c_rect = {
-            .x1 = led->cx - led->radius,
-            .x2 = led->cx + led->radius,
-            .y1 = led->cy - led->radius,
-            .y2 = led->cy + led->radius
+            .x1 = led->cx - obj->radius,
+            .x2 = led->cx + obj->radius,
+            .y1 = led->cy - obj->radius,
+            .y2 = led->cy + obj->radius
         };
         if (!sgl_area_selfclip(&clip, &c_rect)) {
             return;
         }
 
         int y2 = 0, real_r2 = 0, edge_alpha = 0;
-        int r2 = sgl_pow2(led->radius);
-        int r2_edge = sgl_pow2(led->radius + 1);
+        int r2 = sgl_pow2(obj->radius);
+        int r2_edge = sgl_pow2(obj->radius + 1);
         int ds_alpha = SGL_ALPHA_MIN;
 
         for (int y = clip.y1; y <= clip.y2; y++) {
@@ -185,8 +185,6 @@ static void sgl_led_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *
 
             for (int x = clip.x1; x <= clip.x2; x++, buf++) {
                 real_r2 = sgl_pow2(x - led->cx) + y2;
-                ds_alpha = real_r2 * SGL_ALPHA_NUM / r2;
-                ds_alpha = sgl_pow2(ds_alpha) / SGL_ALPHA_NUM ;
                 if (real_r2 >= r2_edge) {
                     if(x > led->cx)
                         break;
@@ -198,22 +196,29 @@ static void sgl_led_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *
                     *buf = sgl_color_mixer(color_mix, *buf, led->alpha);
                 }
                 else {
+                    ds_alpha = real_r2 * SGL_ALPHA_NUM / r2;
+                    ds_alpha = sgl_pow2(ds_alpha) / SGL_ALPHA_NUM ;
                     *buf = sgl_color_mixer(sgl_color_mixer(led->bg_color, color, ds_alpha), *buf, led->alpha);
                 }
             }
         }
     }
-    else if(evt->type == SGL_EVENT_DRAW_INIT) {
-        if(led->cx == -1) {
+    else if (evt->type == SGL_EVENT_DRAW_INIT) {
+        if (led->cx == -1) {
             led->cx = (led->obj.coords.x1 + led->obj.coords.x2) / 2;
         }
 
-        if(led->cy == -1) {
+        if (led->cy == -1) {
             led->cy = (led->obj.coords.y1 + led->obj.coords.y2) / 2;
         }
 
-        if(led->radius == -1) {
-            led->radius = (led->obj.coords.y2 - led->obj.coords.y1) / 2;
+        if (obj->radius == SGL_RADIUS_INVALID) {
+            sgl_obj_fix_radius(obj, SGL_POS_MAX);
+        }
+    }
+    else if (evt->type == SGL_EVENT_PRESSED || evt->type == SGL_EVENT_RELEASED) {
+        if (obj->event_fn) {
+            obj->event_fn(evt);
         }
     }
 }
@@ -249,7 +254,7 @@ sgl_obj_t* sgl_led_create(sgl_obj_t* parent)
     led->bg_color = SGL_THEME_BG_COLOR;
     led->cx = -1;
     led->cy = -1;
-    led->radius = -1;
+    obj->radius = SGL_RADIUS_INVALID;
 
     return obj;
 }

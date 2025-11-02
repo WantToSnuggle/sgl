@@ -208,13 +208,14 @@ size_t sgl_label_get_style(sgl_obj_t *obj, sgl_style_type_t type)
  */
 static void sgl_label_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *evt)
 {
-    if(evt->type == SGL_EVENT_DRAW_MAIN) {
+    if (evt->type == SGL_EVENT_DRAW_MAIN) {
         sgl_label_t *label = (sgl_label_t*)obj;
         sgl_draw_text(surf, &obj->area, &obj->coords, &label->desc);
     }
-
-    if(obj->event_fn) {
-        obj->event_fn(evt);
+    else if (evt->type == SGL_EVENT_PRESSED || evt->type == SGL_EVENT_RELEASED) {
+        if(obj->event_fn) {
+            obj->event_fn(evt);
+        }
     }
 }
 

@@ -1399,7 +1399,7 @@ static inline void draw_obj_slice(sgl_obj_t *obj, sgl_surf_t *surf, int16_t dirt
 		if (obj->sibling != NULL) {
 			stack[top++] = obj->sibling;
 		}
-    
+
 		if (sgl_surf_area_is_overlap(surf, &obj->area)) {
 			evt.type = SGL_EVENT_DRAW_MAIN;
 			SGL_ASSERT(obj->construct_fn != NULL);
@@ -1450,7 +1450,7 @@ static inline bool sgl_dirty_area_calculate(sgl_obj_t *obj)
             sgl_obj_dirty_merge(obj);
 
             /* if the object is active, do not remove it */
-            if (obj == sgl_screen_act()) {
+            if (unlikely(obj == sgl_screen_act())) {
                 obj->destroyed = 0;
                 sgl_obj_node_init(obj);
                 return false;

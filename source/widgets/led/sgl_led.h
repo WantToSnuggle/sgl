@@ -43,7 +43,6 @@ typedef struct sgl_led {
     sgl_obj_t       obj;
     int16_t         cx;
     int16_t         cy;
-    int16_t         radius;
     uint8_t         alpha;
     bool            status;
     sgl_color_t     color;

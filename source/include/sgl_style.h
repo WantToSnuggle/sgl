@@ -113,6 +113,10 @@ typedef enum sgl_style_type {
     SGL_STYLE_KEYBOARD_BTN_BORDER_WIDTH,
     SGL_STYLE_KEYBOARD_BTN_BORDER_COLOR,
 
+    /* window style */
+    SGL_STYLE_WINDOW_TITLE_TEXT,
+    SGL_STYLE_WINDOW_TITLE_TEXT_COLOR,
+
     SGL_STYLE_MAX
 } sgl_style_type_t;
 
