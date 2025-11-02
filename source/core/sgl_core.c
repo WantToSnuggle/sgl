@@ -99,36 +99,6 @@ int sgl_device_fb_register(sgl_device_fb_t *fb_dev)
 
 
 /**
- * @brief Set object to dirty
- * @param obj point to object
- * @return none
- * @note this function will set object to dirty, include its children
- */
-void sgl_obj_set_dirty(sgl_obj_t *obj)
-{
-    SGL_ASSERT(obj != NULL);
-	sgl_obj_t *stack[SGL_OBJ_DEPTH_MAX];
-    int top = 0;
-    stack[top++] = obj;
-
-    while (top > 0) {
-		SGL_ASSERT(top < SGL_OBJ_DEPTH_MAX);
-		obj = stack[--top];
-
-        obj->dirty = 1;
-
-		if (obj->sibling != NULL) {
-			stack[top++] = obj->sibling;
-		}
-
-		if (obj->child != NULL) {
-			stack[top++] = obj->child;
-		}
-    }
-}
-
-
-/**
  * @brief initialize dirty area
  * @param none
  * @return none
@@ -1515,7 +1485,7 @@ static inline bool sgl_dirty_area_calculate(sgl_obj_t *obj)
 
         /* check child dirty and merge all dirty area */
         if (sgl_obj_is_dirty(obj)) {
-
+            SGL_LOG_INFO("obj %s is dirty", obj->name);
             /* update obj area */
             if (unlikely(!sgl_area_clip(&obj->parent->area, &obj->coords, &obj->area))) {
                 sgl_obj_set_invalid(obj);

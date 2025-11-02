@@ -760,7 +760,11 @@ static inline bool sgl_obj_is_destroyed(sgl_obj_t *obj)
  * @return none
  * @note this function will set object to dirty, include its children
  */
-void sgl_obj_set_dirty(sgl_obj_t *obj);
+static inline void sgl_obj_set_dirty(sgl_obj_t *obj)
+{
+    SGL_ASSERT(obj != NULL);
+    obj->dirty = 1;
+}
 
 
 /**
