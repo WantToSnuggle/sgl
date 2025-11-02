@@ -541,8 +541,8 @@ static sgl_page_t* sgl_page_create(void)
     obj->coords = (sgl_area_t) {
         .x1 = 0,
         .y1 = 0,
-        .x2 = sgl_ctx.fb_dev.xres,
-        .y2 = sgl_ctx.fb_dev.yres,
+        .x2 = sgl_ctx.fb_dev.xres - 1,
+        .y2 = sgl_ctx.fb_dev.yres - 1,
     };
 
     obj->area = obj->coords;
@@ -1485,7 +1485,6 @@ static inline bool sgl_dirty_area_calculate(sgl_obj_t *obj)
 
         /* check child dirty and merge all dirty area */
         if (sgl_obj_is_dirty(obj)) {
-            SGL_LOG_INFO("obj %s is dirty", obj->name);
             /* update obj area */
             if (unlikely(!sgl_area_clip(&obj->parent->area, &obj->coords, &obj->area))) {
                 sgl_obj_set_invalid(obj);
@@ -1537,7 +1536,7 @@ static inline void sgl_draw_task(sgl_area_t *dirty)
     surf->w = sgl_min(dirty->x2 - dirty->x1 + 5, head->area.x2 - surf->x);
     surf->h = surf->size / surf->w;
 
-    SGL_LOG_TRACE("sgl_draw_task: %d, %d, %d, %d", surf->x, surf->y, surf->w, surf->h);
+    SGL_LOG_TRACE("sgl_draw_task: dirty area: x: %d, w: %d, h: %d, w: %d", dirty->x1, dirty->y1, dirty->x2 - dirty->x1 + 1, dirty->y2 - dirty->y1 + 1);
 
     while (surf->y < dirty->y2) {
         /* cycle draw widget slice until the end of dirty area */
