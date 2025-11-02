@@ -733,6 +733,7 @@ static inline size_t sgl_obj_get_child_count(sgl_obj_t *obj)
  * @param  obj: the object to set
  * @retval None
  * @note this function is used to set the destroyed flag of the object, then next draw cycle, the object will be removed
+ *       the object should be not NULL.
  */
 static inline void sgl_obj_set_destroyed(sgl_obj_t *obj)
 {
@@ -1348,30 +1349,6 @@ static inline void sgl_obj_set_grid_layout(sgl_obj_t *obj)
 
 
 /**
- * @brief Create an object
- * @param parent parent object
- * @return sgl_obj_t
- * @note if parent is NULL, the object will be as an new page
- */
-sgl_obj_t* sgl_obj_create(sgl_obj_t *parent);
-
-
-/**
- * @brief delete object
- * @param obj point to object
- * @return none
- * @note this function will set object and his childs to be destroyed, then next draw cycle, the object will be removed
- */
-static inline void sgl_obj_delete(sgl_obj_t *obj)
-{
-    SGL_ASSERT(obj != NULL);
-    SGL_ASSERT(obj->parent != NULL);
-    sgl_obj_set_destroyed(obj);
-    sgl_obj_set_dirty(obj);
-}
-
-
-/**
  * @brief set current object as screen object
  * @param obj object, that you want to set an object as active page
  * @return none
@@ -1398,6 +1375,32 @@ static inline sgl_obj_t* sgl_screen_act(void)
 static inline sgl_page_t* sgl_page_get_active(void)
 {
     return sgl_ctx.page;
+}
+
+
+/**
+ * @brief Create an object
+ * @param parent parent object
+ * @return sgl_obj_t
+ * @note if parent is NULL, the object will be as an new page
+ */
+sgl_obj_t* sgl_obj_create(sgl_obj_t *parent);
+
+
+/**
+ * @brief delete object
+ * @param obj point to object
+ * @return none
+ * @note this function will set object and his childs to be destroyed, then next draw cycle, the object will be removed.
+ *       if object is NULL, the all objects of active page will be delete 
+ */
+static inline void sgl_obj_delete(sgl_obj_t *obj)
+{
+    if (obj == NULL) {
+        obj = sgl_screen_act();
+    }
+    sgl_obj_set_destroyed(obj);
+    sgl_obj_set_dirty(obj);
 }
 
 

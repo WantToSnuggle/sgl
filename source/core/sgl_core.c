@@ -129,6 +129,21 @@ void sgl_obj_set_dirty(sgl_obj_t *obj)
 
 
 /**
+ * @brief initialize dirty area
+ * @param none
+ * @return none
+ */
+static inline void sgl_dirty_area_init(void)
+{
+#if CONFIG_SGL_DIRTY_AREA_THRESHOLD
+    sgl_ctx.dirty_num = 0;
+#else
+    sgl_area_init(&sgl_ctx.dirty);
+#endif
+}
+
+
+/**
  * @brief add object to parent
  * @param parent: pointer of parent object
  * @param obj: pointer of object
@@ -164,11 +179,6 @@ void sgl_obj_remove(sgl_obj_t *obj)
 
     sgl_obj_t *parent = obj->parent;
     sgl_obj_t *pos = NULL;
-
-    /* if the object is active, do not remove it */
-    if (obj == sgl_screen_act()) {
-        return;
-    }
 
     if (parent->child != obj) {
         pos = parent->child;
@@ -619,21 +629,6 @@ sgl_obj_t* sgl_obj_create(sgl_obj_t *parent)
 
         return obj;
     }
-}
-
-
-/**
- * @brief initialize dirty area
- * @param none
- * @return none
- */
-static inline void sgl_dirty_area_init(void)
-{
-#if CONFIG_SGL_DIRTY_AREA_THRESHOLD
-    sgl_ctx.dirty_num = 0;
-#else
-    sgl_area_init(&sgl_ctx.dirty);
-#endif
 }
 
 
@@ -1483,6 +1478,13 @@ static inline bool sgl_dirty_area_calculate(sgl_obj_t *obj)
         if (unlikely(sgl_obj_is_destroyed(obj))) {
             /* merge destroy area */
             sgl_obj_dirty_merge(obj);
+
+            /* if the object is active, do not remove it */
+            if (obj == sgl_screen_act()) {
+                obj->destroyed = 0;
+                sgl_obj_node_init(obj);
+                return false;
+            }
 
             /* update parent layout */
             sgl_obj_set_layout(obj->parent, (sgl_layout_type_t)obj->parent->layout);
