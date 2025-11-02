@@ -237,7 +237,7 @@ sgl_obj_t* sgl_2dball_create(sgl_obj_t* parent)
     obj->needinit = 1;
 
     ball->alpha = SGL_ALPHA_MAX;
-    ball->color = SGL_THEME_BORDER_COLOR;
+    ball->color = SGL_THEME_COLOR;
     ball->bg_color = SGL_THEME_BG_COLOR;
     ball->cx = -1;
     ball->cy = -1;
