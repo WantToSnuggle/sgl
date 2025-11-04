@@ -33,7 +33,7 @@
 #include <sgl_theme.h>
 
 
-/* current context, page pointer, and dirty area and started flag */
+/* current context, page pointer, and dirty area */
 sgl_context_t sgl_ctx = {
     .fb_dev = {
         .xres = 0,
@@ -46,7 +46,6 @@ sgl_context_t sgl_ctx = {
         .log_puts = NULL,
     },
     .page = NULL,
-    .started = false,
 };
 
 
@@ -615,7 +614,6 @@ void sgl_init(void)
 
     /* initialize current context */
     sgl_ctx.page = NULL;
-    sgl_ctx.started = false;
 
 #if (CONFIG_SGL_DIRTY_AREA_THRESHOLD)
     /* alloc memory for dirty area */
@@ -650,7 +648,6 @@ void sgl_screen_load(sgl_obj_t *obj)
 {
     SGL_ASSERT(obj != NULL);
     sgl_ctx.page = (sgl_page_t*)obj;
-    sgl_ctx.started = false;
 
     /* initilize framebuffer swap */
 #if (CONFIG_SGL_DRAW_USE_DMA)

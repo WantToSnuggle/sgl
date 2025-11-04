@@ -460,12 +460,11 @@ typedef struct sgl_device_log {
 } sgl_device_log_t;
 
 
-/* current context, page pointer, and dirty area and started flag */
+/* current context, page pointer, and dirty area */
 typedef struct sgl_context {
     sgl_page_t           *page;
     sgl_device_fb_info_t fb_dev;
     sgl_device_log_t     log_dev;
-    bool                 started;
 #if (CONFIG_SGL_DRAW_USE_DMA)
     uint8_t              fb_swap;
 #endif
