@@ -150,18 +150,11 @@ static void sgl_ring_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t 
     sgl_ring_t *ring = (sgl_ring_t*)obj;
 
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
+        ring->desc.cx = (obj->coords.x2 + obj->coords.x1) / 2;
+        ring->desc.cy = (obj->coords.y2 + obj->coords.y1) / 2;
         sgl_draw_ring(surf, &obj->area, &ring->desc);
     }
     else if(evt->type == SGL_EVENT_DRAW_INIT) {
-
-        if(ring->desc.cx == -1) {
-            ring->desc.cx = (obj->coords.x2 + obj->coords.x1) / 2;
-        }
-
-        if(ring->desc.cy == -1) {
-            ring->desc.cy = (obj->coords.y2 + obj->coords.y1) / 2;
-        }
-
         if(ring->desc.radius_out == -1) {
             ring->desc.radius_out = (obj->coords.x2 - obj->coords.x1) / 2;
         }

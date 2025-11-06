@@ -160,6 +160,9 @@ static void sgl_led_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *
         sgl_area_t clip;
         sgl_color_t *buf = NULL;
 
+        led->cx = (led->obj.coords.x1 + led->obj.coords.x2) / 2;
+        led->cy = (led->obj.coords.y1 + led->obj.coords.y2) / 2;
+
         if (!sgl_surf_clip(surf, &obj->area, &clip)) {
             return;
         }
@@ -204,14 +207,6 @@ static void sgl_led_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *
         }
     }
     else if (evt->type == SGL_EVENT_DRAW_INIT) {
-        if (led->cx == -1) {
-            led->cx = (led->obj.coords.x1 + led->obj.coords.x2) / 2;
-        }
-
-        if (led->cy == -1) {
-            led->cy = (led->obj.coords.y1 + led->obj.coords.y2) / 2;
-        }
-
         if (obj->radius == SGL_RADIUS_INVALID) {
             sgl_obj_fix_radius(obj, SGL_POS_MAX);
         }

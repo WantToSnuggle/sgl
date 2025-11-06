@@ -178,6 +178,9 @@ static void sgl_arc_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *
     sgl_arc_t *arc = (sgl_arc_t*)obj;
 
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
+        arc->desc.cx = (obj->coords.x2 + obj->coords.x1) / 2;
+        arc->desc.cy = (obj->coords.y2 + obj->coords.y1) / 2;
+    
         if(arc->desc.start_angle == 0 && arc->desc.end_angle == 360) {
             sgl_draw_ring(surf, &arc->obj.area, (sgl_draw_ring_t*)(&arc->desc));
         }
@@ -197,14 +200,6 @@ static void sgl_arc_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *
     }
     else if(SGL_EVENT_DRAW_INIT)
     {
-        if(arc->desc.cx == -1) {
-            arc->desc.cx = (obj->coords.x2 + obj->coords.x1) / 2;
-        }
-
-        if(arc->desc.cy == -1) {
-            arc->desc.cy = (obj->coords.y2 + obj->coords.y1) / 2;
-        }
-
         if(arc->desc.radius_out < 0) {
             arc->desc.radius_out = (obj->coords.x2 - obj->coords.x1) / 2;
         }

@@ -308,24 +308,38 @@ void sgl_obj_move_foreground(sgl_obj_t *obj)
     SGL_ASSERT(obj != NULL && obj->parent != NULL);
 
     sgl_obj_t *parent = obj->parent;
-    sgl_obj_t *last = NULL;
-    sgl_obj_t *prev = NULL;
+    sgl_obj_t *prev = NULL, *curr = parent->child, *last = NULL;
 
     /* if the object is the last child, do not move it */
     if (obj->sibling == NULL) {
         return;
     }
 
-    sgl_obj_for_each_child(last, parent) {
-        if (last->sibling == obj) {
-            prev = last;
-        }
+    while (curr != NULL && curr != obj) {
+        prev = curr;
+        curr = curr->sibling;
     }
 
-    prev->sibling = obj->sibling;
-    obj->sibling  = last->sibling;
-    last->sibling = obj;
-    /* mark object as dirty */
+    if (prev == NULL) {
+        parent->child = obj->sibling;
+    }
+    else {
+        prev->sibling = obj->sibling;
+    }
+
+    last = parent->child;
+    if (last == NULL) {
+        parent->child = obj;
+        obj->sibling = NULL;
+    }
+    else {
+        while (last->sibling != NULL) {
+            last = last->sibling;
+        }
+        last->sibling = obj;
+        obj->sibling = NULL;
+    }
+
     sgl_obj_set_dirty(obj);
 }
 

@@ -152,6 +152,9 @@ static void sgl_2dball_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
         sgl_area_t clip;
         sgl_color_t *buf = NULL;
 
+        ball->cx = (ball->obj.coords.x1 + ball->obj.coords.x2) / 2;
+        ball->cy = (ball->obj.coords.y1 + ball->obj.coords.y2) / 2;
+
         if (!sgl_surf_clip(surf, &obj->area, &clip)) {
             return;
         }
@@ -196,14 +199,6 @@ static void sgl_2dball_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
         }
     }
     else if(evt->type == SGL_EVENT_DRAW_INIT) {
-        if(ball->cx == -1) {
-            ball->cx = (ball->obj.coords.x1 + ball->obj.coords.x2) / 2;
-        }
-
-        if(ball->cy == -1) {
-            ball->cy = (ball->obj.coords.y1 + ball->obj.coords.y2) / 2;
-        }
-
         if(ball->radius == -1) {
             ball->radius = (ball->obj.coords.y2 - ball->obj.coords.y1) / 2;
         }

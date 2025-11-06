@@ -171,17 +171,12 @@ static void sgl_circle_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
     sgl_circle_t *circle = (sgl_circle_t*)obj;
     
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
+        circle->desc.cx = (circle->obj.coords.x1 + circle->obj.coords.x2) / 2;
+        circle->desc.cy = (circle->obj.coords.y1 + circle->obj.coords.y2) / 2;
+
         sgl_draw_circle(surf, &obj->area, &circle->desc);
     }
     else if(evt->type == SGL_EVENT_DRAW_INIT) {
-        if(circle->desc.cx == -1) {
-            circle->desc.cx = (circle->obj.coords.x1 + circle->obj.coords.x2) / 2;
-        }
-
-        if(circle->desc.cy == -1) {
-            circle->desc.cy = (circle->obj.coords.y1 + circle->obj.coords.y2) / 2;
-        }
-
         if(circle->desc.radius == -1) {
             circle->desc.radius = (circle->obj.coords.y2 - circle->obj.coords.y1) / 2;
         }
