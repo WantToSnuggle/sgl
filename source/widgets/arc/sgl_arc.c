@@ -198,8 +198,7 @@ static void sgl_arc_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *
             obj->event_fn(evt);
         }
     }
-    else if(SGL_EVENT_DRAW_INIT)
-    {
+    else if(SGL_EVENT_DRAW_INIT) {
         if(arc->desc.radius_out < 0) {
             arc->desc.radius_out = (obj->coords.x2 - obj->coords.x1) / 2;
         }

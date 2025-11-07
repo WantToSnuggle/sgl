@@ -42,22 +42,13 @@
 typedef struct sgl_msgbox {
     sgl_obj_t        obj;
     sgl_draw_rect_t  body_desc;
-
     sgl_draw_text_t  title_desc;
-    sgl_rect_t       title_coords;
-
     sgl_draw_line_t  title_line_desc;
-
     sgl_draw_text_t  text_desc;
     sgl_rect_t       text_coords;
-
     uint8_t          status;
-
     sgl_draw_text_t  apply_text;
-    sgl_rect_t       apply_coords;
     sgl_draw_text_t  close_text;
-    sgl_rect_t       close_coords;
-    sgl_area_t       button_coords;
 }sgl_msgbox_t;
 
 

@@ -216,6 +216,40 @@ static void sgl_msgbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
     const sgl_font_t *font = msgbox->title_desc.font;
     int32_t font_height = sgl_font_get_height(font) + 8;
     sgl_color_t tmp_color;
+    sgl_area_t  button_coords = {
+        .x1 = obj->coords.x1,
+        .x2 = obj->coords.x2,
+        .y1 = obj->coords.y2 - font_height,
+        .y2 = obj->coords.y2
+    };
+
+    sgl_area_t apply_coords = {
+        .x1 =  obj->coords.x1 + 3,
+        .x2 = (obj->coords.x1 + obj->coords.x2) / 2 - 2,
+        .y1 = obj->coords.y2 - 2 * font_height,
+        .y2 = obj->coords.y2 - 2,
+    };
+
+    sgl_area_t close_coords = {
+        .x1 = (obj->coords.x1 + obj->coords.x2) / 2 + 2,
+        .x2 = obj->coords.x2 - 3,
+        .y1 = obj->coords.y2 - 2 * font_height,
+        .y2 = obj->coords.y2 - 2,
+    };
+
+    sgl_area_t title_coords = {
+        .x1 = obj->coords.x1 + 4,
+        .x2 = obj->coords.x2 - 4,
+        .y1 = obj->coords.y1 + 1,
+        .y2 = obj->coords.y1 + font_height + 2,
+    };
+
+    sgl_area_t text_coords = {
+        .x1 = obj->coords.x1 + 2,
+        .x2 = obj->coords.x2 - 2,
+        .y1 = obj->coords.y1 + font_height + 6,
+        .y2 = obj->coords.y2 - (font_height + 6),
+    };
 
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
         if(msgbox->status & SGL_MSGBOX_STATUS_EXIT) {
@@ -223,7 +257,7 @@ static void sgl_msgbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
         }
 
         sgl_draw_rect(surf, &obj->area, &obj->coords, &msgbox->body_desc);
-        sgl_draw_text(surf, &obj->area, &msgbox->title_coords, &msgbox->title_desc);
+        sgl_draw_text(surf, &obj->area, &title_coords, &msgbox->title_desc);
 
         sgl_draw_fill_hline_with_alpha(surf, &obj->area,
                                        obj->coords.y1 + font_height + 4,
@@ -234,7 +268,7 @@ static void sgl_msgbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
                                        msgbox->body_desc.alpha
                                       );
 
-        sgl_draw_text(surf, &obj->area, &msgbox->text_coords, &msgbox->text_desc);
+        sgl_draw_text(surf, &obj->area, &text_coords, &msgbox->text_desc);
 
         if(msgbox->status & SGL_MSGBOX_STATUS_APPLY) {
             tmp_color = msgbox->apply_text.color;
@@ -245,8 +279,8 @@ static void sgl_msgbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
             msgbox->close_text.bg_color = sgl_color_mixer(msgbox->close_text.color, msgbox->body_desc.color, 128);
         }
 
-        sgl_draw_text(surf, &msgbox->button_coords, &msgbox->apply_coords, &msgbox->apply_text);
-        sgl_draw_text(surf, &msgbox->button_coords, &msgbox->close_coords, &msgbox->close_text);
+        sgl_draw_text(surf, &button_coords, &apply_coords, &msgbox->apply_text);
+        sgl_draw_text(surf, &button_coords, &close_coords, &msgbox->close_text);
 
         if(msgbox->status & SGL_MSGBOX_STATUS_APPLY) {
             msgbox->apply_text.color = tmp_color;
@@ -284,40 +318,17 @@ static void sgl_msgbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
         }
     }
     else if(evt->type == SGL_EVENT_DRAW_INIT) {
-        msgbox->title_coords.x1 = obj->coords.x1 + 4;
-        msgbox->title_coords.x2 = obj->coords.x2 - 4;
-        msgbox->title_coords.y1 = obj->coords.y1 + 1;
-        msgbox->title_coords.y2 = obj->coords.y1 + font_height + 2;
-
-        msgbox->text_coords.x1 = obj->coords.x1 + 2;
-        msgbox->text_coords.x2 = obj->coords.x2 - 2;
-        msgbox->text_coords.y1 = obj->coords.y1 + font_height + 6;
-        msgbox->text_coords.y2 = obj->coords.y2 - (font_height + 6);
-
-        msgbox->apply_coords.x1 = obj->coords.x1 + 3;
-        msgbox->apply_coords.x2 = (obj->coords.x1 + obj->coords.x2) / 2 - 2;
-        msgbox->apply_coords.y1 = obj->coords.y2 - 2 * font_height;
-        msgbox->apply_coords.y2 = obj->coords.y2 - 2;
         msgbox->apply_text.font = font;
         msgbox->apply_text.radius = msgbox->body_desc.radius;
         msgbox->apply_text.bg_flag = 1;
         msgbox->apply_text.y_offset = font_height / 2;
         msgbox->apply_text.align = SGL_ALIGN_CENTER;
 
-        msgbox->close_coords.x1 = (obj->coords.x1 + obj->coords.x2) / 2 + 2;
-        msgbox->close_coords.x2 = obj->coords.x2 - 3;
-        msgbox->close_coords.y1 = obj->coords.y2 - 2 * font_height;
-        msgbox->close_coords.y2 = obj->coords.y2 - 2;
         msgbox->close_text.font = font;
         msgbox->close_text.radius = msgbox->body_desc.radius;
         msgbox->close_text.bg_flag = 1;
         msgbox->close_text.y_offset = font_height / 2;
         msgbox->close_text.align = SGL_ALIGN_CENTER;
-
-        msgbox->button_coords.x1 = obj->coords.x1;
-        msgbox->button_coords.x2 = obj->coords.x2;
-        msgbox->button_coords.y1 = obj->coords.y2 - font_height;
-        msgbox->button_coords.y2 = obj->coords.y2;
     }
 }
 
