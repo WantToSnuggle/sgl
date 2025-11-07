@@ -69,7 +69,6 @@ void sgl_button_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
         break;
 
     case SGL_STYLE_ALPHA:
-        button->text_desc.alpha = value;
         button->desc.alpha = value;
         break;
 
@@ -78,39 +77,23 @@ void sgl_button_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
         break;
     
     case SGL_STYLE_TEXT:
-        button->text_desc.text = (char*)value;
+        button->text = (char*)value;
         break;
     
     case SGL_STYLE_ICON:
-        button->text_desc.icon = (sgl_icon_pixmap_t*)value;
+        button->icon = (sgl_icon_pixmap_t*)value;
         break;
 
     case SGL_STYLE_ALIGN:
-        button->text_desc.align = value;
+        button->align = value;
         break;
     
     case SGL_STYLE_TEXT_COLOR:
-        button->text_desc.color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_TEXT_ALPHA:
-        button->text_desc.alpha = value;
-        break;
-
-    case SGL_STYLE_TEXT_MARGIN:
-        button->text_desc.margin = value;
-        break;
-
-    case SGL_STYLE_TEXT_X_OFFSET:
-        button->text_desc.x_offset = value;
-        break;
-
-    case SGL_STYLE_TEXT_Y_OFFSET:
-        button->text_desc.y_offset = value;
+        button->text_color = sgl_int2color(value);
         break;
 
     case SGL_STYLE_FONT:
-        button->text_desc.font = (sgl_font_t*)value;
+        button->font = (sgl_font_t*)value;
         break;
 
     case SGL_STYLE_BORDER_WIDTH:
@@ -167,28 +150,16 @@ size_t sgl_button_get_style(sgl_obj_t *obj, sgl_style_type_t type)
         return (size_t)button->desc.pixmap;
 
     case SGL_STYLE_TEXT:
-        return (size_t)button->text_desc.text;
+        return (size_t)button->text;
 
     case SGL_STYLE_ICON:
-        return (size_t)button->text_desc.icon;
+        return (size_t)button->icon;
 
     case SGL_STYLE_TEXT_COLOR:
-        return sgl_color2int(button->text_desc.color);
-
-    case SGL_STYLE_TEXT_ALPHA:
-        return button->text_desc.alpha;
-
-    case SGL_STYLE_TEXT_MARGIN:
-        return button->text_desc.margin;
-
-    case SGL_STYLE_TEXT_X_OFFSET:
-        return button->text_desc.x_offset;
-
-    case SGL_STYLE_TEXT_Y_OFFSET:
-        return button->text_desc.y_offset;
+        return sgl_color2int(button->text_color);
 
     case SGL_STYLE_FONT:
-        return (size_t)button->text_desc.font;
+        return (size_t)button->font;
 
     case SGL_STYLE_BORDER_WIDTH:
         return button->desc.border;
@@ -216,20 +187,32 @@ size_t sgl_button_get_style(sgl_obj_t *obj, sgl_style_type_t type)
 static void sgl_button_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *evt)
 {
     sgl_button_t *button = (sgl_button_t*)obj;
+    sgl_pos_t   align_pos;
+    int text_x = 0, icon_y = 0;
 
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
         sgl_draw_rect(surf, &obj->area, &obj->coords, &button->desc);
 
-        if(button->text_desc.text) {
-            sgl_draw_text(surf, &obj->area, &obj->coords, &button->text_desc);
+        if(button->text) {
+            SGL_ASSERT(button->font != NULL);
+
+            if (button->icon) {
+                text_x = button->icon->width + 2;
+            }
+
+            align_pos = sgl_get_text_pos(&obj->coords, button->font, button->text, text_x, (sgl_align_type_t)button->align);
+
+            if (button->icon) {
+                icon_y = ((obj->coords.y2 - obj->coords.y1) - (button->icon->height)) / 2;
+                sgl_draw_icon_with_alpha(surf, &obj->area, align_pos.x, obj->coords.y1 + icon_y, button->text_color, button->desc.alpha, button->icon);
+            }
+
+            sgl_draw_string_with_alpha(surf, &obj->area, align_pos.x + text_x, align_pos.y, button->text, button->text_color, button->desc.alpha, button->font, 0);
         }
     }
     else if(evt->type == SGL_EVENT_PRESSED) {
         if(sgl_obj_is_flexible(obj)) {
-            obj->coords.x1 -= 2;
-            obj->coords.x2 += 2;
-            obj->coords.y1 -= 2;
-            obj->coords.y2 += 2;
+            sgl_obj_size_zoom(obj, 2);
         }
 
         if(obj->event_fn) {
@@ -238,10 +221,7 @@ static void sgl_button_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
     }
     else if(evt->type == SGL_EVENT_RELEASED) {
         if(sgl_obj_is_flexible(obj)) {
-            obj->coords.x1 += 2;
-            obj->coords.x2 -= 2;
-            obj->coords.y1 += 2;
-            obj->coords.y2 -= 2;
+            sgl_obj_size_zoom(obj, -2);
         }
 
         if(obj->event_fn) {
@@ -285,15 +265,11 @@ sgl_obj_t* sgl_button_create(sgl_obj_t* parent)
     button->desc.pixmap = NULL;
     button->desc.radius = 0;
 
-    button->text_desc.alpha = SGL_THEME_ALPHA;
-    button->text_desc.bg_flag = 0;
-    button->text_desc.bg_color = SGL_THEME_BG_COLOR;
-    button->text_desc.color = SGL_THEME_TEXT_COLOR;
-    button->text_desc.text = NULL;
-    button->text_desc.radius = 0;
-    button->text_desc.font = NULL;
-    button->text_desc.margin = 0;
-    button->text_desc.icon = NULL;
+    button->text = NULL;
+    button->text_color = SGL_THEME_TEXT_COLOR;
+    button->font = NULL;
+    button->icon = NULL;
+    button->align = SGL_ALIGN_CENTER;
 
     return obj;
 }

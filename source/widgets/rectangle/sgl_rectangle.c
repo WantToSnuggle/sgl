@@ -160,10 +160,7 @@ static void sgl_rectangle_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_eve
     }
     else if(evt->type == SGL_EVENT_PRESSED) {
         if(sgl_obj_is_flexible(obj)) {
-            obj->coords.x1 -= 2;
-            obj->coords.x2 += 2;
-            obj->coords.y1 -= 2;
-            obj->coords.y2 += 2;
+            sgl_obj_size_zoom(obj, 2);
         }
 
         if(obj->event_fn) {
@@ -172,10 +169,7 @@ static void sgl_rectangle_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_eve
     }
     else if(evt->type == SGL_EVENT_RELEASED) {
         if(sgl_obj_is_flexible(obj)) {
-            obj->coords.x1 += 2;
-            obj->coords.x2 -= 2;
-            obj->coords.y1 += 2;
-            obj->coords.y2 -= 2;
+            sgl_obj_size_zoom(obj, -2);
         }
 
         if(obj->event_fn) {

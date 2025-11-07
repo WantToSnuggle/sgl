@@ -1040,6 +1040,16 @@ void sgl_obj_set_pos(sgl_obj_t *obj, int16_t x, int16_t y);
 
 
 /**
+ * @brief zoom object size
+ * @param obj point to object
+ * @param zoom zoom size
+ * @return none
+ * @note if you want to zoom out, the zoom should be positive, if you want to zoom in, the zoom should be negative
+ */
+void sgl_obj_size_zoom(sgl_obj_t *obj, int16_t zoom);
+
+
+/**
  * @brief Get object position
  * @param obj point to object
  * @return sgl_pos_t: position of object

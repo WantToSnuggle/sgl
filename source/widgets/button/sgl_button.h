@@ -42,9 +42,13 @@
  * @desc_text: Button object description text
  */
 typedef struct sgl_button {
-    sgl_obj_t       obj;
-    sgl_draw_rect_t desc;
-    sgl_draw_text_t text_desc;
+    sgl_obj_t               obj;
+    sgl_draw_rect_t         desc;
+    const char              *text;
+    const sgl_font_t        *font;
+    const sgl_icon_pixmap_t *icon;
+    sgl_color_t             text_color;
+    uint8_t                 align;
 }sgl_button_t;
 
 
