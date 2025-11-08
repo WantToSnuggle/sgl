@@ -76,6 +76,10 @@ void sgl_slider_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
         slider->body.radius = sgl_obj_fix_radius(obj, value);
         break;
 
+    case SGL_STYLE_PIXMAP:
+        slider->body.pixmap = (sgl_pixmap_t*)value;
+        break;
+
     case SGL_STYLE_BORDER_WIDTH:
         slider->body.border = value;
         break;
@@ -86,6 +90,14 @@ void sgl_slider_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
 
     case SGL_STYLE_DIRECTION:
         slider->direct = value;
+        break;
+
+    case SGL_STYLE_SLIDER_KNOB_ALPHA:
+        slider->alpha = value;
+        break;
+
+    case SGL_STYLE_SLIDER_KNOB_PIXMAP:
+        slider->pixmap = (sgl_pixmap_t*)value;
         break;
 
     case SGL_STYLE_VALUE:
@@ -136,11 +148,20 @@ size_t sgl_slider_get_style(sgl_obj_t *obj, sgl_style_type_t type)
     case SGL_STYLE_RADIUS:
         return obj->radius;
 
+    case SGL_STYLE_PIXMAP:
+        return (size_t)slider->body.pixmap;
+
     case SGL_STYLE_BORDER_WIDTH:
         return slider->body.border;
 
     case SGL_STYLE_BORDER_COLOR:
         return sgl_color2int(slider->body.border_color);
+
+    case SGL_STYLE_SLIDER_KNOB_ALPHA:
+        return slider->alpha;
+
+    case SGL_STYLE_SLIDER_KNOB_PIXMAP:
+        return (size_t)slider->body.pixmap;
 
     case SGL_STYLE_VALUE:
         return slider->value;
@@ -167,10 +188,10 @@ static void sgl_slider_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
         }
         sgl_draw_rect(surf, &obj->area, &obj->coords, &slider->body);
         if (slider->pixmap) {
-            sgl_draw_fill_round_rect_pixmap_with_alpha(surf, &obj->area, &knob, obj->radius, slider->pixmap, slider->body.alpha);
+            sgl_draw_fill_round_rect_pixmap_with_alpha(surf, &knob, &obj->coords, obj->radius, slider->pixmap, slider->alpha);
         }
         else {
-            sgl_draw_fill_round_rect_with_alpha(surf, &knob, &obj->coords, obj->radius, slider->color, slider->body.alpha);
+            sgl_draw_fill_round_rect_with_alpha(surf, &knob, &obj->coords, obj->radius, slider->color, slider->alpha);
         }
     }
     else if(evt->type == SGL_EVENT_PRESSED ||
@@ -233,6 +254,7 @@ sgl_obj_t* sgl_slider_create(sgl_obj_t* parent)
     slider->body.border_color = SGL_THEME_BORDER_COLOR;
 
     slider->color = SGL_THEME_BG_COLOR;
+    slider->alpha = SGL_THEME_ALPHA;
 
     return obj;
 }

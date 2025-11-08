@@ -85,8 +85,10 @@ typedef enum sgl_style_type {
     SGL_STYLE_LISTVIEW_ITEM_RADIUS,
     SGL_STYLE_LISTVIEW_ITEM_TEXT_COLOR,
 
-    /* checkbox style */
-    SGL_STYLE_CHECKBOX_STATUS,
+    /* slider style */
+    SGL_STYLE_SLIDER_KNOB_COLOR,
+    SGL_STYLE_SLIDER_KNOB_ALPHA,
+    SGL_STYLE_SLIDER_KNOB_PIXMAP,
 
     /* number keyboard style */
     SGL_STYLE_NUMBERKBD_TEXT_COLOR,

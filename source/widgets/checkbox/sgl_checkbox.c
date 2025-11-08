@@ -151,12 +151,6 @@ void sgl_checkbox_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
         checkbox->text.x_offset = value;    
         break;
     
-    case SGL_STYLE_CHECKBOX_STATUS:
-        if(((bool)value) != checkbox->status) {
-            checkbox->status = (bool)value;
-        }
-        break;
-
     case SGL_STYLE_STATUS:
         checkbox->status = (bool)value;
         break;
@@ -205,9 +199,6 @@ size_t sgl_checkbox_get_style(sgl_obj_t *obj, sgl_style_type_t type)
 
     case SGL_STYLE_TEXT_X_OFFSET:
         return checkbox->text.x_offset;
-
-    case SGL_STYLE_CHECKBOX_STATUS:
-        return (size_t)checkbox->status;
 
     case  SGL_STYLE_STATUS:
         return (size_t)checkbox->status;
