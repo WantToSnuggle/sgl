@@ -160,9 +160,6 @@ size_t sgl_progress_get_style(sgl_obj_t *obj, sgl_style_type_t type)
     case SGL_STYLE_SLIDER_KNOB_ALPHA:
         return progress->alpha;
 
-    case SGL_STYLE_SLIDER_KNOB_PIXMAP:
-        return (size_t)progress->body.pixmap;
-
     case SGL_STYLE_VALUE:
         return progress->value;
 

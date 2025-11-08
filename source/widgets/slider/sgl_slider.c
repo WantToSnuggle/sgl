@@ -96,10 +96,6 @@ void sgl_slider_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
         slider->alpha = value;
         break;
 
-    case SGL_STYLE_SLIDER_KNOB_PIXMAP:
-        slider->pixmap = (sgl_pixmap_t*)value;
-        break;
-
     case SGL_STYLE_VALUE:
         slider->value = value;
         break;
@@ -160,9 +156,6 @@ size_t sgl_slider_get_style(sgl_obj_t *obj, sgl_style_type_t type)
     case SGL_STYLE_SLIDER_KNOB_ALPHA:
         return slider->alpha;
 
-    case SGL_STYLE_SLIDER_KNOB_PIXMAP:
-        return (size_t)slider->body.pixmap;
-
     case SGL_STYLE_VALUE:
         return slider->value;
 
@@ -177,22 +170,22 @@ size_t sgl_slider_get_style(sgl_obj_t *obj, sgl_style_type_t type)
 static void sgl_slider_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *evt)
 {
     sgl_slider_t *slider = (sgl_slider_t*)obj;
-    sgl_area_t knob = obj->coords;
+    sgl_area_t knob = {
+        .x1 = obj->coords.x1 + slider->body.border,
+        .x2 = obj->coords.x2 - slider->body.border,
+        .y1 = obj->coords.y1 + slider->body.border,
+        .y2 = obj->coords.y2 - slider->body.border,
+    };
 
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
         if(slider->direct == SGL_DIRECT_HORIZONTAL) {
-            knob.x2 = obj->coords.x1 + (obj->coords.x2 - obj->coords.x1) * slider->value / 100;
+            knob.x2 = obj->coords.x1 + (obj->coords.x2 - obj->coords.x1) * slider->value / 100 - slider->body.border;
         }
         else {
-            knob.y1 = obj->coords.y2 - (obj->coords.y2 - obj->coords.y1) * slider->value / 100;
+            knob.y1 = obj->coords.y2 - (obj->coords.y2 - obj->coords.y1) * slider->value / 100 + slider->body.border;
         }
         sgl_draw_rect(surf, &obj->area, &obj->coords, &slider->body);
-        if (slider->pixmap) {
-            sgl_draw_fill_round_rect_pixmap_with_alpha(surf, &knob, &obj->coords, obj->radius, slider->pixmap, slider->alpha);
-        }
-        else {
-            sgl_draw_fill_round_rect_with_alpha(surf, &knob, &obj->coords, obj->radius, slider->color, slider->alpha);
-        }
+        sgl_draw_fill_round_rect_with_alpha_border(surf, &knob, &obj->coords, obj->radius, slider->color, slider->body.border_color, slider->body.border, slider->alpha);
     }
     else if(evt->type == SGL_EVENT_PRESSED ||
         evt->type == SGL_EVENT_MOVE_DOWN || evt->type == SGL_EVENT_MOVE_UP || evt->type == SGL_EVENT_MOVE_LEFT || evt->type == SGL_EVENT_MOVE_RIGHT

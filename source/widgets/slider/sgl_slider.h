@@ -48,7 +48,6 @@ typedef struct sgl_slider {
     uint8_t            direct;
     uint8_t            value;
     uint8_t            alpha;
-    const sgl_pixmap_t *pixmap;
 }sgl_slider_t;
 
 

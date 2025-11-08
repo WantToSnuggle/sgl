@@ -88,7 +88,6 @@ typedef enum sgl_style_type {
     /* slider style */
     SGL_STYLE_SLIDER_KNOB_COLOR,
     SGL_STYLE_SLIDER_KNOB_ALPHA,
-    SGL_STYLE_SLIDER_KNOB_PIXMAP,
 
     /* progress style */
     SGL_STYLE_PROGRESS_FILL_COLOR,
