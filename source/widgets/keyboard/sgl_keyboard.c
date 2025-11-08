@@ -2,9 +2,9 @@
  *
  * MIT License
  *
- * Copyright(c) 2023-present All contributors of SGL  
+ * Copyright(c) 2023-present All contributors of SGL
  * Document reference link: docs directory
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -155,7 +155,7 @@ static const uint8_t btn_right_bitmap[] = {
 };
 
 
-static const sgl_icon_pixmap_t keyboard_icon[] = { 
+static const sgl_icon_pixmap_t keyboard_icon[] = {
     {
         .bitmap = btn_ok_bitmap,
         .bpp = 4,
@@ -247,13 +247,13 @@ static const char keyboard_key_ascii[KEYBOARD_KEYMODE_MAX][KEYBOARD_BTN_NUM] = {
 
 
 static const char keybd_btn_map[KEYBOARD_KEYMODE_MAX][KEYBOARD_BTN_NUM][4] = {
-    { 
+    {
         "1#", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "<<",
         "abc", "A", "S", "D", "F", "G", "H", "J", "K", "L", "nl",
         "_", "-", "Z", "X", "C", "V", "B", "N", "M", ".", ",", ":",
         "kbd", "<", " ", ">", "OK"
     },
-    { 
+    {
         "1#", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "<<",
         "ABC", "a", "s", "d", "f", "g", "h", "j", "k", "l", "nl",
         "_", "-", "z", "x", "c", "v", "b", "n", "m", ".", ",", ":",
@@ -312,15 +312,17 @@ static void keyboard_btn_handler(sgl_keyboard_t *keyboard)
         index --;
     }
 
+    if (keyboard->opcode == '\b') {
+        *(--edit) = '\0';
+        return;
+    }
+
     if (index == 0) {
         SGL_LOG_ERROR("keyboard edit buffer is full\n");
         return;
     }
 
     switch (keyboard->opcode) {
-    case '\b': 
-        *(--edit) = '\0';
-        break;
     case '\n':
     case '\r':
         *(edit++) = '\n';
@@ -438,7 +440,7 @@ void sgl_keyboard_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
     case SGL_STYLE_POS_Y:
         sgl_obj_set_pos_y(obj, value);
         break;
-    
+
     case SGL_STYLE_SIZE_W:
         sgl_obj_set_width(obj, value);
         break;
@@ -450,11 +452,11 @@ void sgl_keyboard_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
     case SGL_STYLE_COLOR:
         keyboard->body_desc.color = sgl_int2color(value);
         break;
-    
+
     case SGL_STYLE_ALPHA:
         keyboard->body_desc.alpha = (uint8_t)value;
         break;
-    
+
     case SGL_STYLE_RADIUS:
         keyboard->body_desc.radius = sgl_obj_fix_radius(obj, value);
         break;
@@ -490,7 +492,7 @@ void sgl_keyboard_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
     case SGL_STYLE_KEYBOARD_BTN_ALPHA:
         keyboard->btn_desc.alpha = (uint8_t)value;
         break;
-    
+
     case SGL_STYLE_KEYBOARD_BTN_BORDER_WIDTH:
         keyboard->btn_desc.border = (uint8_t)value;
         break;
@@ -527,10 +529,10 @@ size_t sgl_keyboard_get_style(sgl_obj_t *obj, sgl_style_type_t type)
 
     case SGL_STYLE_POS_Y:
         return sgl_obj_get_pos_y(obj);
-    
+
     case SGL_STYLE_SIZE_W:
         return sgl_obj_get_width(obj);
-    
+
     case SGL_STYLE_SIZE_H:
         return sgl_obj_get_height(obj);
 
@@ -539,7 +541,7 @@ size_t sgl_keyboard_get_style(sgl_obj_t *obj, sgl_style_type_t type)
 
     case SGL_STYLE_ALPHA:
         return keyboard->body_desc.alpha;
-    
+
     case SGL_STYLE_RADIUS:
         return obj->radius;
 
@@ -564,7 +566,7 @@ size_t sgl_keyboard_get_style(sgl_obj_t *obj, sgl_style_type_t type)
  * @brief keyboard constructor function
  * @param surf: pointer to surface
  * @param obj: pointer to keyboard object
- * @param evt: pointer to event 
+ * @param evt: pointer to event
  * @return none
  */
 static void sgl_keyboard_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *evt)
@@ -684,7 +686,7 @@ static void sgl_keyboard_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_even
     }
     else if (evt->type == SGL_EVENT_OPTION_WALK) {
         keyboard->key_index ++;
-        
+
         if (keyboard->key_index >= KEYBOARD_BTN_NUM) {
             keyboard->key_index = 0;
         }
