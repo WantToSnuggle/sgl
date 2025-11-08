@@ -245,12 +245,17 @@ typedef struct sgl_surf {
 * @width: pixmap width
 * @height: pixmap height
 * @format: bitmap format 0: no compression, 1:
+* @read: read pixel map from external storage
 */
 typedef struct sgl_pixmap {
     const uint8_t *bitmap;
     uint32_t       width : 12;
     uint32_t       height : 12;
     uint32_t       format : 8;
+
+#if (CONFIG_SGL_EXTERNAL_PIXMAP)
+    void          (*read)(void *buff, uint32_t pos, size_t size);
+#endif
 } sgl_pixmap_t;
 
 
@@ -447,6 +452,9 @@ typedef struct sgl_context {
     sgl_area_t           *dirty;
 #else
     sgl_area_t           dirty;
+#endif
+#if (CONFIG_SGL_EXTERNAL_PIXMAP)
+    sgl_color_t          *pixmap_buff;
 #endif
 } sgl_context_t;
 
@@ -1378,7 +1386,7 @@ sgl_obj_t* sgl_obj_create(sgl_obj_t *parent);
  * @param obj point to object
  * @return none
  * @note this function will set object and his childs to be destroyed, then next draw cycle, the object will be removed.
- *       if object is NULL, the all objects of active page will be delete 
+ *       if object is NULL, the all objects of active page will be delete
  */
 static inline void sgl_obj_delete(sgl_obj_t *obj)
 {
@@ -1422,8 +1430,19 @@ static inline void sgl_area_init(sgl_area_t *area)
  */
 static inline sgl_color_t sgl_pixmap_get_pixel(const sgl_pixmap_t *pixmap, int16_t x, int16_t y)
 {
+    uint32_t pos;
+
     SGL_ASSERT(pixmap != NULL);
-    return ((sgl_color_t*)pixmap->bitmap)[y * pixmap->width + x];
+    pos = y * pixmap->width + x;
+
+#if (CONFIG_SGL_EXTERNAL_PIXMAP)
+    if (pixmap->read) {
+        pixmap->read(sgl_ctx.pixmap_buff, pos, 1);
+        return *sgl_ctx.pixmap_buff;
+    }
+#endif
+
+    return ((sgl_color_t*)pixmap->bitmap)[pos];
 }
 
 
@@ -1432,12 +1451,25 @@ static inline sgl_color_t sgl_pixmap_get_pixel(const sgl_pixmap_t *pixmap, int16
  * @pixmap: pointe to pixmap
  * @param x: x position
  * @param y: y position
+ * @param size: pixel size
  * @return sgl_color_t: pixel color address
  */
-static inline sgl_color_t* sgl_pixmap_get_buf(const sgl_pixmap_t *pixmap, int16_t x, int16_t y)
+static inline sgl_color_t* sgl_pixmap_get_buf(const sgl_pixmap_t *pixmap, int16_t x, int16_t y, size_t size)
 {
+    uint32_t pos;
+
     SGL_ASSERT(pixmap != NULL);
-    return &((sgl_color_t*)pixmap->bitmap)[y * pixmap->width + x];
+    pos = y * pixmap->width + x;
+
+#if (CONFIG_SGL_EXTERNAL_PIXMAP)
+    SGL_ASSERT(size <= sgl_panel_resolution_width());
+    if (pixmap->read) {
+        pixmap->read(sgl_ctx.pixmap_buff, pos * sizeof(sgl_color_t), size * sizeof(sgl_color_t));
+        return sgl_ctx.pixmap_buff;
+    }
+#endif
+
+    return &((sgl_color_t*)pixmap->bitmap)[pos];
 }
 
 
@@ -1618,10 +1650,10 @@ int32_t sgl_font_get_string_width(const char *str, const sgl_font_t *font);
 
 /**
  * @brief get the height of a string, which is in a rect area
- * @param rect object rect, it is usually the parent of text 
+ * @param rect object rect, it is usually the parent of text
  * @param str string
  * @param font sgl font of the string
- * @param line_space peer line space 
+ * @param line_space peer line space
  * @param margin margin of left and right
  * @return height size of string
  */

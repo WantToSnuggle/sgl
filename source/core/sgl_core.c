@@ -2,9 +2,9 @@
  *
  * MIT License
  *
- * Copyright(c) 2023-present All contributors of SGL  
+ * Copyright(c) 2023-present All contributors of SGL
  * Document reference link: docs directory
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -491,7 +491,7 @@ void sgl_page_set_style(sgl_obj_t* obj, sgl_style_type_t type, size_t value)
     case SGL_STYLE_COLOR:
         page->color = sgl_int2color(value);
         break;
-    
+
     case SGL_STYLE_PIXMAP:
         page->bg_img = (sgl_pixmap_t*)value;
         break;
@@ -660,6 +660,15 @@ void sgl_init(void)
         return;
     }
 #endif // !CONFIG_SGL_DIRTY_AREA_THRESHOLD
+
+#if (CONFIG_SGL_EXTERNAL_PIXMAP)
+    sgl_ctx.pixmap_buff = sgl_malloc(sgl_panel_resolution_width() * sizeof(sgl_color_t));
+    if (sgl_ctx.pixmap_buff == NULL) {
+        SGL_LOG_ERROR("sgl pixmap buff memory alloc failed");
+        SGL_ASSERT(0);
+        return;
+    }
+#endif
 
     /* initialize dirty area */
     sgl_dirty_area_init();
@@ -837,7 +846,7 @@ void sgl_area_selfmerge(sgl_area_t *merge, sgl_area_t *area)
     merge->x1 = sgl_min(merge->x1, area->x1);
     merge->x2 = sgl_max(merge->x2, area->x2);
     merge->y1 = sgl_min(merge->y1, area->y1);
-    merge->y2 = sgl_max(merge->y2, area->y2); 
+    merge->y2 = sgl_max(merge->y2, area->y2);
 }
 
 
@@ -884,7 +893,7 @@ void sgl_obj_dirty_merge(sgl_obj_t *obj)
             sgl_ctx.dirty[i].x1 = sgl_min(sgl_ctx.dirty[i].x1, obj->area.x1);
             sgl_ctx.dirty[i].x2 = sgl_max(sgl_ctx.dirty[i].x2, obj->area.x2);
             sgl_ctx.dirty[i].y1 = sgl_min(sgl_ctx.dirty[i].y1, obj->area.y1);
-            sgl_ctx.dirty[i].y2 = sgl_max(sgl_ctx.dirty[i].y2, obj->area.y2); 
+            sgl_ctx.dirty[i].y2 = sgl_max(sgl_ctx.dirty[i].y2, obj->area.y2);
 
             return;
         }
@@ -897,7 +906,7 @@ void sgl_obj_dirty_merge(sgl_obj_t *obj)
     sgl_ctx.dirty.x1 = sgl_min(sgl_ctx.dirty.x1, obj->area.x1);
     sgl_ctx.dirty.x2 = sgl_max(sgl_ctx.dirty.x2, obj->area.x2);
     sgl_ctx.dirty.y1 = sgl_min(sgl_ctx.dirty.y1, obj->area.y1);
-    sgl_ctx.dirty.y2 = sgl_max(sgl_ctx.dirty.y2, obj->area.y2); 
+    sgl_ctx.dirty.y2 = sgl_max(sgl_ctx.dirty.y2, obj->area.y2);
 #endif
 }
 
@@ -1055,14 +1064,14 @@ uint32_t sgl_utf8_to_unicode(const char *utf8_str, uint32_t *p_unicode_buffer)
         bytes = 3;
         *p_unicode_buffer = (utf8_str[0] & 0x0F) << 12;
         *p_unicode_buffer |= (utf8_str[1] & 0x3F) << 6;
-        *p_unicode_buffer |= (utf8_str[2] & 0x3F);        
+        *p_unicode_buffer |= (utf8_str[2] & 0x3F);
     }
     else if ((((uint8_t)(*utf8_str)) & 0xF8) == 0xF0) { // 4-byte
         bytes = 4;
         *p_unicode_buffer = (utf8_str[0] & 0x07) << 18;
         *p_unicode_buffer |= (utf8_str[2] & 0x3F) << 6;
         *p_unicode_buffer |= (utf8_str[1] & 0x3F) << 12;
-        *p_unicode_buffer |= (utf8_str[3] & 0x3F);        
+        *p_unicode_buffer |= (utf8_str[3] & 0x3F);
     }
     return bytes;
 }
@@ -1128,10 +1137,10 @@ int32_t sgl_font_get_string_width(const char *str, const sgl_font_t *font)
 
 /**
  * @brief get the height of a string, which is in a rect area
- * @param rect object rect, it is usually the parent of text 
+ * @param rect object rect, it is usually the parent of text
  * @param str string
  * @param font sgl font of the string
- * @param line_space peer line space 
+ * @param line_space peer line space
  * @param margin margin of left and right
  * @return height size of string
  */
@@ -1187,7 +1196,7 @@ sgl_pos_t sgl_get_align_pos(sgl_size_t *parent_size, sgl_size_t *size, sgl_align
             ret.y = (parent_size->h - size->h) / 2;
         break;
 
-        case SGL_ALIGN_TOP_MID:          
+        case SGL_ALIGN_TOP_MID:
             ret.x = (parent_size->w - size->w) / 2;
             ret.y = 0;
         break;
@@ -1195,9 +1204,9 @@ sgl_pos_t sgl_get_align_pos(sgl_size_t *parent_size, sgl_size_t *size, sgl_align
         case SGL_ALIGN_TOP_LEFT:
             ret.x = 0;
             ret.y = 0;
-        break; 
-            
-        case SGL_ALIGN_TOP_RIGHT:    
+        break;
+
+        case SGL_ALIGN_TOP_RIGHT:
             ret.x = parent_size->w - size->w;
             ret.y = 0;
         break;
@@ -1381,7 +1390,7 @@ void sgl_obj_set_pos_align_ref(sgl_obj_t *ref, sgl_obj_t *obj, sgl_align_type_t 
         obj->coords.x1 = ref->coords.x2 - obj_w;
         obj->coords.x2 = obj->coords.x1 + obj_w - 1;
         break;
-    
+
     case SGL_ALIGN_HORIZ_MID:
         obj->coords.y1 = ref->coords.y1 + (ref_h - obj_h) / 2;
         obj->coords.y2 = obj->coords.y1 + obj_h - 1;
@@ -1391,13 +1400,13 @@ void sgl_obj_set_pos_align_ref(sgl_obj_t *ref, sgl_obj_t *obj, sgl_align_type_t 
         obj->coords.y1 = ref->coords.y1;
         obj->coords.y2 = obj->coords.y1 + obj_h - 1;
         break;
-    
+
     case SGL_ALIGN_HORIZ_BOT:
         obj->coords.y1 = ref->coords.y2 - obj_h;
         obj->coords.y2 = obj->coords.y1 + obj_h - 1;
         break;
 
-    default: 
+    default:
         SGL_LOG_WARN("invalid align type");
         break;
     }

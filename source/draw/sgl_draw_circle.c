@@ -2,9 +2,9 @@
  *
  * MIT License
  *
- * Copyright(c) 2023-present All contributors of SGL  
+ * Copyright(c) 2023-present All contributors of SGL
  * Document reference link: docs directory
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -140,7 +140,7 @@ void sgl_draw_fill_circle_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t
             else {
                 *buf = sgl_color_mixer(color, *buf, alpha);
             }
-        } 
+        }
     }
 }
 
@@ -183,7 +183,7 @@ void sgl_draw_fill_circle_pixmap(sgl_surf_t *surf, sgl_area_t *area, int16_t cx,
     for (int y = clip.y1; y <= clip.y2; y++) {
         y2 = sgl_pow2(y - cy);
         buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
-        sgl_color_t *pixmap_color = sgl_pixmap_get_buf(pixmap, px - (cx - clip.x1), py - (cy - y));
+        sgl_color_t *pixmap_color = sgl_pixmap_get_buf(pixmap, px - (cx - clip.x1), py - (cy - y), clip.x2 - clip.x1 + 1);
 
         for (int x = clip.x1; x <= clip.x2; x++, buf++, pixmap_color++) {
             real_r2 = sgl_pow2(x - cx) + y2;
@@ -244,7 +244,7 @@ void sgl_draw_fill_circle_pixmap_with_alpha(sgl_surf_t *surf, sgl_area_t *area, 
     for (int y = clip.y1; y <= clip.y2; y++) {
         y2 = sgl_pow2(y - cy);
         buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
-        sgl_color_t *pixmap_color = sgl_pixmap_get_buf(pixmap, px - (cx - clip.x1), py - (cy - y));
+        sgl_color_t *pixmap_color = sgl_pixmap_get_buf(pixmap, px - (cx - clip.x1), py - (cy - y), clip.x2 - clip.x1 + 1);
 
         for (int x = clip.x1; x <= clip.x2; x++, buf++, pixmap_color++) {
             real_r2 = sgl_pow2(x - cx) + y2;
