@@ -176,6 +176,7 @@ size_t sgl_arc_get_style(sgl_obj_t *obj, sgl_style_type_t type)
 static void sgl_arc_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *evt)
 {
     sgl_arc_t *arc = (sgl_arc_t*)obj;
+    int16_t tb_angle = 0;
 
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
         arc->desc.cx = (obj->coords.x2 + obj->coords.x1) / 2;
@@ -188,7 +189,15 @@ static void sgl_arc_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *
             sgl_draw_arc(surf, &arc->obj.area, &arc->desc);
         }
     }
-    else if(evt->type == SGL_EVENT_PRESSED) {
+    else if(evt->type == SGL_EVENT_PRESSED ||
+        evt->type == SGL_EVENT_MOVE_DOWN || evt->type == SGL_EVENT_MOVE_UP || evt->type == SGL_EVENT_MOVE_LEFT || evt->type == SGL_EVENT_MOVE_RIGHT
+    ) {
+        tb_angle = sgl_atan2_angle(evt->pos.x - arc->desc.cx, evt->pos.y - arc->desc.cy);
+        SGL_LOG_WARN("sgl_arc_construct_cb: %d", tb_angle);
+        if ((tb_angle != arc->desc.end_angle) && tb_angle > 0 && tb_angle < 360) {
+            arc->desc.end_angle = 360 - tb_angle;
+        }
+
         if(obj->event_fn) {
             obj->event_fn(evt);
         }
@@ -229,6 +238,8 @@ sgl_obj_t* sgl_arc_create(sgl_obj_t* parent)
     sgl_obj_t *obj = &arc->obj;
     sgl_obj_init(&arc->obj, parent);
     obj->needinit = 1;
+    obj->clickable = 1;
+    obj->movable = 1;
 
     arc->desc.alpha = SGL_THEME_ALPHA;
     arc->desc.mode = SGL_DRAW_ARC_NORMAL;
