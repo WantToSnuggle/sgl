@@ -54,9 +54,6 @@ extern "C" {
  * CONFIG_SGL_OBJ_NUM_MAX:
  *      If CONFIG_SGL_OBJ_SLOT_DYNAMIC is 0 or not defined, you should define CONFIG_SGL_OBJ_NUM_MAX macro
  * 
- * CONFIG_SGL_DRAW_USE_DMA:
- *      If you want to use DMA to draw, please define this macro to 1
- * 
  * CONFIG_SGL_ANIMATION:
  *      If you want to use animation, please define this macro to 1
  * 
@@ -107,10 +104,6 @@ extern "C" {
 
 #ifndef CONFIG_SGL_DIRTY_AREA_THRESHOLD
 #define CONFIG_SGL_DIRTY_AREA_THRESHOLD                            (64)
-#endif
-
-#ifndef CONFIG_SGL_DRAW_USE_DMA
-#define CONFIG_SGL_DRAW_USE_DMA                                    (0)
 #endif
 
 #ifndef CONFIG_SGL_ANIMATION

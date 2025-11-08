@@ -40,7 +40,9 @@ sgl_context_t sgl_ctx = {
         .yres = 0,
         .xres_virtual = 0,
         .yres_virtual = 0,
-        .framebuffer_size = 0,
+        .buffer[0] = NULL,
+        .buffer[1] = NULL,
+        .buffer_size = 0,
     },
     .log_dev = {
         .log_puts = NULL,
@@ -59,34 +61,34 @@ static uint8_t sgl_mem_pool[CONFIG_SGL_HEAP_MEMORY_SIZE];
  * @brief register the frame buffer device
  * @param fb_dev the frame buffer device
  * @return int, 0 if success, -1 if failed
+ * @note you must check the return value of this function
  */
 int sgl_device_fb_register(sgl_device_fb_t *fb_dev)
 {
     sgl_check_ptr_return(fb_dev, -1);
 
-    if (fb_dev->framebuffer == NULL || fb_dev->flush_area == NULL) {
-        SGL_LOG_ERROR("framebuffer pointer or flush_area function pointer is null");
+    if (fb_dev->buffer[0] == NULL) {
+        SGL_LOG_ERROR("You haven't set up the frame buffer.");
         SGL_ASSERT(0);
         return -1;
     }
 
-    sgl_ctx.fb_dev.framebuffer[0]   = fb_dev->framebuffer;
-
-    /* double buffer for dma mode */
-#if (CONFIG_SGL_DRAW_USE_DMA)
-    sgl_ctx.fb_swap = 0;
-    sgl_ctx.fb_dev.framebuffer_size = fb_dev->framebuffer_size / 2;
-    sgl_ctx.fb_dev.framebuffer[1]   = ((sgl_color_t*)fb_dev->framebuffer) + sgl_ctx.fb_dev.framebuffer_size;
-
-    if ((sgl_ctx.fb_dev.framebuffer_size) < (size_t)fb_dev->xres) {
-        SGL_LOG_ERROR("framebuffer size is too small");
+    if (fb_dev->flush_area == NULL) {
+        SGL_LOG_ERROR("You haven't set up the flush area.");
         SGL_ASSERT(0);
         return -1;
     }
 
-#else
-    sgl_ctx.fb_dev.framebuffer_size = fb_dev->framebuffer_size;
-#endif
+    if (fb_dev->buffer_size == 0) {
+        SGL_LOG_ERROR("You haven't set up the frame buffer size.");
+        SGL_ASSERT(0);
+        return -1;
+    }
+
+    sgl_ctx.fb_dev.buffer[0]   = fb_dev->buffer[0];
+    sgl_ctx.fb_dev.buffer[1]   = fb_dev->buffer[1];
+    sgl_ctx.fb_dev.buffer_size = fb_dev->buffer_size;
+
     sgl_ctx.fb_dev.xres             = fb_dev->xres;
     sgl_ctx.fb_dev.yres             = fb_dev->yres;
     sgl_ctx.fb_dev.xres_virtual     = fb_dev->xres_virtual;
@@ -546,18 +548,18 @@ static sgl_page_t* sgl_page_create(void)
 
     sgl_obj_t *obj = &page->obj;
 
-    if (sgl_ctx.fb_dev.framebuffer[0] == NULL) {
+    if (sgl_ctx.fb_dev.buffer[0] == NULL) {
         SGL_LOG_ERROR("sgl_page_create: framebuffer is NULL");
         sgl_free(page);
         return NULL;
     }
 
-    page->surf.buffer = (sgl_color_t*)sgl_ctx.fb_dev.framebuffer[0];
+    page->surf.buffer = (sgl_color_t*)sgl_ctx.fb_dev.buffer[0];
     page->surf.x = 0;
     page->surf.y = 0;
     page->surf.w = sgl_ctx.fb_dev.xres;
-    page->surf.h = sgl_ctx.fb_dev.framebuffer_size / sgl_ctx.fb_dev.xres;
-    page->surf.size = sgl_ctx.fb_dev.framebuffer_size;
+    page->surf.h = sgl_ctx.fb_dev.buffer_size / sgl_ctx.fb_dev.xres;
+    page->surf.size = sgl_ctx.fb_dev.buffer_size;
     page->color = SGL_THEME_DESKTOP;
 
     obj->parent = obj;
@@ -681,9 +683,7 @@ void sgl_screen_load(sgl_obj_t *obj)
     sgl_ctx.page = (sgl_page_t*)obj;
 
     /* initilize framebuffer swap */
-#if (CONFIG_SGL_DRAW_USE_DMA)
     sgl_ctx.fb_swap = 0;
-#endif
 
     /* initialize dirty area */
     sgl_dirty_area_init();
@@ -1569,9 +1569,7 @@ static inline void sgl_draw_task(sgl_area_t *dirty)
         surf->y += surf->h;
 
         /* swap buffer for dma operation, but it depends on double buffer */
-#if (CONFIG_SGL_DRAW_USE_DMA)
         sgl_surf_buffer_swap(surf);
-#endif
     }
 }
 

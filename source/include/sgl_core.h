@@ -41,12 +41,9 @@ extern "C" {
 
 /* the maximum depth of object*/
 #define  SGL_OBJ_DEPTH_MAX                 (32)
+/* the maximum number of drawing buffers */
+#define  SGL_DRAW_BUFFER_MAX               (2)
 
-#if (CONFIG_SGL_DRAW_USE_DMA)
-#define SGL_DRAW_BUFFER_SIZE               (2)
-#else
-#define SGL_DRAW_BUFFER_SIZE               (1)
-#endif
 
 #if (CONFIG_SGL_DIRTY_AREA_THRESHOLD)
 #define SGL_DIRTY_AREA_THRESHOLD           CONFIG_SGL_DIRTY_AREA_THRESHOLD
@@ -410,7 +407,7 @@ typedef struct sgl_page {
 
 /**
  * @brief sgl framebuffer device struct
- * @framebuffer: framebuffer, this specify the memory address of the framebuffer
+ * @buffer: framebuffer, this specify the memory address of the framebuffer
  * @framebuffer_size: framebuffer size
  * @xres: x resolution
  * @yres: y resolution
@@ -419,36 +416,14 @@ typedef struct sgl_page {
  * @flush_area: flush area callback function pointer
  */
 typedef struct sgl_device_fb {
-    void      *framebuffer;
-    size_t     framebuffer_size;
+    void      *buffer[SGL_DRAW_BUFFER_MAX];
+    size_t     buffer_size;
     int16_t    xres;
     int16_t    yres;
     int16_t    xres_virtual;
     int16_t    yres_virtual;
     void       (*flush_area)(int16_t x, int16_t y, int16_t w, int16_t h, sgl_color_t *src);
 } sgl_device_fb_t;
-
-
-/**
- * @brief internal frame buffer device info
- * @brief sgl framebuffer device struct
- * @framebuffer: framebuffer, this specify the memory address of the framebuffer
- * @framebuffer_size: framebuffer size
- * @xres: x resolution
- * @yres: y resolution
- * @xres_virtual: x virtual resolution
- * @yres_virtual: y virtual resolution
- * @flush_area: flush area callback function pointer
- */
-typedef struct sgl_device_fb_info {
-    void      *framebuffer[SGL_DRAW_BUFFER_SIZE];
-    size_t     framebuffer_size;
-    int16_t    xres;
-    int16_t    yres;
-    int16_t    xres_virtual;
-    int16_t    yres_virtual;
-    void       (*flush_area)(int16_t x, int16_t y, int16_t w, int16_t h, sgl_color_t *src);
-} sgl_device_fb_info_t;
 
 
 /**
@@ -463,12 +438,10 @@ typedef struct sgl_device_log {
 /* current context, page pointer, and dirty area */
 typedef struct sgl_context {
     sgl_page_t           *page;
-    sgl_device_fb_info_t fb_dev;
+    sgl_device_fb_t      fb_dev;
     sgl_device_log_t     log_dev;
-#if (CONFIG_SGL_DRAW_USE_DMA)
     uint8_t              fb_swap;
-#endif
-
+    uint8_t              reserved;
 #if (CONFIG_SGL_DIRTY_AREA_THRESHOLD)
     uint16_t             dirty_num;
     sgl_area_t           *dirty;
@@ -541,7 +514,7 @@ static inline int16_t sgl_panel_resolution_height(void)
  */
 static inline void* sgl_panel_buffer_address(void)
 {
-    return sgl_ctx.fb_dev.framebuffer[0];
+    return sgl_ctx.fb_dev.buffer[0];
 }
 
 
@@ -1560,7 +1533,6 @@ void sgl_area_merge(sgl_area_t *area_a, sgl_area_t *area_b, sgl_area_t *merge);
 void sgl_area_selfmerge(sgl_area_t *merge, sgl_area_t *area);
 
 
-#if (CONFIG_SGL_DRAW_USE_DMA)
 /**
  * @brief swap the framebuffer buffer
  * @param surf [in] surface
@@ -1568,10 +1540,10 @@ void sgl_area_selfmerge(sgl_area_t *merge, sgl_area_t *area);
  */
 static inline void sgl_surf_buffer_swap(sgl_surf_t *surf)
 {
-    sgl_ctx.fb_swap ^= 1;
-    surf->buffer = sgl_ctx.fb_dev.framebuffer[sgl_ctx.fb_swap];
+    if (sgl_ctx.fb_dev.buffer[1] != NULL) {
+        surf->buffer = sgl_ctx.fb_dev.buffer[sgl_ctx.fb_swap ^= 1];
+    }
 }
-#endif // !CONFIG_SGL_DRAW_USE_DMA
 
 
 /**
