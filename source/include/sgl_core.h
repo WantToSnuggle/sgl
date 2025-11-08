@@ -1467,6 +1467,8 @@ static inline sgl_color_t* sgl_pixmap_get_buf(const sgl_pixmap_t *pixmap, int16_
         pixmap->read(sgl_ctx.pixmap_buff, pos * sizeof(sgl_color_t), size * sizeof(sgl_color_t));
         return sgl_ctx.pixmap_buff;
     }
+#else
+    SGL_UNUSED(size);
 #endif
 
     return &((sgl_color_t*)pixmap->bitmap)[pos];

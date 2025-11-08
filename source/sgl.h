@@ -39,6 +39,7 @@
 #include "widgets/arc/sgl_arc.h"
 #include "widgets/button/sgl_button.h"
 #include "widgets/slider/sgl_slider.h"
+#include "widgets/progress/sgl_progress.h"
 #include "widgets/label/sgl_label.h"
 #include "widgets/switch/sgl_switch.h"
 #include "widgets/msgbox/sgl_msgbox.h"
