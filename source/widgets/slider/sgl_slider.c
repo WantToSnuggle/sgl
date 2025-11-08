@@ -226,8 +226,6 @@ sgl_obj_t* sgl_slider_create(sgl_obj_t* parent)
     obj->set_style = sgl_slider_set_style;
     obj->get_style = sgl_slider_get_style;
 #endif
-    obj->needinit = 1;
-
     slider->direct = SGL_DIRECT_HORIZONTAL;
     slider->body.alpha = SGL_THEME_ALPHA;
     slider->body.color = SGL_THEME_BG_COLOR;
