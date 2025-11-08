@@ -137,10 +137,10 @@ size_t sgl_slider_get_style(sgl_obj_t *obj, sgl_style_type_t type)
         return sgl_obj_get_height(obj);
 
     case SGL_STYLE_COLOR:
-        return sgl_color2int(slider->body.color);
+        return sgl_color2int(slider->color);
 
     case SGL_STYLE_BG_COLOR:
-        return sgl_color2int(slider->color);
+        return sgl_color2int(slider->body.color);
 
     case SGL_STYLE_ALPHA:
         return slider->body.alpha;
