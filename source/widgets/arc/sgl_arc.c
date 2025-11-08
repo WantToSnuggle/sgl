@@ -193,9 +193,9 @@ static void sgl_arc_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *
         evt->type == SGL_EVENT_MOVE_DOWN || evt->type == SGL_EVENT_MOVE_UP || evt->type == SGL_EVENT_MOVE_LEFT || evt->type == SGL_EVENT_MOVE_RIGHT
     ) {
         tb_angle = sgl_atan2_angle(evt->pos.x - arc->desc.cx, evt->pos.y - arc->desc.cy);
-        SGL_LOG_WARN("sgl_arc_construct_cb: %d", tb_angle);
-        if ((tb_angle != arc->desc.end_angle) && tb_angle > 0 && tb_angle < 360) {
-            arc->desc.end_angle = 360 - tb_angle;
+        tb_angle = 360 - tb_angle;
+        if ((tb_angle != arc->desc.end_angle) && tb_angle >= 0 && tb_angle <= 360) {
+            arc->desc.end_angle = tb_angle;
         }
 
         if(obj->event_fn) {
