@@ -67,6 +67,9 @@ extern "C" {
  * CONFIG_SGL_TEXT_UTF8:
  *      If you want to use text utf8, please define this macro to 1
  * 
+ * CONFIG_SGL_EXTERNAL_PIXMAP:
+ *      If you want to use external pixmap, please define this macro to 1
+ * 
  * CONFIG_SGL_USE_OBJ_ID:
  *      If you want to use obj id, please define this macro to 1, at mostly, the CONFIG_SGL_USE_OBJ_ID should be 0
  * 
@@ -127,6 +130,10 @@ extern "C" {
 
 #ifndef CONFIG_SGL_TEXT_UTF8
 #define CONFIG_SGL_TEXT_UTF8                                       (0)
+#endif
+
+#ifndef CONFIG_SGL_EXTERNAL_PIXMAP
+#define CONFIG_SGL_EXTERNAL_PIXMAP                                 (0)
 #endif
 
 #ifndef CONFIG_SGL_OBJ_USE_NAME
