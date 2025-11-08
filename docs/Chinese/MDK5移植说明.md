@@ -27,7 +27,6 @@
     #include "stm32f10x.h"
     #include "sgl.h"
 
-
     #define  PANEL_WIDTH    240
     #define  PANEL_HEIGHT   240
     sgl_color_t panel_buffer[PANEL_WIDTH * 1];
@@ -36,9 +35,8 @@
     void demo_panel_flush_area(int16_t x, int16_t y, int16_t w, int16_t h, sgl_color_t *src)
     {
         /* set flush windows address */
-        //tft_set_win(x, y, x + w - 1, y + h - 1);
-            
-            //SPI1_WriteMultByte((uint8_t*)src, w * h * 2);
+        //tft_set_win(x, y, x + w - 1, y + h - 1);    
+        //SPI1_WriteMultByte((uint8_t*)src, w * h * 2);
     }
 
     void UART1_SendString(const char *str)
@@ -58,8 +56,8 @@
             .xres_virtual = PANEL_WIDTH,
             .yres_virtual = PANEL_HEIGHT,
             .flush_area = demo_panel_flush_area,
-            .framebuffer = panel_buffer,
-            .framebuffer_size = SGL_ARRAY_SIZE(panel_buffer),
+            .buffer[0] = panel_buffer,
+            .buffer_size = SGL_ARRAY_SIZE(panel_buffer),
         };
 
         sgl_device_fb_register(&fb_dev);
