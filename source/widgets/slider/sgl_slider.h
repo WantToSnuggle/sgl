@@ -41,9 +41,13 @@
  * @desc: slider description
  */
 typedef struct sgl_slider {
-    sgl_obj_t         obj;
-    uint8_t           value;
-    sgl_draw_bar_t    desc;
+    sgl_obj_t          obj;
+    sgl_draw_rect_t    body;
+    sgl_color_t        color;          
+    /* 0: horizontal, 1: vertical */
+    uint8_t            direct;
+    uint8_t            value;
+    const sgl_pixmap_t *pixmap;
 }sgl_slider_t;
 
 
