@@ -235,6 +235,18 @@ typedef struct sgl_draw_matrix {
 } sgl_draw_matrix_t;
 
 
+/** 
+ * @brief clip area width of surface
+ * @note if you want to check the area is overlap with surface, you can use this macro
+ *       it will direct return if the area is not overlap with surface, otherwise, continue
+ */
+#if (CONFIG_SGL_USE_CONTROLLER_FB)
+#define sgl_surf_clip_area_return(surf, rect, clip)         do {} while(0)
+#else
+#define sgl_surf_clip_area_return(surf, rect, clip)         if (!sgl_surf_clip(surf, rect, clip)) return
+#endif
+
+
 /**
  * @brief set pixel on surface
  * @param surf: pointer of surface
