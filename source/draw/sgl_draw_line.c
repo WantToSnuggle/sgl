@@ -26,7 +26,6 @@
 #include <sgl_log.h>
 #include <sgl_draw.h>
 #include <sgl_math.h>
-#include <stdio.h>
 
 
 /**

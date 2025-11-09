@@ -1102,6 +1102,7 @@ uint32_t sgl_search_unicode_ch_index(const sgl_font_t *font, uint32_t unicode)
         }
     }
 
+    SGL_LOG_WARN("sgl_search_unicode_ch_index: unicode not found in font table");
     return 0;
 }
 #endif // !CONFIG_SGL_TEXT_UTF8
