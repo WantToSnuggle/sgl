@@ -1581,10 +1581,12 @@ static inline void sgl_draw_task(sgl_area_t *dirty)
         /* swap buffer for dma operation, but it depends on double buffer */
         sgl_surf_buffer_swap(surf);
     }
-#endif
-
+#else
     SGL_LOG_TRACE("sgl_draw_task: dirty area: x: %d, y: %d, w: %d, h: %d", dirty->x1, dirty->y1, surf->w, dirty->y2 - dirty->y1 + 1);
     draw_obj_slice(head, surf, sgl_min(dirty->y2 - surf->y + 1, surf->h));
+    /* swap buffer for dma operation, but it depends on double buffer */
+    sgl_surf_buffer_swap(surf);
+#endif
 }
 
 
