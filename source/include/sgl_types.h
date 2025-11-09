@@ -104,27 +104,40 @@ extern "C" {
 
 
 #ifdef __GNUC__            /* gcc compiler   */
-#define likely(x)                               __builtin_expect(!!(x), 1)
-#define unlikely(x)                             __builtin_expect(!!(x), 0)
+#ifndef likely
+#  define likely(x)                             __builtin_expect(!!(x), 1)
+#  define unlikely(x)                           __builtin_expect(!!(x), 0)
+#endif
 #elif defined(__clang__)   /* clang compiler */
-#define likely(x)                               __builtin_expect(!!(x), 1)
-#define unlikely(x)                             __builtin_expect(!!(x), 0)
+#ifndef likely
+#  define likely(x)                             __builtin_expect(!!(x), 1)
+#  define unlikely(x)                           __builtin_expect(!!(x), 0)
+#endif
 #elif defined(__CC_ARM)    /* RealView compiler (Keil ARMCC) */
-#define likely(x)                               __builtin_expect(!!(x), 1)
-#define unlikely(x)                             __builtin_expect(!!(x), 0)
+#ifndef likely
+#  define likely(x)                             __builtin_expect(!!(x), 1)
+#  define unlikely(x)                           __builtin_expect(!!(x), 0)
+#endif
 #elif defined(__ICCARM__)  /* IAR compiler    */
-#define likely(x)                               __iar_builtin_expect(!!(x), 1)
-#define unlikely(x)                             __iar_builtin_expect(!!(x), 0)
+#ifndef likely
+#  define likely(x)                             __iar_builtin_expect(!!(x), 1)
+#  define unlikely(x)                           __iar_builtin_expect(!!(x), 0)
+#endif
 #elif defined(_MSC_VER)    /* MSVC compiler   */
-// NOTICE: MSVC is not support  __builtin_expect！
-#define likely(x)                               (x)
-#define unlikely(x)                             (x)
+#ifndef likely
+#  define likely(x)                             (x)
+#  define unlikely(x)                           (x)
+#endif
 #elif defined(__MINGW32__) /* MinGW compiler  */
+#ifndef likely
 #define likely(x)                               __builtin_expect(!!(x), 1)
 #define unlikely(x)                             __builtin_expect(!!(x), 0)
+#endif
 #else                      /* others compiler */
-#define likely(x)                               (x)
-#define unlikely(x)                             (x)
+#ifndef likely
+#  define likely(x)                             (x)
+#  define unlikely(x)                           (x)
+#endif
 #endif
 
 
