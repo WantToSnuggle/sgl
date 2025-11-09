@@ -558,7 +558,7 @@ static sgl_page_t* sgl_page_create(void)
     page->surf.x = 0;
     page->surf.y = 0;
     page->surf.w = sgl_ctx.fb_dev.xres;
-    page->surf.h = sgl_ctx.fb_dev.buffer_size / sgl_ctx.fb_dev.xres;
+    page->surf.h = sgl_ctx.fb_dev.yres;
     page->surf.size = sgl_ctx.fb_dev.buffer_size;
     page->color = SGL_THEME_DESKTOP;
 
@@ -1565,12 +1565,12 @@ static inline void sgl_draw_task(sgl_area_t *dirty)
     dirty->y1 = sgl_max(dirty->y1 - 2, 0);
     dirty->y2 = sgl_min(dirty->y2 + 3, head->area.y2);
 
+#if (!CONFIG_SGL_USE_CONTROLLER_FB)
     /* to set start x and y position for dirty area */
     surf->y = dirty->y1;
-    surf->x = sgl_max(dirty->x1 - 2, 0);
-    surf->w = sgl_min(dirty->x2 - dirty->x1 + 5, head->area.x2 - surf->x + 1);
+    surf->x = dirty->x1;
+    surf->w = dirty->x2 - dirty->x1 + 1;
     surf->h = surf->size / surf->w;
-
     SGL_LOG_TRACE("sgl_draw_task: dirty area: x: %d, y: %d, w: %d, h: %d", dirty->x1, dirty->y1, surf->w, dirty->y2 - dirty->y1 + 1);
 
     while (surf->y <= dirty->y2) {
@@ -1581,6 +1581,10 @@ static inline void sgl_draw_task(sgl_area_t *dirty)
         /* swap buffer for dma operation, but it depends on double buffer */
         sgl_surf_buffer_swap(surf);
     }
+#endif
+
+    SGL_LOG_TRACE("sgl_draw_task: dirty area: x: %d, y: %d, w: %d, h: %d", dirty->x1, dirty->y1, surf->w, dirty->y2 - dirty->y1 + 1);
+    draw_obj_slice(head, surf, sgl_min(dirty->y2 - surf->y + 1, surf->h));
 }
 
 

@@ -40,7 +40,7 @@ extern "C" {
 
 
 /* the maximum depth of object*/
-#define  SGL_OBJ_DEPTH_MAX                 (32)
+#define  SGL_OBJ_DEPTH_MAX                 (16)
 /* the maximum number of drawing buffers */
 #define  SGL_DRAW_BUFFER_MAX               (2)
 

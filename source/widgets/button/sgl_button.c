@@ -221,6 +221,7 @@ static void sgl_button_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
     }
     else if(evt->type == SGL_EVENT_RELEASED) {
         if(sgl_obj_is_flexible(obj)) {
+            sgl_obj_dirty_merge(obj);
             sgl_obj_size_zoom(obj, -2);
         }
 

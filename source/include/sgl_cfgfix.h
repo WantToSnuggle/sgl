@@ -41,6 +41,9 @@ extern "C" {
  * CONFIG_SGL_PANEL_PIXEL_DEPTH:
  *      The pixel depth of panel, it will be used to define the color type
  *
+ * CONFIG_SGL_USE_CONTROLLER_FB:
+ *      If you want to use controller fb, please define this macro to 1
+ * 
  * CONFIG_SGL_COLOR16_SWAP:
  *      Its for 16 bit color, the color will be swapped
  * 
@@ -95,6 +98,10 @@ extern "C" {
 
 #ifndef CONFIG_SGL_PANEL_PIXEL_DEPTH
 #define CONFIG_SGL_PANEL_PIXEL_DEPTH                               (16)
+#endif
+
+#ifndef CONFIG_SGL_USE_CONTROLLER_FB
+#define CONFIG_SGL_USE_CONTROLLER_FB                               (0)
 #endif
 
 #ifndef CONFIG_SGL_COLOR16_SWAP
