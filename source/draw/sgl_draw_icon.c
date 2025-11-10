@@ -41,7 +41,7 @@
 void sgl_draw_one_icon( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, sgl_color_t color, sgl_color_t bg_color, const sgl_icon_pixmap_t *icon)
 {
     const uint8_t *dot = icon->bitmap;
-    sgl_area_t clip;
+    sgl_area_t clip = SGL_AREA_MAX;
     sgl_color_t *buf = NULL;
     int rel_x, rel_y, byte_x, dot_index;
     uint8_t alpha_dot;
@@ -53,9 +53,7 @@ void sgl_draw_one_icon( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y
         .y2 = y + icon->height - 1,
     };
 
-    if (!sgl_surf_clip(surf, &icon_rect, &clip)) {
-        return;
-    }
+    sgl_surf_clip_area_return(surf, &icon_rect, &clip);
 
     if (!sgl_area_selfclip(&clip, area)) {
         return;
@@ -114,7 +112,7 @@ void sgl_draw_one_icon( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y
 void sgl_draw_icon_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, sgl_color_t color, const sgl_icon_pixmap_t *icon)
 {
     const uint8_t *dot = icon->bitmap;
-    sgl_area_t clip;
+    sgl_area_t clip = SGL_AREA_MAX;
     sgl_color_t *buf = NULL;
     int rel_x, rel_y, byte_x, dot_index;
     uint8_t alpha_dot;
@@ -126,9 +124,7 @@ void sgl_draw_icon_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t
         .y2 = y + icon->height - 1,
     };
 
-    if (!sgl_surf_clip(surf, &icon_rect, &clip)) {
-        return;
-    }
+    sgl_surf_clip_area_return(surf, &icon_rect, &clip);
 
     if (!sgl_area_selfclip(&clip, area)) {
         return;
@@ -189,7 +185,7 @@ void sgl_draw_icon_with_alpha( sgl_surf_t *surf, sgl_area_t *area, int16_t x, in
 {
     const uint8_t *dot = icon->bitmap;
     sgl_color_t color_mix;
-    sgl_area_t clip;
+    sgl_area_t clip = SGL_AREA_MAX;
     sgl_color_t *buf = NULL;
     int rel_x, rel_y, byte_x, dot_index;
     uint8_t alpha_dot;
@@ -201,9 +197,7 @@ void sgl_draw_icon_with_alpha( sgl_surf_t *surf, sgl_area_t *area, int16_t x, in
         .y2 = y + icon->height - 1,
     };
 
-    if (!sgl_surf_clip(surf, &icon_rect, &clip)) {
-        return;
-    }
+    sgl_surf_clip_area_return(surf, &icon_rect, &clip);
 
     if (!sgl_area_selfclip(&clip, area)) {
         return;
