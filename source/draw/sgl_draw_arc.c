@@ -129,9 +129,7 @@ void sgl_draw_fill_arc(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_arc_t *desc)
     sgl_color_t tmp_color;
     sgl_area_t clip;
 
-    if (!sgl_surf_clip(surf, area, &clip)) {
-        return;
-    }
+    sgl_surf_clip_area_return(surf, area, &clip);
 
     sgl_area_t c_rect = {
         .x1 = desc->cx - desc->radius_out,
@@ -272,9 +270,7 @@ void sgl_draw_fill_arc_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_a
     sgl_color_t tmp_color;
     sgl_area_t clip;
 
-    if (!sgl_surf_clip(surf, area, &clip)) {
-        return;
-    }
+    sgl_surf_clip_area_return(surf, area, &clip);
 
     sgl_area_t c_rect = {
         .x1 = desc->cx - desc->radius_out,
