@@ -48,6 +48,7 @@ sgl_context_t sgl_ctx = {
         .log_puts = NULL,
     },
     .page = NULL,
+    .tick_ms = 0,
 };
 
 
@@ -1565,7 +1566,7 @@ static inline void sgl_draw_task(sgl_area_t *dirty)
     dirty->y1 = sgl_max(dirty->y1 - 2, 0);
     dirty->y2 = sgl_min(dirty->y2 + 3, head->area.y2);
 
-#if (!CONFIG_SGL_USE_CONTROLLER_FB)
+#if (!CONFIG_SGL_USE_FULL_FB)
     /* to set start x and y position for dirty area */
     surf->y = dirty->y1;
     surf->x = dirty->x1;
@@ -1598,12 +1599,17 @@ static inline void sgl_draw_task(sgl_area_t *dirty)
  */
 void sgl_task_handle(void)
 {
+    /* If the system tick time has not been reached, skip directly. */
+    if (sgl_tick_get() < SGL_SYSTEM_TICK_MS) {
+        return;
+    }
     /* event task */
     sgl_event_task();
 
 #if (CONFIG_SGL_ANIMATION)
     sgl_anim_task();
 #endif // !CONFIG_SGL_ANIMATION
+    sgl_tick_reset();
 
     /* calculate dirty area, if no dirty area, return directly */
     if (! sgl_dirty_area_calculate(&sgl_ctx.page->obj)) {

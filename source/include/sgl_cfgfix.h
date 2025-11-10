@@ -43,6 +43,9 @@ extern "C" {
  *
  * CONFIG_SGL_USE_FULL_FB:
  *      If you want to use full framebuffer, please define this macro to 1
+ *
+ * CONFIG_SGL_SYSTICK_MS:
+ *      The macro should be defined to the system tick ms, default: 10
  * 
  * CONFIG_SGL_COLOR16_SWAP:
  *      Its for 16 bit color, the color will be swapped
@@ -59,10 +62,6 @@ extern "C" {
  * 
  * CONFIG_SGL_ANIMATION:
  *      If you want to use animation, please define this macro to 1
- * 
- * CONFIG_SGL_ANIMATION_TICK_MS:
- *      If the CONFIG_SGL_ANIMATION is 1, you should define CONFIG_SGL_ANIMATION_TICK_MS macro, and it means 
- *      the animation tick ms, default: 5
  * 
  * CONFIG_SGL_DEBUG:
  *      If you want to use debug, please define this macro to 1
@@ -104,6 +103,10 @@ extern "C" {
 #define CONFIG_SGL_USE_FULL_FB                                     (0)
 #endif
 
+#ifndef CONFIG_SGL_SYSTICK_MS
+#define CONFIG_SGL_SYSTICK_MS                                      (10)
+#endif
+
 #ifndef CONFIG_SGL_COLOR16_SWAP
 #define CONFIG_SGL_COLOR16_SWAP                                    (0)
 #endif
@@ -118,10 +121,6 @@ extern "C" {
 
 #ifndef CONFIG_SGL_ANIMATION
 #define CONFIG_SGL_ANIMATION                                       (0)
-#elif (CONFIG_SGL_ANIMATION == 1)
-#   ifndef CONFIG_SGL_ANIMATION_TICK_MS
-#       define CONFIG_SGL_ANIMATION_TICK_MS                        (20)
-#   endif
 #endif
 
 #ifndef CONFIG_SGL_DEBUG

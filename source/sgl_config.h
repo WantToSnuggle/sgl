@@ -9,10 +9,10 @@
 
 #define  CONFIG_SGL_PANEL_PIXEL_DEPTH                      16
 #define  CONFIG_SGL_EVENT_QUEUE_SIZE                       16
+#define  CONFIG_SGL_SYSTICK_MS                             10
 #define  CONFIG_SGL_DIRTY_AREA_THRESHOLD                   64
 #define  CONFIG_SGL_COLOR16_SWAP                           0   
 #define  CONFIG_SGL_ANIMATION                              0
-#define  CONFIG_SGL_ANIMATION_TICK_MS                      20
 #define  CONFIG_SGL_DEBUG                                  0
 #define  CONFIG_SGL_LOG_COLOR                              y
 #define  CONFIG_SGL_LOG_LEVEL                              0

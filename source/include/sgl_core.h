@@ -43,6 +43,8 @@ extern "C" {
 #define  SGL_OBJ_DEPTH_MAX                 (16)
 /* the maximum number of drawing buffers */
 #define  SGL_DRAW_BUFFER_MAX               (2)
+/* define default animation tick ms */
+#define  SGL_SYSTEM_TICK_MS                CONFIG_SGL_SYSTICK_MS
 
 
 #if (CONFIG_SGL_DIRTY_AREA_THRESHOLD)
@@ -446,7 +448,7 @@ typedef struct sgl_context {
     sgl_device_fb_t      fb_dev;
     sgl_device_log_t     log_dev;
     uint8_t              fb_swap;
-    uint8_t              reserved;
+    uint8_t              tick_ms;
 #if (CONFIG_SGL_DIRTY_AREA_THRESHOLD)
     uint16_t             dirty_num;
     sgl_area_t           *dirty;
@@ -547,6 +549,40 @@ static inline void sgl_log_stdout(const char *str)
     if (sgl_ctx.log_dev.log_puts) {
         sgl_ctx.log_dev.log_puts(str);
     }
+}
+
+
+/**
+ * @brief get tick milliseconds
+ * @param none
+ * @return tick milliseconds
+ */
+static inline uint8_t sgl_tick_get(void)
+{
+    return sgl_ctx.tick_ms;
+}
+
+
+/**
+ * @brief increase tick milliseconds
+ * @param ms milliseconds
+ * @return none
+ * @note in general, you should call this function in the 1ms tick interrupt handler
+ */
+static inline void sgl_tick_inc(uint8_t ms)
+{
+    sgl_ctx.tick_ms += ms;
+}
+
+
+/**
+ * @brief reset tick milliseconds
+ * @param none
+ * @return none
+ */
+static inline void sgl_tick_reset(void)
+{
+    sgl_ctx.tick_ms = 0;
 }
 
 

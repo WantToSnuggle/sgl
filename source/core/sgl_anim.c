@@ -35,7 +35,6 @@ sgl_anim_ctx_t anim_ctx = {
     .anim_list_head = NULL,
     .anim_list_tail = NULL,
     .anim_cnt = 0,
-    .tick_ms = 0,
 };
 
 
@@ -156,12 +155,8 @@ void sgl_anim_task(void)
         return;
     }
 
-    if (anim_ctx.tick_ms < SGL_ANIMATION_TICK_MS) {
-        return;
-    }
-
     while (anim != NULL) {
-        anim->act_time += anim_ctx.tick_ms;
+        anim->act_time += sgl_tick_get();
 
         if(anim->act_time < anim->act_delay) {
             continue;
@@ -204,9 +199,6 @@ void sgl_anim_task(void)
 
         anim = anim->next;
     }
-
-    /* reset tick ms */
-    anim_ctx.tick_ms = 0;
 }
 
 

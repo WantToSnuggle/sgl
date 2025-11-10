@@ -76,7 +76,6 @@ typedef struct sgl_anim_ctx {
     sgl_anim_t *anim_list_head;
     sgl_anim_t *anim_list_tail;
     uint32_t    anim_cnt;
-    uint32_t    tick_ms;
 } sgl_anim_ctx_t;
 
 
@@ -85,10 +84,6 @@ typedef struct sgl_anim_ctx {
 
 #define  SGL_ANIM_REPEAT_LOOP                          (0x3FFFFFFF)
 #define  SGL_ANIM_REPEAT_ONCE                          (1)
-
-
-/* define default animation tick ms */
-#define SGL_ANIMATION_TICK_MS   CONFIG_SGL_ANIMATION_TICK_MS
 
 
 /* Animation context it will be used internally */
@@ -251,17 +246,6 @@ static inline void sgl_anim_set_repeat_cnt(sgl_anim_t *anim, int32_t repeat_cnt)
 {
     SGL_ASSERT(anim != NULL);
     anim->repeat_cnt = ((uint32_t)repeat_cnt) & SGL_ANIM_REPEAT_LOOP;
-}
-
-
-/**
- * @brief increase tick for animation
- * @param  tick_ms time
- * @return none
-*/
-static inline void sgl_anim_tick_inc(uint32_t tick_ms)
-{
-    anim_ctx.tick_ms += tick_ms;
 }
 
 
