@@ -71,6 +71,7 @@ void sgl_arc_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
 
     case SGL_STYLE_RADIUS:
         arc->desc.radius_out = value;
+        obj->radius = arc->desc.radius_out;
         break;
 
     case SGL_STYLE_ARC_WIDTH:

@@ -67,6 +67,7 @@ void sgl_ring_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
 
     case SGL_STYLE_RADIUS:
         ring->desc.radius_out = value;
+        obj->radius = ring->desc.radius_out;
         break;
 
     case SGL_STYLE_RING_WIDTH:

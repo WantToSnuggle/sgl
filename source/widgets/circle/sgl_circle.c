@@ -67,6 +67,7 @@ void sgl_circle_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
 
     case SGL_STYLE_RADIUS:
         circle->desc.radius = value;
+        obj->radius = value;
         break;
 
     case SGL_STYLE_ALPHA:
