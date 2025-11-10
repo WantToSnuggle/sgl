@@ -31,6 +31,11 @@
     #define  PANEL_HEIGHT   240
     sgl_color_t panel_buffer[PANEL_WIDTH * 1];
 
+    /* 系统时钟中断服务函数，设置为1ms中断一次 */
+    void systick_handler(void)
+    {
+        sgl_tick_inc(1);
+    }
 
     void demo_panel_flush_area(int16_t x, int16_t y, int16_t w, int16_t h, sgl_color_t *src)
     {
@@ -79,21 +84,28 @@
 
 7. 编辑`sgl_config.h`文件，修改内容如下：
     ```c
-    #define    CONFIG_SGL_PANEL_PIXEL_DEPTH       16
-    #define    CONFIG_SGL_EVENT_QUEUE_SIZE        16
-    #define    CONFIG_SGL_DEBUG                   0
-    #define    CONFIG_SGL_LOG_COLOR               1
-    #define    CONFIG_SGL_LOG_LEVEL               0
-    #define    CONFIG_SGL_FONT                    1
-    #define    CONFIG_SGL_USE_OBJ_ID              0
-    #define    CONFIG_SGL_USE_STYLE_UNIFIED_API   1
-    #define    CONFIG_SGL_HEAP_ALGO               lwmem
-    #define    CONFIG_SGL_FL_INDEX_MAX            20
-    #define    CONFIG_SGL_HEAP_MEMORY_SIZE        10240
-    #define    CONFIG_SGL_FONT_SONG23             1
-    #define    CONFIG_SGL_FONT_CONSOLAS23         0
-    #define    CONFIG_SGL_FONT_KAI33              0
-    #define    CONFIG_SGL_THEME_DEFAULT           1    
+    #define  CONFIG_SGL_PANEL_PIXEL_DEPTH                      16
+    #define  CONFIG_SGL_EVENT_QUEUE_SIZE                       16
+    #define  CONFIG_SGL_SYSTICK_MS                             10
+    #define  CONFIG_SGL_DIRTY_AREA_THRESHOLD                   64
+    #define  CONFIG_SGL_COLOR16_SWAP                           0   
+    #define  CONFIG_SGL_ANIMATION                              0
+    #define  CONFIG_SGL_DEBUG                                  0
+    #define  CONFIG_SGL_LOG_COLOR                              1
+    #define  CONFIG_SGL_LOG_LEVEL                              0
+    #define  CONFIG_SGL_TEXT_UTF8                              0
+    #define  CONFIG_SGL_EXTERNAL_PIXMAP                        0  
+    #define  CONFIG_SGL_OBJ_USE_NAME                           0
+    #define  CONFIG_SGL_USE_STYLE_UNIFIED_API                  1
+    #define  CONFIG_SGL_BOOT_LOGO                              0
+    #define  CONFIG_SGL_BOOT_ANIMATION                         0
+    #define  CONFIG_SGL_HEAP_ALGO                              lwmem
+    #define  CONFIG_SGL_FL_INDEX_MAX                           20
+    #define  CONFIG_SGL_HEAP_MEMORY_SIZE                       10240
+    #define  CONFIG_SGL_FONT_SONG23                            1
+    #define  CONFIG_SGL_FONT_CONSOLAS23                        0
+    #define  CONFIG_SGL_FONT_KAI33                             0
+    #define  CONFIG_SGL_FONT_CONSOLAS14                        0
     ```
 ## 配置编译选项
 1. 打开`Options for Target`窗口，然后找到`Target`选项:             
