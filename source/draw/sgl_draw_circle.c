@@ -39,12 +39,10 @@
  */
 void sgl_draw_fill_circle(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_t cy, int16_t radius, sgl_color_t color)
 {
-    sgl_area_t clip;
+    sgl_area_t clip = SGL_AREA_MAX;
     sgl_color_t *buf = NULL;
 
-    if (!sgl_surf_clip(surf, area, &clip)) {
-        return;
-    }
+    sgl_surf_clip_area_return(surf, area, &clip);
 
     sgl_area_t c_rect = {
         .x1 = cx - radius,
@@ -98,12 +96,10 @@ void sgl_draw_fill_circle(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_
  */
 void sgl_draw_fill_circle_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_t cy, int16_t radius, sgl_color_t color, uint8_t alpha)
 {
-    sgl_area_t clip;
+    sgl_area_t clip = SGL_AREA_MAX;
     sgl_color_t *buf = NULL;
 
-    if (!sgl_surf_clip(surf, area, &clip)) {
-        return;
-    }
+    sgl_surf_clip_area_return(surf, area, &clip);
 
     sgl_area_t c_rect = {
         .x1 = cx - radius,
@@ -163,12 +159,9 @@ void sgl_draw_fill_circle_pixmap(sgl_surf_t *surf, sgl_area_t *area, int16_t cx,
     int r2 = radius * radius;
     int r2_max = (radius + 1) * (radius + 1);
     sgl_color_t *buf = NULL;
+    sgl_area_t clip = SGL_AREA_MAX;
 
-    sgl_area_t clip;
-
-    if (!sgl_surf_clip(surf, area, &clip)) {
-        return;
-    }
+    sgl_surf_clip_area_return(surf, area, &clip);
 
     sgl_area_t c_rect = {
         .x1 = cx - radius,
@@ -224,12 +217,9 @@ void sgl_draw_fill_circle_pixmap_with_alpha(sgl_surf_t *surf, sgl_area_t *area, 
     int r2_max = (radius + 1) * (radius + 1);
     sgl_color_t edge_color;
     sgl_color_t *buf = NULL;
+    sgl_area_t clip = SGL_AREA_MAX;
 
-    sgl_area_t clip;
-
-    if (!sgl_surf_clip(surf, area, &clip)) {
-        return;
-    }
+    sgl_surf_clip_area_return(surf, area, &clip);
 
     sgl_area_t c_rect = {
         .x1 = cx - radius,
@@ -288,12 +278,9 @@ void sgl_draw_fill_circle_with_border(sgl_surf_t *surf, sgl_area_t *area, int16_
 
     int in_r2_max = sgl_pow2(radius_in - 1);
     int out_r2_max = sgl_pow2(radius + 1);
+    sgl_area_t clip = SGL_AREA_MAX;
 
-    sgl_area_t clip;
-
-    if (!sgl_surf_clip(surf, area, &clip)) {
-        return;
-    }
+    sgl_surf_clip_area_return(surf, area, &clip);
 
     for (int y = clip.y1; y <= clip.y2; y++) {
         y2 = sgl_pow2(y - cy);
@@ -349,12 +336,9 @@ void sgl_draw_fill_circle_with_alpha_border(sgl_surf_t *surf, sgl_area_t *area, 
     int in_r2_max = sgl_pow2(radius_in - 1);
     int out_r2_max = sgl_pow2(radius + 1);
     uint8_t edge_alpha = 0;
+    sgl_area_t clip = SGL_AREA_MAX;
 
-    sgl_area_t clip;
-
-    if (!sgl_surf_clip(surf, area, &clip)) {
-        return;
-    }
+    sgl_surf_clip_area_return(surf, area, &clip);
 
     for (int y = clip.y1; y <= clip.y2; y++) {
         y2 = sgl_pow2(y - cy);

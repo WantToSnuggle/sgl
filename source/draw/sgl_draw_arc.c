@@ -127,7 +127,7 @@ void sgl_draw_fill_arc(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_arc_t *desc)
     int32_t ds = 0, de = 0, sd = 0, ed = 0;
     int32_t sx = 0, sy = 0, ex = 0, ey = 0;
     sgl_color_t tmp_color;
-    sgl_area_t clip;
+    sgl_area_t clip = SGL_AREA_MAX;
 
     sgl_surf_clip_area_return(surf, area, &clip);
 
@@ -268,7 +268,7 @@ void sgl_draw_fill_arc_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_a
     int32_t ds = 0, de = 0, sd = 0, ed = 0;
     int32_t sx = 0, sy = 0, ex = 0, ey = 0;
     sgl_color_t tmp_color;
-    sgl_area_t clip;
+    sgl_area_t clip = SGL_AREA_MAX;
 
     sgl_surf_clip_area_return(surf, area, &clip);
 

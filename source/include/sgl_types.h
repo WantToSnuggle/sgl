@@ -74,6 +74,8 @@ extern "C" {
 #define SGL_POS_MIN                             (-8192)
 #define SGL_RADIUS_INVALID                      (0xFFF)
 
+#define SGL_AREA_MAX                            {.x1 = SGL_POS_MIN, .y1 = SGL_POS_MIN, .x2 = SGL_POS_MAX, .y2 = SGL_POS_MAX}
+#define SGL_AREA_INVALID                        {.x1 = SGL_POS_MAX, .y1 = SGL_POS_MAX, .x2 = SGL_POS_MIN, .y2 = SGL_POS_MIN}
 
 #define SGL_WIDTH_INVALID                       (-1)
 #define SGL_WIDTH_MAX                           (8192)
