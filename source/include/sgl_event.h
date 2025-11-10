@@ -127,6 +127,25 @@ static inline void sgl_event_send(sgl_event_t event)
 
 
 /**
+ * @brief Send an event to the specified object
+ * @param obj The object to be sent
+ * @param type The type of the event
+ * @return none
+ * @note This function is used to send an event to the specified object, for example, 
+ *       if you want to send an event to the button, you can call:
+ *       ---- press button case  : sgl_event_send_obj(button, SGL_EVENT_PRESSED);
+ *       ---- release button case: sgl_event_send_obj(button, SGL_EVENT_RELEASED);
+ */
+static inline void sgl_event_send_obj(struct sgl_obj *obj, sgl_event_type_t type)
+{
+    sgl_event_t event = {0};
+    event.obj = obj;
+    event.type = type;
+    sgl_event_send(event);
+}
+
+
+/**
  * @brief All event task in SGL, this function will traverse all elements in the event queue, 
  *        respond to each element with an event, so that all events will trigger and point to the 
  *        corresponding callback function
