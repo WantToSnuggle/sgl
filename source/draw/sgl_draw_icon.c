@@ -53,7 +53,9 @@ void sgl_draw_one_icon( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y
         .y2 = y + icon->height - 1,
     };
 
-    sgl_surf_clip_area_return(surf, &icon_rect, &clip);
+    if (!sgl_surf_clip(surf, &icon_rect, &clip)) {
+        return;
+    }
 
     if (!sgl_area_selfclip(&clip, area)) {
         return;
@@ -124,7 +126,9 @@ void sgl_draw_icon_on_bg( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t
         .y2 = y + icon->height - 1,
     };
 
-    sgl_surf_clip_area_return(surf, &icon_rect, &clip);
+    if (!sgl_surf_clip(surf, &icon_rect, &clip)) {
+        return;
+    }
 
     if (!sgl_area_selfclip(&clip, area)) {
         return;
@@ -197,7 +201,9 @@ void sgl_draw_icon_with_alpha( sgl_surf_t *surf, sgl_area_t *area, int16_t x, in
         .y2 = y + icon->height - 1,
     };
 
-    sgl_surf_clip_area_return(surf, &icon_rect, &clip);
+    if (!sgl_surf_clip(surf, &icon_rect, &clip)) {
+        return;
+    }
 
     if (!sgl_area_selfclip(&clip, area)) {
         return;

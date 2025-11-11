@@ -90,29 +90,6 @@ typedef struct sgl_draw_circle {
 
 
 /**
- * @brief bar description
- * @color: color of bar
- * @bg_color: background color of bar
- * @alpha: alpha of bar
- * @border: border of bar
- * @border_color: border color of bar
- * @pixmap: pixmap of bar
- */
-typedef struct sgl_draw_bar {
-    int16_t            radius;
-    sgl_color_t        color;
-    sgl_color_t        bg_color;
-    int16_t            knob_offset;
-    /* 0: horizontal, 1: vertical */
-    uint8_t            direct;
-    uint8_t            alpha;
-    uint8_t            border;
-    sgl_color_t        border_color;
-    const sgl_pixmap_t *pixmap;
-} sgl_draw_bar_t;
-
-
-/**
  * @brief text description
  * @text: text to draw
  * @font: font of text
@@ -386,122 +363,6 @@ void sgl_draw_fill_vline(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t 
  * @return none
  */
 void sgl_draw_fill_vline_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y1, int16_t y2, int16_t width, sgl_color_t color, uint8_t alpha);
-
-
-/**
- * @brief draw a horizontal bar
- * @param surf          surface
- * @param area          area that you want to draw
- * @param rect          rect coordinate
- * @param fg_color      foreground color
- * @param bg_color      background color
- * @param knob_offset   knob offset
- * @return none
- */
-void sgl_draw_fill_hori_bar(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_color_t fg_color, sgl_color_t bg_color, int16_t knob_offset);
-
-
-/**
- * @brief draw a vertical bar with alpha
- * @param surf          surface
- * @param area          area that you want to draw
- * @param rect          rect coordinate
- * @param fg_color      foreground color
- * @param bg_color      background color
- * @param alpha         alpha
- * @param knob_offset   knob offset
- * @return none
- */
-void sgl_draw_fill_hori_bar_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_color_t fg_color, sgl_color_t bg_color, uint8_t alpha, int16_t knob_offset);
-
-
-/**
- * @brief draw a horizontal bar
- * @param surf          surface
- * @param area          area that you want to draw
- * @param rect          rect coordinate
- * @param fg_color      foreground color
- * @param bg_color      background color
- * @param knob_offset   knob offset
- * @param border_color  border color
- * @param border_width  border width
- * @return none
- */
-void sgl_draw_fill_hori_bar_with_border(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_color_t fg_color, sgl_color_t bg_color, int16_t knob_offset, sgl_color_t border_color, int16_t border_width);
-
-
-/**
- * @brief draw a vertical bar with alpha and border
- * @param surf          surface
- * @param area          area that you want to draw
- * @param rect          rect coordinate
- * @param fg_color      foreground color
- * @param bg_color      background color
- * @param alpha         alpha
- * @param knob_offset   knob offset
- * @param border_color  border color
- * @param border_width  border width
- * @return none
- */
-void sgl_draw_fill_hori_bar_with_alpha_border(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_color_t fg_color, sgl_color_t bg_color, uint8_t alpha, int16_t knob_offset, sgl_color_t border_color, int16_t border_width);
-
-
-/**
- * @brief draw a vertical bar
- * @param surf          surface
- * @param area          area that you want to draw
- * @param rect          rect coordinate
- * @param fg_color      foreground color
- * @param bg_color      background color
- * @param knob_offset   knob offset
- * @return none
- */
-void sgl_draw_fill_vert_bar(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_color_t fg_color, sgl_color_t bg_color, int16_t knob_offset);
-
-
-/**
- * @brief draw a vertical bar
- * @param surf          surface
- * @param area          area that you want to draw
- * @param rect          rect coordinate
- * @param fg_color      foreground color
- * @param bg_color      background color
- * @param knob_offset   knob offset
- * @param border_color  border color
- * @param border_width  border width
- * @return none
- */
-void sgl_draw_fill_vert_bar_with_border(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_color_t fg_color, sgl_color_t bg_color, int16_t knob_offset, sgl_color_t border_color, uint8_t border_width);
-
-
-/**
- * @brief draw a vertical bar with alpha
- * @param surf          surface
- * @param area          area that you want to draw
- * @param rect          rect coordinate
- * @param fg_color      foreground color
- * @param bg_color      background color
- * @param alpha         alpha of color
- * @param knob_offset   knob offset
- * @return none
- */
-void sgl_draw_fill_vert_bar_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_color_t fg_color, sgl_color_t bg_color, uint8_t alpha, int16_t knob_offset);
-
-
-/**
- * @brief draw a vertical bar with alpha and border
- * @param surf          surface
- * @param area          area that you want to draw
- * @param rect          rect coordinate
- * @param fg_color      foreground color
- * @param bg_color      background color
- * @param alpha         alpha of color
- * @param knob_offset   knob offset
- * @param border_color  border color
- * @param border_width  border width
- * @return none
- */
-void sgl_draw_fill_vert_bar_with_alpha_border(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_color_t fg_color, sgl_color_t bg_color, uint8_t alpha, int16_t knob_offset, sgl_color_t border_color, uint8_t border_width);
 
 
 /**
@@ -981,17 +842,6 @@ void sgl_draw_text(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *rect, sgl_dra
  * @return none
  */
 void sgl_draw_circle(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_circle_t *desc);
-
-
-/**
- * @brief Draw rectangle
- * @param surf - surface
- * @param area - draw area
- * @param coords - rectangle coords
- * @param desc - bar description
- * @return none
- */
-void sgl_draw_bar(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *coords, sgl_draw_bar_t *desc);
 
 
 /**
