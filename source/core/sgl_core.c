@@ -1439,6 +1439,10 @@ static inline void draw_obj_slice(sgl_obj_t *obj, sgl_surf_t *surf, int16_t dirt
 			stack[top++] = obj->sibling;
 		}
 
+        if (sgl_obj_is_hidden(obj)) {
+            continue;
+        }
+
 		if (sgl_surf_area_is_overlap(surf, &obj->area)) {
 			evt.type = SGL_EVENT_DRAW_MAIN;
 			SGL_ASSERT(obj->construct_fn != NULL);
