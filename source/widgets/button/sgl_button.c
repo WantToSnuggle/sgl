@@ -207,7 +207,7 @@ static void sgl_button_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
                 sgl_draw_icon_with_alpha(surf, &obj->area, align_pos.x, obj->coords.y1 + icon_y, button->text_color, button->desc.alpha, button->icon);
             }
 
-            sgl_draw_string_with_alpha(surf, &obj->area, align_pos.x + text_x, align_pos.y, button->text, button->text_color, button->desc.alpha, button->font, 0);
+            sgl_draw_string(surf, &obj->area, align_pos.x + text_x, align_pos.y, button->text, button->text_color, button->desc.alpha, button->font);
         }
     }
     else if(evt->type == SGL_EVENT_PRESSED) {

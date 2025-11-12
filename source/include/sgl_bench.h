@@ -1,4 +1,4 @@
-/* source/widgets/sgl_line.h
+/* source/include/sgl_bench.h
  *
  * MIT License
  *
@@ -22,58 +22,36 @@
  * SOFTWARE.
  */
 
-#ifndef __SGL_LINE_H__
-#define __SGL_LINE_H__
+#ifndef __SGL_BENCH_H__
+#define __SGL_BENCH_H__
 
-#include <sgl_core.h>
-#include <sgl_draw.h>
-#include <sgl_math.h>
-#include <sgl_log.h>
-#include <sgl_mm.h>
-#include <sgl_cfgfix.h>
-#include <string.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
+#include <sgl.h>
 
-/**
- * @brief sgl line struct
- * @obj: sgl general object
- * @desc: pointer to line draw descriptor
- */
-typedef struct sgl_line {
-    sgl_obj_t       obj;
-    sgl_draw_line_t desc;
-}sgl_line_t;
+#define CONFIG_SGL_BENCH_PER_TIMES   5
+#define CONFIG_SGL_BENCH 1
+#if (CONFIG_SGL_BENCH)
 
-
-/**
- * @brief create a line object
- * @param parent parent of the line
- * @return line object
- */
-sgl_obj_t* sgl_line_create(sgl_obj_t* parent);
+typedef struct sgl_bench {
+    struct sgl_bench *next;
+    const char       *name;
+    void             (*init)(void);
+    void             (*func)(void);
+    void             (*deinit)(void);
+    uint32_t          frame;
+} sgl_bench_t;
 
 
-/**
- * @brief set line object style
- * @param obj line object
- * @param type style type
- * @param value style value
- */
-void sgl_line_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value);
+extern sgl_bench_t sgl_bench_ctx;
 
 
-/**
- * @brief get line object style
- * @param obj line object
- * @param type style type
- * @return style value
- */
-size_t sgl_line_get_style(sgl_obj_t *obj, sgl_style_type_t type);
+#endif // ! CONFIG_SGL_BENCH
 
+#ifdef __cplusplus
+} /*extern "C"*/
+#endif
 
-void sgl_line_set_start_point(sgl_obj_t *obj, int16_t x, int16_t y);
-void sgl_line_set_end_point(sgl_obj_t *obj, int16_t x, int16_t y);
-void sgl_line_set_width(sgl_obj_t *obj, uint16_t width);
-
-
-#endif // !__SGL_LINE_H__
+#endif // ! __SGL_BENCH_H__
