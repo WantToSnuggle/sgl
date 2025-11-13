@@ -467,67 +467,38 @@ static void sgl_page_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t 
 
     if (evt->type == SGL_EVENT_DRAW_MAIN) {
         if (pixmap == NULL) {
-            sgl_draw_fill_rect(surf, &obj->area, &obj->coords, page->color);
+            sgl_draw_fill_rect(surf, &obj->area, &obj->coords, page->color, SGL_ALPHA_MAX);
         }
         else {
-            sgl_draw_fill_rect_pixmap(surf, &obj->area, &obj->coords, page->bg_img);
+            sgl_draw_fill_rect_pixmap(surf, &obj->area, &obj->coords, page->bg_img, SGL_ALPHA_MAX);
         }
     }
 }
 
 
 /**
- * @brief set page style callback function
- * @param[in] obj pointer to the object
- * @param[in] style pointer to the style
- * @param[in] value value of the style
+ * @brief set page background color
+ * @param obj point to object
+ * @param color background color
  * @return none
  */
-void sgl_page_set_style(sgl_obj_t* obj, sgl_style_type_t type, size_t value)
+void sgl_page_set_color(sgl_obj_t* obj, sgl_color_t color)
 {
     sgl_page_t* page = (sgl_page_t*)obj;
-
-    switch (type)
-    {
-    case SGL_STYLE_COLOR:
-        page->color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_PIXMAP:
-        page->bg_img = (sgl_pixmap_t*)value;
-        break;
-
-    default:
-        SGL_LOG_WARN("page: style type not supported");
-        break;
-    }
+    page->color = color;
 }
 
 
 /**
- * @brief set page style callback function
- * @param[in] obj pointer to the object
- * @param[in] type style type
- * @return size_t, value of the style
+ * @brief set page background pixmap
+ * @param obj point to object
+ * @param pixmap background pixmap
+ * @return none
  */
-size_t sgl_page_get_style(sgl_obj_t* obj, sgl_style_type_t type)
+void sgl_page_set_pixmap(sgl_obj_t* obj, const sgl_pixmap_t *pixmap)
 {
     sgl_page_t* page = (sgl_page_t*)obj;
-
-    switch (type)
-    {
-    case SGL_STYLE_COLOR:
-        return sgl_color2int(page->color);
-
-    case SGL_STYLE_PIXMAP:
-        return (size_t)page->bg_img;
-
-    default:
-        SGL_LOG_WARN("page: style type not supported");
-        break;
-    }
-
-    return SGL_STYLE_FAILED;
+    page->bg_img = pixmap;
 }
 
 
@@ -566,10 +537,6 @@ static sgl_page_t* sgl_page_create(void)
     obj->parent = obj;
     obj->clickable = 0;
     obj->construct_fn = sgl_page_construct_cb;
-#if CONFIG_SGL_USE_STYLE_UNIFIED_API
-    obj->set_style = sgl_page_set_style;
-    obj->get_style = sgl_page_get_style;
-#endif
     obj->dirty = 1;
     obj->coords = (sgl_area_t) {
         .x1 = 0,
@@ -992,10 +959,6 @@ int sgl_obj_init(sgl_obj_t *obj, sgl_obj_t *parent)
     obj->event_fn = NULL;
     obj->event_data = 0;
     obj->construct_fn = NULL;
-#if CONFIG_SGL_USE_STYLE_UNIFIED_API
-    obj->set_style = NULL;
-    obj->get_style = NULL;
-#endif
     obj->dirty = 1;
     obj->clickable = 0;
 

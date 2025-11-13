@@ -363,10 +363,6 @@ typedef struct sgl_obj {
     struct sgl_obj     *parent;
     struct sgl_obj     *child;
     struct sgl_obj     *sibling;
-#if (CONFIG_SGL_USE_STYLE_UNIFIED_API)
-    void               (*set_style)(struct sgl_obj *obj, sgl_style_type_t type, size_t value);
-    size_t             (*get_style)(struct sgl_obj *obj, sgl_style_type_t type);
-#endif
     uint8_t            destroyed : 1;
     uint8_t            dirty : 1;
     uint8_t            hide : 1;
@@ -1740,22 +1736,21 @@ void sgl_task_handle(void);
 
 
 /**
- * @brief set page style callback function
- * @param[in] obj pointer to the object
- * @param[in] style pointer to the style
- * @param[in] value value of the style
+ * @brief set page background color
+ * @param obj point to object
+ * @param color background color
  * @return none
  */
-void sgl_page_set_style(sgl_obj_t* obj, sgl_style_type_t type, size_t value);
+void sgl_page_set_color(sgl_obj_t* obj, sgl_color_t color);
 
 
 /**
- * @brief set page style callback function
- * @param[in] obj pointer to the object
- * @param[in] type style type
- * @return size_t, value of the style
+ * @brief set page background pixmap
+ * @param obj point to object
+ * @param pixmap background pixmap
+ * @return none
  */
-size_t sgl_page_get_style(sgl_obj_t* obj, sgl_style_type_t type);
+void sgl_page_set_pixmap(sgl_obj_t* obj, const sgl_pixmap_t *pixmap);
 
 
 /**
@@ -1780,249 +1775,6 @@ static inline sgl_obj_t* sgl_obj_get_child(sgl_obj_t* obj)
     SGL_ASSERT(obj != NULL);
     return obj->child;
 }
-
-
-#if (CONFIG_SGL_USE_STYLE_UNIFIED_API)
-/**
- * @brief set style of an object
- * @param obj the object
- * @param type the style type
- * @param value the style value
- * @return none
- */
-static inline void sgl_obj_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
-{
-    SGL_ASSERT(obj != NULL && (obj->set_style != NULL));
-    obj->set_style(obj, type, value);
-}
-
-
-/**
- * @brief get style of an object
- * @param obj the object
- * @param type the style type
- * @return the style value
- */
-static inline size_t sgl_obj_get_style(sgl_obj_t *obj, sgl_style_type_t type)
-{
-    SGL_ASSERT(obj != NULL && (obj->get_style != NULL));
-    return obj->get_style(obj, type);
-}
-
-
-/**
- * @brief sgl object set color
- * @param obj The object to set the color.
- * @param color The color to set.
- * @return none
- */
-static inline void sgl_obj_set_color(sgl_obj_t *obj, sgl_color_t color)
-{
-    sgl_obj_set_style(obj, SGL_STYLE_COLOR, sgl_color2int(color));
-}
-
-
-/**
- * @brief sgl object get color
- * @param obj The object to get the color.
- * @return The color of the object.
- */
-static inline sgl_color_t sgl_obj_get_color(sgl_obj_t *obj)
-{
-    size_t color = sgl_obj_get_style(obj, SGL_STYLE_COLOR);
-    return sgl_int2color(color);
-}
-
-
-/**
- * @brief sgl object set alpha
- * @param obj The object to set the alpha.
- * @param alpha The alpha of the object.
- * @return None.
- */
-static inline void sgl_obj_set_alpha(sgl_obj_t *obj, uint8_t alpha)
-{
-    sgl_obj_set_style(obj, SGL_STYLE_ALPHA, alpha);
-}
-
-
-/**
- * @brief sgl object get color
- * @param obj The object to get the alpha.
- * @return The alpha of the object.
- */
-static inline uint8_t sgl_obj_get_alpha(sgl_obj_t *obj)
-{
-    return (uint8_t)sgl_obj_get_style(obj, SGL_STYLE_ALPHA);
-}
-
-
-/**
- * @brief sgl object set background color
- * @param obj The object to set the background color.
- * @param color The background color of the object.
- * @return None.
- */
-static inline void sgl_obj_set_bg_color(sgl_obj_t *obj, sgl_color_t color)
-{
-    sgl_obj_set_style(obj, SGL_STYLE_BG_COLOR, sgl_color2int(color));
-}
-
-
-/**
- * @brief sgl object get background color
- * @param obj The object to get the background color.
- * @return The background color of the object.
- */
-static inline sgl_color_t sgl_obj_get_bg_color(sgl_obj_t *obj)
-{
-    size_t color = sgl_obj_get_style(obj, SGL_STYLE_BG_COLOR);
-    return sgl_int2color(color);
-}
-
-
-/**
- * @brief set object radius
- * @param obj The object to set the radius.
- * @param radius The radius of the object.
- * @return None
- */
-static inline void sgl_obj_set_radius(sgl_obj_t *obj, int16_t radius)
-{
-    SGL_ASSERT(obj != NULL);
-    sgl_obj_set_style(obj, SGL_STYLE_RADIUS, radius);
-}
-
-
-/**
- * @brief get object radius
- * @param obj The object to get the radius.
- * @return The radius of the object.
- */
-static inline int16_t sgl_obj_get_radius(sgl_obj_t *obj)
-{
-    SGL_ASSERT(obj != NULL);
-    return obj->radius;
-}
-
-
-/**
- * @brief set object pixmap
- * @param obj The object to set the pixmap.
- * @param pixmap The pixmap to set.
- * @return None
- */
-static inline void sgl_obj_set_pixmap(sgl_obj_t *obj, const sgl_pixmap_t *pixmap)
-{
-    sgl_obj_set_style(obj, SGL_STYLE_PIXMAP, (size_t)pixmap);
-}
-
-
-/**
- * @brief get object pixmap
- * @param obj The object to get the pixmap.
- * @return The pixmap of the object.
- */
-static inline sgl_pixmap_t *sgl_obj_get_pixmap(sgl_obj_t *obj)
-{
-    return (sgl_pixmap_t *)sgl_obj_get_style(obj, SGL_STYLE_PIXMAP);
-}
-
-
-/**
- * @brief set object border width
- * @param obj The object to set the border width.
- * @param width The border width.
- * @return None.
- */
-static inline void sgl_obj_set_border_width(sgl_obj_t *obj, uint16_t width)
-{
-    sgl_obj_set_style(obj, SGL_STYLE_BORDER_WIDTH, (size_t)width);
-}
-
-
-/**
- * @brief get object border width
- * @param obj The object to get the border width.
- * @return The border width.
- */
-static inline uint16_t sgl_obj_get_border_width(sgl_obj_t *obj)
-{
-    return (uint16_t)sgl_obj_get_style(obj, SGL_STYLE_BORDER_WIDTH);
-}
-
-
-/**
- * @brief set object border color
- * @param obj The object to set the border color
- * @param color The border color.
- * @return None
- */
-static inline void sgl_obj_set_border_color(sgl_obj_t *obj, sgl_color_t color)
-{
-    sgl_obj_set_style(obj, SGL_STYLE_BORDER_COLOR, sgl_color2int(color));
-}
-
-
-/**
- * @brief get object border color
- * @param obj The object to get the border color
- * @return The border color.
- */
-static inline sgl_color_t sgl_obj_get_border_color(sgl_obj_t *obj)
-{
-    size_t color = sgl_obj_get_style(obj, SGL_STYLE_BORDER_COLOR);
-    return sgl_int2color(color);
-}
-
-
-/**
- * @brief set object font
- * @param obj The object to set the font
- * @param font The font to set.
- * @return None.
- */
-static inline void sgl_obj_set_font(sgl_obj_t *obj, const sgl_font_t *font)
-{
-    sgl_obj_set_style(obj, SGL_STYLE_FONT, (size_t)font);
-}
-
-
-/**
- * @brief get object font
- * @param obj The object to get the font
- * @return The font of the object.
- */
-static inline sgl_font_t* sgl_obj_get_font(sgl_obj_t *obj)
-{
-    size_t font = sgl_obj_get_style(obj, SGL_STYLE_FONT);
-    return (sgl_font_t*)font;
-}
-
-
-/**
- * @brief set object text
- * @param obj The object to set the text
- * @param text The text to set.
- * @return None.
- */
-static inline void sgl_obj_set_text(sgl_obj_t *obj, const char *text)
-{
-    sgl_obj_set_style(obj, SGL_STYLE_TEXT, SGL_TEXT(text));
-}
-
-
-/**
- * @brief get object text
- * @param obj The object to get the text
- * @return The text of the object.
- */
-static inline const char *sgl_obj_get_text(sgl_obj_t *obj)
-{
-    return (const char *)sgl_obj_get_style(obj, SGL_STYLE_TEXT);
-}
-
-#endif // CONFIG_SGL_USE_STYLE_UNIFIED_API
 
 
 #if (CONFIG_SGL_OBJ_USE_NAME)
