@@ -1,4 +1,4 @@
-/* source/widgets/sgl_ring.c
+/* source/widgets/sgl_rectangle.c
  *
  * MIT License
  *
@@ -30,63 +30,71 @@
 #include <sgl_theme.h>
 #include <sgl_cfgfix.h>
 #include <string.h>
-#include "sgl_ring.h"
+#include "sgl_rectangle.h"
 
 
-static void sgl_ring_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *evt)
+/**
+ * @brief rectangle construct callback
+ * @param  surf: surface
+ * @param  obj: object
+ * @param  evt: event parameter
+ * @retval none
+ */
+static void sgl_rectangle_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *evt)
 {
-    sgl_ring_t *ring = (sgl_ring_t*)obj;
-
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
-        SGL_LOG_INFO("sgl_ring_construct_cb = %d %d", obj->coords.x1, obj->coords.y1);
-        ring->cx = (obj->coords.x2 + obj->coords.x1) / 2;
-        ring->cy = (obj->coords.y2 + obj->coords.y1) / 2;
-        sgl_draw_fill_ring(surf, &obj->area, ring->cx, ring->cy, ring->radius_in, ring->radius_out, ring->color, ring->alpha);
+        sgl_rectangle_t *rect = (sgl_rectangle_t*)obj;
+        sgl_draw_rect(surf, &obj->area, &obj->coords, &rect->desc);
     }
-    else if(evt->type == SGL_EVENT_DRAW_INIT) {
-        if(ring->radius_out == -1) {
-            ring->radius_out = (obj->coords.x2 - obj->coords.x1) / 2;
+    else if(evt->type == SGL_EVENT_PRESSED) {
+        if(sgl_obj_is_flexible(obj)) {
+            sgl_obj_size_zoom(obj, 2);
         }
 
-        if(ring->radius_in == -1) {
-            ring->radius_in = ring->radius_out - 2;
+        if(obj->event_fn) {
+            obj->event_fn(evt);
         }
     }
+    else if(evt->type == SGL_EVENT_RELEASED) {
+        if(sgl_obj_is_flexible(obj)) {
+            sgl_obj_dirty_merge(obj);
+            sgl_obj_size_zoom(obj, -2);
+        }
 
-    if(obj->event_fn) {
-        obj->event_fn(evt);
+        if(obj->event_fn) {
+            obj->event_fn(evt);
+        }
     }
 }
 
 
 /**
- * @brief Create a ring object
- * @param parent The parent object of the ring
- * @return The ring object
+ * @brief  create a rectangle
+ * @param  parent: parent object
+ * @retval rectangle object
  */
-sgl_obj_t* sgl_ring_create(sgl_obj_t* parent)
+sgl_obj_t* sgl_rect_create(sgl_obj_t* parent)
 {
-    sgl_ring_t *ring = sgl_malloc(sizeof(sgl_ring_t));
-    if(ring == NULL) {
-        SGL_LOG_ERROR("sgl_ring_create: malloc failed");
+    sgl_rectangle_t *rect = sgl_malloc(sizeof(sgl_rectangle_t));
+    if(rect == NULL) {
+        SGL_LOG_ERROR("sgl_rect_create: malloc failed");
         return NULL;
     }
 
     /* set object all member to zero */
-    memset(ring, 0, sizeof(sgl_ring_t));
+    memset(rect, 0, sizeof(sgl_rectangle_t));
 
-    sgl_obj_t *obj = &ring->obj;
-    sgl_obj_init(&ring->obj, parent);
-    obj->construct_fn = sgl_ring_construct_cb;
+    sgl_obj_t *obj = &rect->obj;
+    sgl_obj_init(&rect->obj, parent);
+    sgl_obj_set_unflexible(obj);
+    
+    obj->construct_fn = sgl_rectangle_construct_cb;
 
-    obj->needinit = 1;
-    ring->radius_in = -1;
-    ring->radius_out = -1;
-    ring->cx = -1;
-    ring->cy = -1;
-    ring->alpha = SGL_THEME_ALPHA;
-    ring->color = SGL_THEME_COLOR;
+    rect->desc.alpha = SGL_THEME_ALPHA;
+    rect->desc.color = SGL_THEME_COLOR;
+    rect->desc.border = SGL_THEME_BORDER_WIDTH;
+    rect->desc.border_color = SGL_THEME_BORDER_COLOR;
+    rect->desc.pixmap = NULL;
 
     return obj;
 }
-

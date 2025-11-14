@@ -99,7 +99,7 @@ void sgl_draw_character( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t 
 
             byte_x = rel_x >> 1;
             dot_index = byte_x + (rel_y * (font_w >> 1));
-            alpha_dot = (rel_x & 1) ? dot[dot_index] & 0xF : (dot[dot_index] >> 4) & 0xF;
+            alpha_dot = (rel_x & 1) ? dot[dot_index] & 0xF : (dot[dot_index] >> 4);
             alpha_dot = alpha_dot | (alpha_dot << 4);
             color_mix = sgl_color_mixer(color, *buf, alpha_dot);
             *buf = sgl_color_mixer(color_mix, *buf, alpha);

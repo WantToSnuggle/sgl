@@ -12,9 +12,11 @@
 #define    CONFIG_SGL_EVENT_QUEUE_SIZE        16
 #define    CONFIG_SGL_DIRTY_AREA_THRESHOLD     256
 #define    CONFIG_SGL_ANIMATION               1
+#define    CONFIG_SGL_DEBUG                   1
+#define    CONFIG_SGL_LOG_COLOR               1
+#define    CONFIG_SGL_LOG_LEVEL               0
 #define    CONFIG_SGL_TEXT_UTF8               1
 #define    CONFIG_SGL_OBJ_USE_NAME            1
-#define    CONFIG_SGL_USE_STYLE_UNIFIED_API     1
 #define    CONFIG_SGL_BOOT_LOGO               1
 #define    CONFIG_SGL_HEAP_ALGO               lwmem
 #define    CONFIG_SGL_FL_INDEX_MAX            20

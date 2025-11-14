@@ -29,9 +29,7 @@
 #include <stddef.h>
 #include <sgl_log.h>
 #include <sgl_list.h>
-#include <sgl_types.h>
 #include <sgl_event.h>
-#include <sgl_style.h>
 
 
 #ifdef __cplusplus
@@ -48,7 +46,7 @@ extern "C" {
 
 
 #if (CONFIG_SGL_DIRTY_AREA_THRESHOLD)
-#define SGL_DIRTY_AREA_THRESHOLD           CONFIG_SGL_DIRTY_AREA_THRESHOLD
+#define  SGL_DIRTY_AREA_THRESHOLD          CONFIG_SGL_DIRTY_AREA_THRESHOLD
 #endif
 
 

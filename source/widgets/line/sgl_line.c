@@ -1,4 +1,4 @@
-/* source/sgl.h
+/* source/widgets/sgl_line.c
  *
  * MIT License
  *
@@ -22,37 +22,50 @@
  * SOFTWARE.
  */
 
-#ifndef  __SGL_H__
-#define  __SGL_H__ 
-
-
-#include <sgl_list.h>
 #include <sgl_core.h>
-#include <sgl_anim.h>
-#include <sgl_misc.h>
-#include <sgl_types.h>
-#include <sgl_font.h>
-#include "widgets/line/sgl_line.h"
-#include "widgets/rectangle/sgl_rectangle.h"
-#include "widgets/circle/sgl_circle.h"
-#include "widgets/ring/sgl_ring.h"
-#include "widgets/arc/sgl_arc.h"
-#include "widgets/button/sgl_button.h"
-#include "widgets/slider/sgl_slider.h"
-// #include "widgets/progress/sgl_progress.h"
-#include "widgets/label/sgl_label.h"
-#include "widgets/switch/sgl_switch.h"
-// #include "widgets/msgbox/sgl_msgbox.h"
-// #include "widgets/textline/sgl_textline.h"
-// #include "widgets/textbox/sgl_textbox.h"
-// #include "widgets/checkbox/sgl_checkbox.h"
-// #include "widgets/icon/sgl_icon.h"
-// #include "widgets/listview/sgl_listview.h"
-// #include "widgets/numberkbd/sgl_numberkbd.h"
-// #include "widgets/keyboard/sgl_keyboard.h"
-// #include "widgets/unzip_image/sgl_unzip_image.h"
-#include "widgets/led/sgl_led.h"
-#include "widgets/2dball/sgl_2dball.h"
+#include <sgl_draw.h>
+#include <sgl_math.h>
+#include <sgl_log.h>
+#include <sgl_mm.h>
+#include <sgl_theme.h>
+#include <sgl_cfgfix.h>
+#include <string.h>
+#include "sgl_line.h"
 
 
-#endif // __SGL_H__
+static void sgl_line_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *evt)
+{
+    sgl_line_t *line = (sgl_line_t*)obj;
+
+    if(evt->type == SGL_EVENT_DRAW_MAIN) {
+        sgl_draw_line(surf, &obj->area, &line->desc);
+    }
+}
+
+
+/**
+ * @brief create a line object
+ * @param parent parent of the line
+ * @return line object
+ */
+sgl_obj_t* sgl_line_create(sgl_obj_t* parent)
+{
+    sgl_line_t *line = sgl_malloc(sizeof(sgl_line_t));
+    if(line == NULL) {
+        SGL_LOG_ERROR("sgl_line_create: malloc failed");
+        return NULL;
+    }
+
+    /* set object all member to zero */
+    memset(line, 0, sizeof(sgl_line_t));
+
+    sgl_obj_t *obj = &line->obj;
+    sgl_obj_init(&line->obj, parent);
+    obj->construct_fn = sgl_line_construct_cb;
+
+    line->desc.color = SGL_THEME_BG_COLOR;
+    line->desc.alpha = SGL_ALPHA_MAX;
+    line->desc.width = 1;
+
+    return obj;
+}

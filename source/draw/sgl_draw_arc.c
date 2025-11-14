@@ -108,7 +108,7 @@ static inline uint8_t arc_get_dot(sgl_arc_dot_t *dot,int ax, int ay)
  * @param desc pointer to arc description
  * @return none
  */
-void sgl_draw_fill_arc_with_alpha(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_arc_t *desc)
+void sgl_draw_fill_arc(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_arc_t *desc)
 {
     int y2 = 0, real_r2 = 0, edge_alpha = 0;
     int in_r2 = sgl_pow2(desc->radius_in);

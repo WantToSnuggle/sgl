@@ -182,7 +182,7 @@ void sgl_draw_fill_round_rect(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *re
 
         if (y > cy1 && y < cy2) {
             for (int x = clip.x1; x <= clip.x2; x++, buf++) {
-                *buf = sgl_color_mixer(color, *buf, alpha);
+                *buf = (alpha == SGL_ALPHA_MAX ? color : sgl_color_mixer(color, *buf, alpha));
             }
         }
         else {
@@ -191,7 +191,7 @@ void sgl_draw_fill_round_rect(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *re
 
             for (int x = clip.x1; x <= clip.x2; x++, buf++) {
                 if (x > cx1 && x < cx2) {
-                    *buf = sgl_color_mixer(color, *buf, alpha);
+                    *buf = (alpha == SGL_ALPHA_MAX ? color : sgl_color_mixer(color, *buf, alpha));
                 }
                 else {
                     cx_tmp = x > cx1 ? cx2 : cx1;
@@ -201,7 +201,7 @@ void sgl_draw_fill_round_rect(sgl_surf_t *surf, sgl_area_t *area, sgl_area_t *re
                     }
                     else if (real_r2 >= r2) {
                         edge_alpha = SGL_ALPHA_MAX - sgl_sqrt_error(real_r2);
-                        *buf = (alpha == SGL_ALPHA_MAX ? sgl_color_mixer(color, *buf, alpha) : sgl_color_mixer(sgl_color_mixer(color, *buf, edge_alpha), *buf, alpha));
+                        *buf = (alpha == SGL_ALPHA_MAX ? sgl_color_mixer(color, *buf, edge_alpha) : sgl_color_mixer(sgl_color_mixer(color, *buf, edge_alpha), *buf, alpha));
                     }
                     else {
                         *buf = (alpha == SGL_ALPHA_MAX ? color : sgl_color_mixer(color, *buf, alpha));
@@ -254,6 +254,10 @@ void sgl_draw_fill_round_rect_with_border(sgl_surf_t *surf, sgl_area_t *area, sg
         return;
     }
 
+    if (!sgl_area_selfclip(&clip, rect)) {
+        return;
+    }
+
     for (int y = clip.y1; y <= clip.y2; y++) {
         buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
 
@@ -274,10 +278,10 @@ void sgl_draw_fill_round_rect_with_border(sgl_surf_t *surf, sgl_area_t *area, sg
             for (int x = clip.x1; x <= clip.x2; x++, buf++) {
                 if (x > cx1 && x < cx2) {
                     if (y < cyi1 || y > cyi2) {
-                        *buf = sgl_color_mixer(border_color, *buf, alpha);
+                        *buf = (alpha == SGL_ALPHA_MAX ? border_color : sgl_color_mixer(border_color, *buf, alpha));
                     }
                     else {
-                        *buf = sgl_color_mixer(color, *buf, alpha);
+                        *buf = (alpha == SGL_ALPHA_MAX ? color : sgl_color_mixer(color, *buf, alpha));
                     }
                 }
                 else {
@@ -293,7 +297,7 @@ void sgl_draw_fill_round_rect_with_border(sgl_surf_t *surf, sgl_area_t *area, sg
                     }
                     if (real_r2 < in_r2 ) {
                         edge_alpha = sgl_sqrt_error(real_r2);
-                        *buf = (alpha == SGL_ALPHA_MAX ? sgl_color_mixer(border_color, color, alpha) : sgl_color_mixer(sgl_color_mixer(border_color, color, edge_alpha), *buf, alpha));
+                        *buf = (alpha == SGL_ALPHA_MAX ? sgl_color_mixer(border_color, color, edge_alpha) : sgl_color_mixer(sgl_color_mixer(border_color, color, edge_alpha), *buf, alpha));
                     }
                     else if (real_r2 > out_r2) {
                         edge_alpha = SGL_ALPHA_MAX - sgl_sqrt_error(real_r2);

@@ -59,6 +59,46 @@ typedef struct sgl_draw_rect {
 
 
 /**
+ * @brief line draw description
+ * @start: start point
+ * @end: end point
+ * @color: line color
+ * @width: line width
+ * @alpha: alpha
+ */
+typedef struct sgl_draw_line {
+    sgl_pos_t        start;
+    sgl_pos_t        end;
+    sgl_color_t      color;
+    int16_t          width;
+    uint8_t          alpha;
+} sgl_draw_line_t;
+
+
+/**
+ * @brief rectangle description
+ * @cx: center x of rectangle
+ * @cy: center y of rectangle
+ * @color: color of rectangle
+ * @radius: radius of rectangle
+ * @alpha: alpha of rectangle
+ * @border: border of rectangle
+ * @border_color: border color of rectangle
+ * @pixmap: pixmap of rectangle
+ */
+typedef struct sgl_draw_circle {
+    int16_t            cx;
+    int16_t            cy;
+    sgl_color_t        color;
+    int16_t            radius;
+    uint8_t            alpha;
+    uint8_t            border;
+    sgl_color_t        border_color;
+    const sgl_pixmap_t *pixmap;
+} sgl_draw_circle_t;
+
+
+/**
  * @brief arc description
  * @cx: center x
  * @cy: center y
@@ -83,6 +123,20 @@ typedef struct sgl_draw_arc {
     uint32_t         mode: 2;
     sgl_color_t      bg_color;
 } sgl_draw_arc_t;
+
+
+/**
+ * @brief icon description
+ * @icon: icon pixmap
+ * @color: icon color
+ * @alpha: alpha of icon
+ */
+typedef struct sgl_draw_icon {
+    const sgl_icon_pixmap_t *icon;
+    sgl_color_t       color;
+    uint8_t           alpha;
+    uint8_t           align: 5;
+} sgl_draw_icon_t;
 
 
 /** 
@@ -268,6 +322,76 @@ void sgl_draw_rect(sgl_surf_t *surf, sgl_area_t *area, sgl_rect_t *rect, sgl_dra
 
 
 /**
+ * @brief Draw a circle
+ * @param surf Surface
+ * @param area Area of the circle
+ * @param cx X coordinate of the center
+ * @param cy Y coordinate of the center
+ * @param radius Radius of the circle
+ * @param color Color of the circle
+ * @param alpha Alpha of the circle
+ * @return none
+ */
+void sgl_draw_fill_circle(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_t cy, int16_t radius, sgl_color_t color, uint8_t alpha);
+
+
+/**
+ * @brief Draw a circle with pixmap and alpha
+ * @param surf Surface
+ * @param area Area of the circle
+ * @param cx X coordinate of the center
+ * @param cy Y coordinate of the center
+ * @param radius Radius of the circle
+ * @param pixmap Pixmap of image
+ * @param alpha Alpha of the circle
+ * @param px  center X coordinate of the pixmap
+ * @param py  center Y coordinate of the pixmap
+ * @return none
+ */
+void sgl_draw_fill_circle_pixmap(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_t cy, int16_t radius, const sgl_pixmap_t *pixmap, uint8_t alpha, int16_t px, int16_t py);
+
+
+/**
+ * @brief Draw a circle with alpha and border
+ * @param surf Surface
+ * @param area Area of the circle
+ * @param cx X coordinate of the center
+ * @param cy Y coordinate of the center
+ * @param radius Radius of the circle
+ * @param color Color of the circle
+ * @param border_color Color of the border
+ * @param border_width Width of the border
+ * @param alpha Alpha of the circle
+ * @return none
+ */
+
+void sgl_draw_fill_circle_with_border(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_t cy, int16_t radius, sgl_color_t color, sgl_color_t border_color, int16_t border_width, uint8_t alpha);
+
+
+/**
+ * @brief draw task, the task contains the draw information and canvas
+ * @param surf surface pointer
+ * @param area the area of the task
+ * @param desc the draw information
+ * @return none
+ */
+void sgl_draw_circle(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_circle_t *desc);
+
+
+/**
+ * @brief draw icon with alpha
+ * @param surf   surface
+ * @param area   area of icon
+ * @param x      x coordinate
+ * @param y      y coordinate
+ * @param color  color of icon
+ * @param alpha  alpha of icon
+ * @param icon   icon pixmap
+ */
+void sgl_draw_icon( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, sgl_color_t color, uint8_t alpha, const sgl_icon_pixmap_t *icon);
+
+
+/**
  * @brief Draw a character on the surface with alpha blending
  * @param surf Pointer to the surface where the character will be drawn
  * @param area Pointer to the area where the character will be drawn
@@ -311,6 +435,56 @@ void sgl_draw_string(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, c
  * @return none
  */
 void sgl_draw_fill_ring(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_t cy, int16_t radius_in, int16_t radius_out, sgl_color_t color, uint8_t alpha);
+
+
+/**
+ * @brief draw a horizontal line with alpha
+ * @param surf surface
+ * @param area area that you want to draw
+ * @param y y coordinate
+ * @param x1 x start coordinate
+ * @param x2 x end coordinate
+ * @param width line width
+ * @param color line color
+ * @param alpha alpha of color
+ * @return none
+ */
+void sgl_draw_fill_hline(sgl_surf_t *surf, sgl_area_t *area, int16_t y, int16_t x1, int16_t x2, int16_t width, sgl_color_t color, uint8_t alpha);
+
+
+/**
+ * @brief draw a vertical line with alpha
+ * @param surf surface
+ * @param area area that you want to draw
+ * @param x x coordinate
+ * @param y1 y start coordinate
+ * @param y2 y end coordinate
+ * @param width line width
+ * @param color line color
+ * @param alpha alpha of color
+ * @return none
+ */
+void sgl_draw_fill_vline(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y1, int16_t y2, int16_t width, sgl_color_t color, uint8_t alpha);
+
+
+/**
+ * @brief draw a line
+ * @param surf surface
+ * @param area draw area
+ * @param desc line description
+ * @return none
+ */
+void sgl_draw_line(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_line_t *desc);
+
+
+/**
+ * @brief draw an arc with alpha
+ * @param surf pointer to surface
+ * @param area pointer to area
+ * @param desc pointer to arc description
+ * @return none
+ */
+void sgl_draw_fill_arc(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_arc_t *desc);
 
 
 #ifdef __cplusplus

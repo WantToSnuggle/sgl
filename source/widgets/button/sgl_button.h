@@ -70,6 +70,7 @@ static inline void sgl_button_set_color(sgl_obj_t *obj, sgl_color_t color)
 {
     sgl_button_t *button = (sgl_button_t*)obj;
     button->rect.color = color;
+    sgl_obj_set_dirty(obj);
 }
 
 /**
@@ -82,6 +83,7 @@ static inline void sgl_button_set_alpha(sgl_obj_t *obj, uint8_t alpha)
 {
     sgl_button_t *button = (sgl_button_t*)obj;
     button->rect.alpha = alpha;
+    sgl_obj_set_dirty(obj);
 }
 
 /**
@@ -94,6 +96,7 @@ static inline void sgl_button_set_border_width(sgl_obj_t *obj, uint8_t width)
 {
     sgl_button_t *button = (sgl_button_t*)obj;
     button->rect.border = width;
+    sgl_obj_set_dirty(obj);
 }
 
 /**
@@ -106,6 +109,7 @@ static inline void sgl_button_set_border_color(sgl_obj_t *obj, sgl_color_t color
 {
     sgl_button_t *button = (sgl_button_t*)obj;
     button->rect.border_color = color;
+    sgl_obj_set_dirty(obj);
 }
 
 /**
@@ -117,7 +121,8 @@ static inline void sgl_button_set_border_color(sgl_obj_t *obj, sgl_color_t color
 static inline void sgl_button_set_pixmap(sgl_obj_t *obj, const sgl_pixmap_t *pixmap)
 {
     sgl_button_t *button = (sgl_button_t*)obj;
-    button->rect.pixmap = pixmap; 
+    button->rect.pixmap = pixmap;
+    sgl_obj_set_dirty(obj);
 }
 
 /**
@@ -129,7 +134,8 @@ static inline void sgl_button_set_pixmap(sgl_obj_t *obj, const sgl_pixmap_t *pix
 static inline void sgl_button_set_radius(sgl_obj_t *obj, uint8_t radius)
 {
     sgl_button_t *button = (sgl_button_t*)obj;
-    button->rect.radius = radius; 
+    button->rect.radius = sgl_obj_fix_radius(obj, radius);
+    sgl_obj_set_dirty(obj);
 }
 
 /**
@@ -142,6 +148,7 @@ static inline void sgl_button_set_text(sgl_obj_t *obj, const char *text)
 {
     sgl_button_t *button = (sgl_button_t*)obj;
     button->text = text; 
+    sgl_obj_set_dirty(obj);
 }
 
 /**
@@ -154,6 +161,7 @@ static inline void sgl_button_set_text_color(sgl_obj_t *obj, sgl_color_t color)
 {
     sgl_button_t *button = (sgl_button_t*)obj;
     button->text_color = color; 
+    sgl_obj_set_dirty(obj);
 }
 
 /**
@@ -166,6 +174,7 @@ static inline void sgl_button_set_text_font(sgl_obj_t *obj, const sgl_font_t *fo
 {
     sgl_button_t *button = (sgl_button_t*)obj;
     button->font = font; 
+    sgl_obj_set_dirty(obj);
 }
 
 /**
@@ -178,6 +187,7 @@ static inline void sgl_button_set_icon(sgl_obj_t *obj, const sgl_icon_pixmap_t *
 {
     sgl_button_t *button = (sgl_button_t*)obj;
     button->icon = icon; 
+    sgl_obj_set_dirty(obj);
 }
 
 /**
@@ -190,6 +200,7 @@ static inline void sgl_button_set_text_align(sgl_obj_t *obj, uint8_t align)
 {
     sgl_button_t *button = (sgl_button_t*)obj;
     button->align = align; 
+    sgl_obj_set_dirty(obj);
 }
 
 #endif // !__SGL_BUTTON_H__
