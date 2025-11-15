@@ -64,8 +64,8 @@ static void logo_anim_path(struct sgl_anim *anim, int32_t value)
 static void finished_anim_path(struct sgl_anim *anim, int32_t value)
 {
     logo_t *logo = (logo_t*)anim->data;
-    sgl_obj_set_alpha(logo->text, value);
-    sgl_obj_set_alpha(logo->background, value);
+    sgl_label_set_alpha(logo->text, value);
+    sgl_rect_set_alpha(logo->background, value);
 }
 
 
@@ -109,15 +109,15 @@ void sgl_boot_animation(void)
     }
 
     sgl_obj_set_size(logo.text, 40, 30);
-    sgl_obj_set_color(logo.text, SGL_COLOR_ROYAL_BLUE);
-    sgl_obj_set_font(logo.text, &song23);
+    sgl_label_set_text_color(logo.text, SGL_COLOR_ROYAL_BLUE);
+    sgl_label_set_font(logo.text, &song23);
     sgl_obj_set_pos_align(logo.text, SGL_ALIGN_LEFT_MID);
-    sgl_obj_set_text(logo.text, "SGL");
+    sgl_label_set_text(logo.text, "SGL");
 
     sgl_obj_set_size(logo.background, 60, 30);
-    sgl_obj_set_color(logo.background, SGL_COLOR_LIGHT_GRAY);
-    sgl_obj_set_border_width(logo.background, 0);
-    sgl_obj_set_radius(logo.background, 8);
+    sgl_rect_set_color(logo.background, SGL_COLOR_LIGHT_GRAY);
+    sgl_rect_set_border_width(logo.background, 0);
+    sgl_rect_set_radius(logo.background, 8);
     sgl_obj_set_pos_align(logo.background, SGL_ALIGN_RIGHT_MID);
 
     sgl_anim_set_data(logo_anim, logo.text);
