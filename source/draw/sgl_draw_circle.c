@@ -73,7 +73,7 @@ void sgl_draw_fill_circle(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_
             }
             else if (real_r2 >= r2) {
                 edge_alpha = SGL_ALPHA_MAX - sgl_sqrt_error(real_r2);
-                *buf = (alpha == SGL_ALPHA_MAX ? sgl_color_mixer(color, *buf, alpha) : sgl_color_mixer(sgl_color_mixer(color, *buf, edge_alpha), *buf, alpha));
+                *buf = (alpha == SGL_ALPHA_MAX ? sgl_color_mixer(color, *buf, edge_alpha) : sgl_color_mixer(sgl_color_mixer(color, *buf, edge_alpha), *buf, alpha));
             }
             else {
                 *buf = (alpha == SGL_ALPHA_MAX ? color : sgl_color_mixer(color, *buf, alpha));
