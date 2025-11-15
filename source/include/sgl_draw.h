@@ -457,7 +457,6 @@ void sgl_draw_fill_ring(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_t 
 /**
  * @brief draw a horizontal line with alpha
  * @param surf surface
- * @param area area that you want to draw
  * @param y y coordinate
  * @param x1 x start coordinate
  * @param x2 x end coordinate
@@ -472,7 +471,6 @@ void sgl_draw_fill_hline(sgl_surf_t *surf, int16_t y, int16_t x1, int16_t x2, in
 /**
  * @brief draw a vertical line with alpha
  * @param surf surface
- * @param area area that you want to draw
  * @param x x coordinate
  * @param y1 y start coordinate
  * @param y2 y end coordinate
@@ -487,7 +485,6 @@ void sgl_draw_fill_vline(sgl_surf_t *surf, int16_t x, int16_t y1, int16_t y2, in
 /**
  * @brief draw a line
  * @param surf surface
- * @param area draw area
  * @param desc line description
  * @return none
  */
