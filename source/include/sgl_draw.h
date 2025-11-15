@@ -135,7 +135,7 @@ typedef struct sgl_draw_icon {
     const sgl_icon_pixmap_t *icon;
     sgl_color_t       color;
     uint8_t           alpha;
-    uint8_t           align: 5;
+    uint8_t           align;
 } sgl_draw_icon_t;
 
 

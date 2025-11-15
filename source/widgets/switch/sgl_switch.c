@@ -65,6 +65,9 @@ static void sgl_switch_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
             obj->event_fn(evt);
         }
     }
+    else if(evt->type == SGL_EVENT_RELEASED) {
+        sgl_obj_clear_dirty(obj);
+    }
 }
 
 

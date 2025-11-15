@@ -46,7 +46,7 @@ typedef struct sgl_label {
     const sgl_icon_pixmap_t *icon;
     sgl_color_t      color;
     sgl_color_t      bg_color;
-    uint8_t          align: 5;
+    uint8_t          align: 7;
     uint8_t          bg_flag : 1;
     uint8_t          alpha;
 }sgl_label_t;
