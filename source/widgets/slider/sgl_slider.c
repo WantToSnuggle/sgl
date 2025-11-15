@@ -33,140 +33,6 @@
 #include "sgl_slider.h"
 
 
-/**
- * @brief set slider object style
- * @param obj slider object
- * @param type style type
- * @param value style value
- */
-void sgl_slider_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
-{
-    sgl_slider_t *slider = (sgl_slider_t*)obj;
-
-    switch((int)type) {
-    case SGL_STYLE_POS_X:
-        sgl_obj_set_pos_x(obj, value);
-        break;
-
-    case SGL_STYLE_POS_Y:
-        sgl_obj_set_pos_y(obj, value);
-        break;
-    
-    case SGL_STYLE_SIZE_W:
-        sgl_obj_set_width(obj, value);
-        break;
-    
-    case SGL_STYLE_SIZE_H:
-        sgl_obj_set_height(obj, value);
-        break;
-
-    case SGL_STYLE_COLOR:
-        slider->color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_BG_COLOR:
-        slider->body.color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_ALPHA:
-        slider->body.alpha = value;
-        break;
-
-    case SGL_STYLE_RADIUS:
-        slider->body.radius = sgl_obj_fix_radius(obj, value);
-        break;
-
-    case SGL_STYLE_PIXMAP:
-        slider->body.pixmap = (sgl_pixmap_t*)value;
-        break;
-
-    case SGL_STYLE_BORDER_WIDTH:
-        slider->body.border = value;
-        break;
-
-    case SGL_STYLE_BORDER_COLOR:
-        slider->body.border_color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_DIRECTION:
-        slider->direct = value;
-        break;
-
-    case SGL_STYLE_SLIDER_KNOB_ALPHA:
-        slider->alpha = value;
-        break;
-
-    case SGL_STYLE_VALUE:
-        slider->value = value;
-        break;
-
-    default:
-        SGL_LOG_WARN("sgl_slider_set_style: unsupported style type %d", type);
-    }
-
-    /* set object dirty */
-    sgl_obj_set_dirty(obj);
-}
-
-
-/**
- * @brief get slider object style
- * @param obj slider object
- * @param type style type
- * @return style value
- */
-size_t sgl_slider_get_style(sgl_obj_t *obj, sgl_style_type_t type)
-{
-    sgl_slider_t *slider = (sgl_slider_t*)obj;
-
-    switch((int)type) {
-    case SGL_STYLE_POS_X:
-        return sgl_obj_get_pos_x(obj);
-
-    case SGL_STYLE_POS_Y:
-        return sgl_obj_get_pos_y(obj);
-    
-    case SGL_STYLE_SIZE_W:
-        return sgl_obj_get_width(obj);
-    
-    case SGL_STYLE_SIZE_H:
-        return sgl_obj_get_height(obj);
-
-    case SGL_STYLE_COLOR:
-        return sgl_color2int(slider->color);
-
-    case SGL_STYLE_BG_COLOR:
-        return sgl_color2int(slider->body.color);
-
-    case SGL_STYLE_ALPHA:
-        return slider->body.alpha;
-
-    case SGL_STYLE_RADIUS:
-        return obj->radius;
-
-    case SGL_STYLE_PIXMAP:
-        return (size_t)slider->body.pixmap;
-
-    case SGL_STYLE_BORDER_WIDTH:
-        return slider->body.border;
-
-    case SGL_STYLE_BORDER_COLOR:
-        return sgl_color2int(slider->body.border_color);
-
-    case SGL_STYLE_SLIDER_KNOB_ALPHA:
-        return slider->alpha;
-
-    case SGL_STYLE_VALUE:
-        return slider->value;
-
-    default:
-        SGL_LOG_WARN("sgl_slider_set_style: unsupported style type %d", type);
-    }
-
-    return SGL_STYLE_FAILED;
-}
-
-
 static void sgl_slider_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *evt)
 {
     sgl_slider_t *slider = (sgl_slider_t*)obj;
@@ -185,7 +51,7 @@ static void sgl_slider_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
             knob.y1 = obj->coords.y2 - (obj->coords.y2 - obj->coords.y1) * slider->value / 100 + slider->body.border;
         }
         sgl_draw_rect(surf, &obj->area, &obj->coords, &slider->body);
-        sgl_draw_fill_round_rect_with_alpha_border(surf, &knob, &obj->coords, obj->radius, slider->color, slider->body.border_color, slider->body.border, slider->alpha);
+        sgl_draw_fill_round_rect_with_border(surf, &knob, &obj->coords, obj->radius, slider->color, slider->body.border_color, slider->body.border, slider->alpha);
     }
     else if(evt->type == SGL_EVENT_PRESSED ||
         evt->type == SGL_EVENT_MOVE_DOWN || evt->type == SGL_EVENT_MOVE_UP || evt->type == SGL_EVENT_MOVE_LEFT || evt->type == SGL_EVENT_MOVE_RIGHT
@@ -236,10 +102,7 @@ sgl_obj_t* sgl_slider_create(sgl_obj_t* parent)
     sgl_obj_set_clickable(obj);
     sgl_obj_set_movable(obj);
     obj->construct_fn = sgl_slider_construct_cb;
-#if CONFIG_SGL_USE_STYLE_UNIFIED_API
-    obj->set_style = sgl_slider_set_style;
-    obj->get_style = sgl_slider_get_style;
-#endif
+
     slider->direct = SGL_DIRECT_HORIZONTAL;
     slider->body.alpha = SGL_THEME_ALPHA;
     slider->body.color = SGL_THEME_BG_COLOR;

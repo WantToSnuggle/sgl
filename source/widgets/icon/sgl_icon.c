@@ -34,97 +34,6 @@
 
 
 /**
- * @brief set icon style
- * @param obj pointer to object
- * @param type style type
- * @param value style value
- * @return none
- */
-void sgl_icon_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
-{
-    sgl_icon_t *icon = (sgl_icon_t*)obj;
-
-    switch((int)type) {
-    case SGL_STYLE_POS_X:
-        sgl_obj_set_pos_x(obj, value);
-        break;
-
-    case SGL_STYLE_POS_Y:
-        sgl_obj_set_pos_y(obj, value);
-        break;
-    
-    case SGL_STYLE_SIZE_W:
-        sgl_obj_set_width(obj, value);
-        break;
-    
-    case SGL_STYLE_SIZE_H:
-        sgl_obj_set_height(obj, value);
-        break;
-
-    case SGL_STYLE_COLOR:
-        icon->desc.color = sgl_int2color(value);
-        break;
-    
-    case SGL_STYLE_ALPHA:
-        icon->desc.alpha = value;
-        break;
-    
-    case SGL_STYLE_ICON:
-        icon->desc.icon = (sgl_icon_pixmap_t*)value;
-        break;
-
-    default:
-        SGL_LOG_WARN("sgl_icon_set_style: unsupported style type %d", type);
-        break;
-    }
-
-    /* set style */
-    sgl_obj_set_dirty(obj);
-}
-
-
-/**
- * @brief get icon style
- * @param obj pointer to object
- * @param type style type
- * @return style value
- */
-size_t sgl_icon_get_style(sgl_obj_t *obj, sgl_style_type_t type)
-{
-    sgl_icon_t *icon = (sgl_icon_t*)obj;
-
-    switch((int)type) {
-    case SGL_STYLE_POS_X:
-        return sgl_obj_get_pos_x(obj);
-
-    case SGL_STYLE_POS_Y:
-        return sgl_obj_get_pos_y(obj);
-    
-    case SGL_STYLE_SIZE_W:
-        return sgl_obj_get_width(obj);
-    
-    case SGL_STYLE_SIZE_H:
-        return sgl_obj_get_height(obj);
-
-    case SGL_STYLE_COLOR:
-        return sgl_color2int(icon->desc.color);
-
-    case SGL_STYLE_ALPHA:
-        return icon->desc.alpha;
-
-    case SGL_STYLE_ICON:
-        return (size_t)icon->desc.icon;
-
-    default:
-        SGL_LOG_WARN("sgl_icon_get_style: unsupported style type %d", type);
-        break;
-    }
-
-    return SGL_STYLE_FAILED;
-}
-
-
-/**
  * @brief icon construct callback
  * @param surf pointer to surface
  * @param obj pointer to object
@@ -134,9 +43,11 @@ size_t sgl_icon_get_style(sgl_obj_t *obj, sgl_style_type_t type)
 static void sgl_icon_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *evt)
 {
     sgl_icon_t *icon = (sgl_icon_t*)obj;
+    sgl_pos_t icon_pos;
 
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
-        sgl_draw_icon(surf, &obj->area, &obj->coords, &icon->desc);
+        icon_pos = sgl_get_icon_pos(&obj->area, icon->icon, 0, (sgl_align_type_t)icon->align);
+        sgl_draw_icon(surf, &obj->area, icon_pos.x, icon_pos.y, icon->color, icon->alpha, icon->icon);
     }
     else if(evt->type == SGL_EVENT_PRESSED) {
         if(obj->event_fn) {
@@ -170,14 +81,11 @@ sgl_obj_t* sgl_icon_create(sgl_obj_t* parent)
     sgl_obj_t *obj = &icon->obj;
     sgl_obj_init(&icon->obj, parent);
     obj->construct_fn = sgl_icon_construct_cb;
-#if CONFIG_SGL_USE_STYLE_UNIFIED_API
-    obj->set_style = sgl_icon_set_style;
-    obj->get_style = sgl_icon_get_style;
-#endif
 
-    icon->desc.alpha = SGL_THEME_ALPHA;
-    icon->desc.icon = NULL;
-    icon->desc.color = SGL_THEME_TEXT_COLOR;
+    icon->alpha = SGL_THEME_ALPHA;
+    icon->icon = NULL;
+    icon->color = SGL_THEME_TEXT_COLOR;
+    icon->align = SGL_ALIGN_CENTER;
 
     return obj;
 }

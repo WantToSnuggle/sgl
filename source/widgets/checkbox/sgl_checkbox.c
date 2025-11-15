@@ -104,115 +104,6 @@ static sgl_icon_pixmap_t checked_icon = {
 
 
 /**
- * @brief set style of checkbox
- * @param obj checkbox object
- * @param type style type
- * @param value style value
- * @return none
- */
-void sgl_checkbox_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
-{
-    sgl_checkbox_t *checkbox = (sgl_checkbox_t*)(obj);
-
-    switch((int)type) {
-    case SGL_STYLE_POS_X:
-        sgl_obj_set_pos_x(obj, value);
-        break;
-
-    case SGL_STYLE_POS_Y:
-        sgl_obj_set_pos_y(obj, value);
-        break;
-    
-    case SGL_STYLE_SIZE_W:
-        sgl_obj_set_width(obj, value);
-        break;
-    
-    case SGL_STYLE_SIZE_H:
-        sgl_obj_set_height(obj, value);
-        break;
-
-    case SGL_STYLE_COLOR:
-        checkbox->text.color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_TEXT_COLOR:
-        checkbox->text.color = sgl_int2color(value);
-        break;
-    
-    case SGL_STYLE_FONT:
-        checkbox->text.font = (sgl_font_t*)value;
-        break;
-
-    case SGL_STYLE_TEXT:
-        checkbox->text.text = (char*)value;
-        break;
-
-    case SGL_STYLE_TEXT_X_OFFSET:
-        checkbox->text.x_offset = value;    
-        break;
-    
-    case SGL_STYLE_STATUS:
-        checkbox->status = (bool)value;
-        break;
-
-    default:
-        SGL_LOG_WARN("sgl_checkbox_set_style: unsupported style type %d", type);
-        break;
-    }
-
-    /* set dirty flag */
-    sgl_obj_set_dirty(obj);
-}
-
-
-/**
- * @brief get style of checkbox
- * @param obj checkbox object
- * @param type style type
- * @return style value
- */
-size_t sgl_checkbox_get_style(sgl_obj_t *obj, sgl_style_type_t type)
-{
-    sgl_checkbox_t *checkbox = (sgl_checkbox_t*)(obj);
-
-    switch((int)type) {
-    case SGL_STYLE_POS_X:
-        return sgl_obj_get_pos_x(obj);
-
-    case SGL_STYLE_POS_Y:
-        return sgl_obj_get_pos_y(obj);
-    
-    case SGL_STYLE_SIZE_W:
-        return sgl_obj_get_width(obj);
-    
-    case SGL_STYLE_SIZE_H:
-        return sgl_obj_get_height(obj);
-
-    case SGL_STYLE_TEXT_COLOR:
-        return sgl_color2int(checkbox->text.color);
-
-    case SGL_STYLE_FONT:
-        return (size_t)checkbox->text.font;
-
-    case SGL_STYLE_TEXT:
-        return (size_t)checkbox->text.text;
-
-    case SGL_STYLE_TEXT_X_OFFSET:
-        return checkbox->text.x_offset;
-
-    case  SGL_STYLE_STATUS:
-        return (size_t)checkbox->status;
-
-    default:
-        SGL_LOG_WARN("sgl_checkbox_get_style: unsupported style type %d", type);
-        break;
-    }
-
-    return SGL_STYLE_FAILED;
-}
-
-
-/**
  * @brief checkbox construct callback
  * @param surf surface pointer
  * @param obj checkbox object
@@ -222,15 +113,29 @@ size_t sgl_checkbox_get_style(sgl_obj_t *obj, sgl_style_type_t type)
 static void sgl_checkbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *evt)
 {
     sgl_checkbox_t *checkbox = (sgl_checkbox_t*)(obj);
+    int text_x = 0, icon_y = 0;
+    sgl_pos_t align_pos;
 
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
         if(checkbox->status) {
-            checkbox->text.icon = &checked_icon;
+            checkbox->icon = &checked_icon;
         }
         else {
-            checkbox->text.icon = &unchecked_icon;
+            checkbox->icon = &unchecked_icon;
         }
-        sgl_draw_text(surf, &obj->area, &obj->coords, &checkbox->text);
+
+        if (checkbox->icon) {
+            text_x = checkbox->icon->width + 2;
+        }
+
+        align_pos = sgl_get_text_pos(&obj->coords, checkbox->font, checkbox->text, text_x, SGL_ALIGN_CENTER);
+
+        if (checkbox->icon) {
+            icon_y = ((obj->coords.y2 - obj->coords.y1) - (checkbox->icon->height)) / 2 + 1;
+            sgl_draw_icon(surf, &obj->area, align_pos.x, obj->coords.y1 + icon_y, checkbox->color, checkbox->alpha, checkbox->icon);
+        }
+
+        sgl_draw_string(surf, &obj->area, align_pos.x + text_x, align_pos.y, checkbox->text, checkbox->color, checkbox->alpha, checkbox->font);
     }
     else if(evt->type == SGL_EVENT_PRESSED) {
         checkbox->status = !checkbox->status;
@@ -247,7 +152,7 @@ static void sgl_checkbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_even
         }
 
         if(obj->coords.x2 < obj->coords.x1) {
-            obj->coords.x2 = obj->coords.x1 + (checked_icon.width + sgl_font_get_string_width(checkbox->text.text, checkbox->text.font));
+            obj->coords.x2 = obj->coords.x1 + (checked_icon.width + sgl_font_get_string_width(checkbox->text, checkbox->font));
         }
     }
 }
@@ -272,18 +177,12 @@ sgl_obj_t* sgl_checkbox_create(sgl_obj_t* parent)
     sgl_obj_t *obj = &checkbox->obj;
     sgl_obj_init(&checkbox->obj, parent);
     obj->construct_fn = sgl_checkbox_construct_cb;
-#if CONFIG_SGL_USE_STYLE_UNIFIED_API
-    obj->set_style = sgl_checkbox_set_style;
-    obj->get_style = sgl_checkbox_get_style;
-#endif
     obj->needinit = 1;
 
     checkbox->status = false;
-    checkbox->text.alpha = SGL_ALPHA_MAX;
-    checkbox->text.color = SGL_THEME_TEXT_COLOR;
-    checkbox->text.icon = &unchecked_icon;
-    checkbox->text.align = SGL_ALIGN_LEFT_MID;
-    checkbox->text.x_offset = 0;
+    checkbox->alpha = SGL_ALPHA_MAX;
+    checkbox->color = SGL_THEME_TEXT_COLOR;
+    checkbox->icon = &unchecked_icon;
 
     obj->coords.y2 = SGL_POS_INVALID;
     obj->coords.x2 = SGL_POS_INVALID;

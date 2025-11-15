@@ -29,45 +29,6 @@
 
 
 /**
- * @brief draw a horizontal line
- * @param surf surface
- * @param area area that you want to draw
- * @param y y coordinate
- * @param x1 x start coordinate
- * @param x2 x end coordinate
- * @param width line width
- * @param color line color
- * @return none
- */
-void sgl_draw_fill_hline(sgl_surf_t *surf, sgl_area_t *area, int16_t y, int16_t x1, int16_t x2, int16_t width, sgl_color_t color)
-{
-    sgl_area_t clip;
-    sgl_color_t *buf = NULL;
-    sgl_area_t coords = {
-        .x1 = x1,
-        .y1 = y,
-        .x2 = x2,
-        .y2 = y + width - 1,
-    };
-
-    if (!sgl_surf_clip(surf, area, &clip)) {
-        return;
-    }
-
-    if (!sgl_area_selfclip(&coords, &clip)) {
-        return;
-    }
-
-    for (int y = coords.y1; y <= coords.y2; y++) {
-        buf = sgl_surf_get_buf(surf,  coords.x1 - surf->x, y - surf->y);
-        for (int x = coords.x1; x <= coords.x2; x++, buf++) {
-            *buf = color;
-        }
-    }
-}
-
-
-/**
  * @brief draw a horizontal line with alpha
  * @param surf surface
  * @param area area that you want to draw
@@ -79,7 +40,7 @@ void sgl_draw_fill_hline(sgl_surf_t *surf, sgl_area_t *area, int16_t y, int16_t 
  * @param alpha alpha of color
  * @return none
  */
-void sgl_draw_fill_hline_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t y, int16_t x1, int16_t x2, int16_t width, sgl_color_t color, uint8_t alpha)
+void sgl_draw_fill_hline(sgl_surf_t *surf, int16_t y, int16_t x1, int16_t x2, int16_t width, sgl_color_t color, uint8_t alpha)
 {
     sgl_area_t clip;
     sgl_color_t *buf = NULL;
@@ -90,54 +51,15 @@ void sgl_draw_fill_hline_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t 
         .y2 = y + width - 1,
     };
 
-    if (!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, &coords, &clip)) {
         return;
     }
 
-    if (!sgl_area_selfclip(&coords, &clip)) {
-        return;
-    }
-
-    for (int y = coords.y1; y <= coords.y2; y++) {
-        buf = sgl_surf_get_buf(surf,  coords.x1 - surf->x, y - surf->y);
-        for (int x = coords.x1; x <= coords.x2; x++, buf++) {
-            *buf = sgl_color_mixer(color, *buf, alpha);
+    for (int y = clip.y1; y <= clip.y2; y++) {
+        buf = sgl_surf_get_buf(surf,  clip.x1 - surf->x, y - surf->y);
+        for (int x = clip.x1; x <= clip.x2; x++, buf++) {
+            *buf = alpha == SGL_ALPHA_MAX ? color : sgl_color_mixer(color, *buf, alpha);
         }
-    }
-}
-
-
-/**
- * @brief draw a vertical line
- * @param surf surface
- * @param area area that you want to draw
- * @param x x coordinate
- * @param y1 y start coordinate
- * @param y2 y end coordinate
- * @param width line width
- * @param color line color
- * @return none
- */
-void sgl_draw_fill_vline(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y1, int16_t y2, int16_t width, sgl_color_t color)
-{
-    sgl_area_t clip;
-    sgl_area_t coords = {
-        .x1 = x,
-        .y1 = y1,
-        .x2 = x + width - 1,
-        .y2 = y2,
-    };
-
-    if (!sgl_surf_clip(surf, area, &clip)) {
-        return;
-    }
-
-    if (!sgl_area_selfclip(&coords, &clip)) {
-        return;
-    }
-
-    for (int i = coords.y1; i <= coords.y2; i++) {
-        sgl_surf_hline(surf, i - surf->y, coords.x1, coords.x2 + 1, color);
     }
 }
 
@@ -154,7 +76,7 @@ void sgl_draw_fill_vline(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t 
  * @param alpha alpha of color
  * @return none
  */
-void sgl_draw_fill_vline_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y1, int16_t y2, int16_t width, sgl_color_t color, uint8_t alpha)
+void sgl_draw_fill_vline(sgl_surf_t *surf, int16_t x, int16_t y1, int16_t y2, int16_t width, sgl_color_t color, uint8_t alpha)
 {
     sgl_area_t clip;
     sgl_area_t coords = {
@@ -164,43 +86,20 @@ void sgl_draw_fill_vline_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t 
         .y2 = y2,
     };
 
-    if (!sgl_surf_clip(surf, area, &clip)) {
+    if (!sgl_surf_clip(surf, &coords, &clip)) {
         return;
     }
 
-    if (!sgl_area_selfclip(&coords, &clip)) {
-        return;
-    }
-
-    for (int i = coords.y1; i <= coords.y2; i++) {
-        for (int j = coords.x1; j <= coords.x2; j++) {
-            sgl_surf_set_pixel(surf, j, i - surf->y, sgl_color_mixer(color, sgl_surf_get_pixel(surf, j, i - surf->y), alpha));
+    for (int i = clip.y1; i <= clip.y2; i++) {
+        for (int j = clip.x1; j <= clip.x2; j++) {
+            if (alpha == SGL_ALPHA_MAX) {
+                sgl_surf_set_pixel(surf, j, i - surf->y, color);
+            }
+            else {
+                sgl_surf_set_pixel(surf, j, i - surf->y, sgl_color_mixer(color, sgl_surf_get_pixel(surf, j, i - surf->y), alpha));
+            }
         }
     }
-}
-
-
-void sgl_draw_fill_line_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t x1, int16_t x2, int16_t y1, int16_t y2, int16_t width, sgl_color_t color, uint8_t alpha)
-{
-    sgl_area_t clip;
-    sgl_area_t coords = {
-        .x1 = x1,
-        .y1 = y1,
-        .x2 = x2,
-        .y2 = y2,
-    };
-
-    if (!sgl_surf_clip(surf, area, &clip)) {
-        return;
-    }
-
-    if (!sgl_area_selfclip(&coords, &clip)) {
-        return;
-    }
-
-    SGL_UNUSED(width);
-    SGL_UNUSED(color);
-    SGL_UNUSED(alpha);
 }
 
 
@@ -211,7 +110,7 @@ void sgl_draw_fill_line_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t x
  * @param desc line description
  * @return none
  */
-void sgl_draw_line(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_line_t *desc)
+void sgl_draw_line(sgl_surf_t *surf, sgl_draw_line_t *desc)
 {
     uint8_t alpha = desc->alpha;
 
@@ -221,28 +120,12 @@ void sgl_draw_line(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_line_t *desc)
     int16_t y2 = desc->end.y;
 
     if (y1 == y2) {
-        if (alpha == SGL_ALPHA_MAX) {
-            sgl_draw_fill_hline(surf, area, y1, x1, x2, desc->width, desc->color);
-        }
-        else if (alpha > SGL_ALPHA_MIN) {
-            sgl_draw_fill_hline_with_alpha(surf, area, y1, x1, x2, desc->width, desc->color, alpha);
-        }
-        else {
-            return;
-        }
+        sgl_draw_fill_hline(surf, y1, x1, x2, desc->width, desc->color, alpha);
     }
     else if (x1 == x2) {
-        if (alpha == SGL_ALPHA_MAX) {
-            sgl_draw_fill_vline(surf, area, x1, y1, y2, desc->width, desc->color);
-        }
-        else if (alpha > SGL_ALPHA_MIN) {
-            sgl_draw_fill_vline_with_alpha(surf, area, x1, y1, y2, desc->width, desc->color, alpha);
-        }
-        else {
-            return;
-        }
+        sgl_draw_fill_vline(surf, x1, y1, y2, desc->width, desc->color, alpha);
     }
     else {
-        sgl_draw_fill_line_with_alpha(surf, area, x1, x2, y1, y2, desc->width, desc->color, alpha);
+
     }
 }

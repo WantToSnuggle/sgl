@@ -34,133 +34,6 @@
 
 
 /**
- * @brief set style of the circle object
- * @param obj pointer to the object
- * @param type style type
- * @param value value of the style
- * @return none
- */
-void sgl_circle_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
-{
-    sgl_circle_t *circle = (sgl_circle_t*)obj;
-
-    switch((int)type) {
-    case SGL_STYLE_POS_X:
-        sgl_obj_set_pos_x(obj, value);
-        break;
-
-    case SGL_STYLE_POS_Y:
-        sgl_obj_set_pos_y(obj, value);
-        break;
-    
-    case SGL_STYLE_SIZE_W:
-        sgl_obj_set_width(obj, value);
-        break;
-    
-    case SGL_STYLE_SIZE_H:
-        sgl_obj_set_height(obj, value);
-        break;
-
-    case SGL_STYLE_COLOR:
-        circle->desc.color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_RADIUS:
-        circle->desc.radius = value;
-        obj->radius = value;
-        break;
-
-    case SGL_STYLE_ALPHA:
-        circle->desc.alpha = value;
-        break;
-    
-    case SGL_STYLE_BORDER_WIDTH:
-        circle->desc.border = value;
-        break;
-
-    case SGL_STYLE_BORDER_COLOR:
-        circle->desc.border_color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_PIXMAP:
-        circle->desc.pixmap = (sgl_pixmap_t*)value;
-        break;
-
-    case SGL_STYLE_CENTER_X_OFFSET:
-        circle->desc.cx = obj->coords.x1 + value;
-        break;
-
-    case SGL_STYLE_CENTER_Y_OFFSET:
-        circle->desc.cy = obj->coords.y1 + value;
-        break;
-
-    default:
-        SGL_LOG_WARN("sgl_circle_set_style: unsupported style type %d", type);
-        break;
-    }
-
-    /* set dirty flag */
-    sgl_obj_set_dirty(obj);
-}
-
-
-/**
- * @brief get style of the circle object
- * @param obj pointer to the object
- * @param type style type
- * @return style value
- */
-size_t sgl_circle_get_style(sgl_obj_t *obj, sgl_style_type_t type)
-{
-    sgl_circle_t *circle = (sgl_circle_t*)obj;
-
-    switch((int)type) {
-    case SGL_STYLE_POS_X:
-        return sgl_obj_get_pos_x(obj);
-
-    case SGL_STYLE_POS_Y:
-        return sgl_obj_get_pos_y(obj);
-    
-    case SGL_STYLE_SIZE_W:
-        return sgl_obj_get_width(obj);
-    
-    case SGL_STYLE_SIZE_H:
-        return sgl_obj_get_height(obj);
-
-    case SGL_STYLE_COLOR:
-        return sgl_color2int(circle->desc.color);
-
-    case SGL_STYLE_RADIUS:
-        return circle->desc.radius;
-
-    case SGL_STYLE_ALPHA:
-        return circle->desc.alpha;
-
-    case SGL_STYLE_BORDER_WIDTH:
-        return circle->desc.border;
-
-    case SGL_STYLE_BORDER_COLOR:
-        return sgl_color2int(circle->desc.border_color);
-
-    case SGL_STYLE_PIXMAP:
-        return (size_t)circle->desc.pixmap;
-
-    case SGL_STYLE_CENTER_X_OFFSET:
-        return circle->desc.cx;
-
-    case SGL_STYLE_CENTER_Y_OFFSET:
-        return circle->desc.cy;
-
-    default:
-        SGL_LOG_WARN("sgl_circle_get_style: unsupported style type %d", type);
-        break;
-    }
-
-    return SGL_STYLE_FAILED;
-}
-
-
-/**
  * @brief construct function of the circle object
  * @param surf pointer to the surface
  * @param obj pointer to the object
@@ -209,10 +82,7 @@ sgl_obj_t* sgl_circle_create(sgl_obj_t* parent)
     sgl_obj_t *obj = &circle->obj;
     sgl_obj_init(&circle->obj, parent);
     obj->construct_fn = sgl_circle_construct_cb;
-#if CONFIG_SGL_USE_STYLE_UNIFIED_API
-    obj->set_style = sgl_circle_set_style;
-    obj->get_style = sgl_circle_get_style;
-#endif
+
     obj->needinit = 1;
 
     circle->desc.alpha = SGL_ALPHA_MAX;

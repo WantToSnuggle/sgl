@@ -33,117 +33,6 @@
 #include "sgl_2dball.h"
 
 
-/**
- * @brief set 2dball object style
- * @param obj 2dball object
- * @param type style type
- * @param value style value
- */
-void sgl_2dball_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
-{
-    sgl_2dball_t *ball = (sgl_2dball_t*)obj;
-
-    switch((int)type) {
-    case SGL_STYLE_POS_X:
-        sgl_obj_set_pos_x(obj, value);
-        break;
-
-    case SGL_STYLE_POS_Y:
-        sgl_obj_set_pos_y(obj, value);
-        break;
-    
-    case SGL_STYLE_SIZE_W:
-        sgl_obj_set_width(obj, value);
-        break;
-    
-    case SGL_STYLE_SIZE_H:
-        sgl_obj_set_height(obj, value);
-        break;
-
-    case SGL_STYLE_COLOR:
-        ball->color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_BG_COLOR:
-        ball->bg_color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_RADIUS:
-        ball->radius = value;
-        break;
-
-    case SGL_STYLE_ALPHA:
-        ball->alpha = value;
-        break;
-
-    case SGL_STYLE_CENTER_X_OFFSET:
-        ball->cx = obj->coords.x1 + value;
-        break;
-
-    case SGL_STYLE_CENTER_Y_OFFSET:
-        ball->cy = obj->coords.y1 + value;
-        break;
-
-    default:
-        SGL_LOG_WARN("sgl_2dball_set_style: unsupported style type %d", type);
-        break;
-    }
-
-    /* set dirty flag */
-    sgl_obj_set_dirty(obj);
-}
-
-
-/**
- * @brief get 2dball object style
- * @param obj 2dball object
- * @param type style type
- * @return style value
- */
-size_t sgl_2dball_get_style(sgl_obj_t *obj, sgl_style_type_t type)
-{
-    sgl_2dball_t *ball = (sgl_2dball_t*)obj;
-
-    switch((int)type) {
-    case SGL_STYLE_POS_X:
-        return sgl_obj_get_pos_x(obj);
-
-    case SGL_STYLE_POS_Y:
-        return sgl_obj_get_pos_y(obj);
-    
-    case SGL_STYLE_SIZE_W:
-        return sgl_obj_get_width(obj);
-    
-    case SGL_STYLE_SIZE_H:
-        return sgl_obj_get_height(obj);
-
-    case SGL_STYLE_COLOR:
-        return sgl_color2int(ball->color);
-
-    case SGL_STYLE_BG_COLOR:
-        return sgl_color2int(ball->bg_color);
-
-    case SGL_STYLE_RADIUS:
-        return ball->radius;
-
-    case SGL_STYLE_ALPHA:
-        return ball->alpha;
-
-    case SGL_STYLE_CENTER_X_OFFSET:
-        return ball->cx;
-
-    case SGL_STYLE_CENTER_Y_OFFSET:
-        return ball->cy;
-
-    default:
-        SGL_LOG_WARN("sgl_2dball_get_style: unsupported style type %d", type);
-        break;
-    }
-
-    return SGL_STYLE_FAILED;
-}
-
-
 static void sgl_2dball_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *evt)
 {
     sgl_2dball_t *ball = (sgl_2dball_t*)obj;
@@ -225,10 +114,6 @@ sgl_obj_t* sgl_2dball_create(sgl_obj_t* parent)
     sgl_obj_t *obj = &ball->obj;
     sgl_obj_init(&ball->obj, parent);
     obj->construct_fn = sgl_2dball_construct_cb;
-#if CONFIG_SGL_USE_STYLE_UNIFIED_API
-    obj->set_style = sgl_2dball_set_style;
-    obj->get_style = sgl_2dball_get_style;
-#endif
     obj->needinit = 1;
 
     ball->alpha = SGL_ALPHA_MAX;

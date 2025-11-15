@@ -75,9 +75,6 @@ extern "C" {
  * CONFIG_SGL_USE_OBJ_ID:
  *      If you want to use obj id, please define this macro to 1, at mostly, the CONFIG_SGL_USE_OBJ_ID should be 0
  * 
- * CONFIG_SGL_USE_STYLE_UNIFIED_API:
- *      If you want to use style unified api, please define this macro to 1, default: 1
- * 
  * CONFIG_SGL_HEAP_ALGO:
  *      The heap algorithm, default: lwmem
  * 
@@ -144,10 +141,6 @@ extern "C" {
 
 #ifndef CONFIG_SGL_OBJ_USE_NAME
 #define CONFIG_SGL_OBJ_USE_NAME                                    (0)
-#endif
-
-#ifndef CONFIG_SGL_USE_STYLE_UNIFIED_API
-#define CONFIG_SGL_USE_STYLE_UNIFIED_API                           (1)
 #endif
 
 #ifndef CONFIG_SGL_HEAP_ALGO

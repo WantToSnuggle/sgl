@@ -44,10 +44,9 @@
 typedef struct sgl_switch {
     sgl_obj_t         obj;
     sgl_draw_rect_t   bg_desc;
-    sgl_draw_rect_t   knob_desc;
-    sgl_area_t        knob_rect;
     sgl_color_t       color;
     sgl_color_t       bg_color;
+    sgl_color_t       knob_color;
     bool              status;
 }sgl_switch_t;
 
@@ -61,38 +60,119 @@ sgl_obj_t* sgl_switch_create(sgl_obj_t* parent);
 
 
 /**
- * @brief set switch status
+ * @brief set switch color
  * @param obj switch object
- * @param status switch status, true means on, false means off
+ * @param color switch color
  * @return none
  */
-void sgl_switch_set_status(sgl_obj_t *obj, bool status);
-
-
-/**
- * @brief  Get switch status
- * @param  obj: switch object
- * @return switch status, true means on, false means off
- */
-bool sgl_switch_get_status(sgl_obj_t *obj);
-
+static inline void sgl_switch_set_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_switch_t *switch_obj = (sgl_switch_t *)obj;
+    switch_obj->color = color;
+    sgl_obj_set_dirty(obj);
+}
 
 /**
- * @brief set switch object style
+ * @brief set switch background color
  * @param obj switch object
- * @param type style type
- * @param value style value
+ * @param color switch background color
+ * @return none
  */
-void sgl_switch_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value);
-
+static inline void sgl_switch_set_bg_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_switch_t *switch_obj = (sgl_switch_t *)obj;
+    switch_obj->bg_color = color;
+    sgl_obj_set_dirty(obj);
+}
 
 /**
- * @brief get switch object style
- * @param obj switch object
- * @param type style type
- * @return style value
+ * @brief Set the knob color of the switch object
+ * @param obj  Pointer to the switch object
+ * @param color  The color of the knob
+ * @return none
  */
-size_t sgl_switch_get_style(sgl_obj_t *obj, sgl_style_type_t type);
+static inline void sgl_switch_set_knob_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_switch_t *switch_obj = (sgl_switch_t *)obj;
+    switch_obj->knob_color = color;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set switch alpha
+ * @param obj switch object
+ * @param alpha switch alpha
+ * @return none
+ */
+static inline void sgl_switch_set_alpha(sgl_obj_t *obj, uint8_t alpha)
+{
+    sgl_switch_t *switch_obj = (sgl_switch_t *)obj;
+    switch_obj->bg_desc.alpha = alpha;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set switch radius
+ * @param obj switch object
+ * @param radius switch radius
+ * @return none
+ */
+static inline void sgl_swaitch_set_radius(sgl_obj_t *obj, uint16_t radius)
+{
+    sgl_switch_t *switch_obj = (sgl_switch_t *)obj;
+    switch_obj->bg_desc.radius = sgl_obj_fix_radius(obj, radius);
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set switch border color
+ * @param obj switch object
+ * @param color switch border color
+ * @return none
+ */
+static inline void sgl_switch_set_border_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_switch_t *switch_obj = (sgl_switch_t *)obj;
+    switch_obj->bg_desc.border_color = color;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set switch border width
+ * @param obj switch object
+ * @param width switch border width
+ * @return none
+ */
+static inline void sgl_switch_set_border_width(sgl_obj_t *obj, int16_t width)
+{
+    sgl_switch_t *switch_obj = (sgl_switch_t *)obj;
+    switch_obj->bg_desc.border = width;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set status of switch
+ * @param obj switch object
+ * @param status switch status
+ * @return none 
+ */
+static inline void sgl_switch_set_status(sgl_obj_t *obj, bool status)
+{
+    sgl_switch_t *switch_obj = (sgl_switch_t *)obj;
+    switch_obj->status = status;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief get status of switch
+ * @param obj switch object
+ * @return switch status
+ */
+static inline bool sgl_switch_get_status(sgl_obj_t *obj)
+{
+    sgl_switch_t *switch_obj = (sgl_switch_t *)obj;
+    return switch_obj->status;
+}
 
 
 #endif // !__SGL_SWITCH_H__

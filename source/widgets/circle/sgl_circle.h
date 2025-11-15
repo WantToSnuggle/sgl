@@ -55,22 +55,82 @@ sgl_obj_t* sgl_circle_create(sgl_obj_t* parent);
 
 
 /**
- * @brief set style of the circle object
+ * @brief set the color of the circle
  * @param obj pointer to the object
- * @param type style type
- * @param value value of the style
+ * @param color color of the circle
  * @return none
  */
-void sgl_circle_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value);
-
+static inline void sgl_circle_set_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_circle_t *circle = (sgl_circle_t *)obj;
+    circle->desc.color = color;
+    sgl_obj_set_dirty(obj);
+}
 
 /**
- * @brief get style of the circle object
+ * @brief set the radius of the circle
  * @param obj pointer to the object
- * @param type style type
- * @return style value
+ * @param radius radius of the circle
+ * @return none
  */
-size_t sgl_circle_get_style(sgl_obj_t *obj, sgl_style_type_t type);
+static inline void sgl_circle_set_radius(sgl_obj_t *obj, uint16_t radius)
+{
+    sgl_circle_t *circle = (sgl_circle_t *)obj;
+    circle->desc.radius = radius;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set the alpha of the circle
+ * @param obj pointer to the object
+ * @param alpha alpha of the circle
+ * @return none
+ */
+static inline void sgl_circle_set_alpha(sgl_obj_t *obj, uint8_t alpha)
+{
+    sgl_circle_t *circle = (sgl_circle_t *)obj;
+    circle->desc.alpha = alpha;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set the pixmap of the circle
+ * @param obj pointer to the object
+ * @param pixmap pixmap of the circle
+ * @return none
+ */
+static inline void sgl_circle_set_pixmap(sgl_obj_t *obj, const sgl_pixmap_t *pixmap)
+{
+    sgl_circle_t *circle = (sgl_circle_t *)obj;
+    circle->desc.pixmap = pixmap;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set the border color of the circle
+ * @param obj pointer to the object
+ * @param color border color of the circle
+ * @return none
+ */
+static inline void sgl_circle_set_border_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_circle_t *circle = (sgl_circle_t *)obj;
+    circle->desc.border_color = color;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set the border width of the circle
+ * @param obj pointer to the object
+ * @param width border width of the circle
+ * @return none
+ */
+static inline void sgl_circle_set_border_width(sgl_obj_t *obj, uint8_t width)
+{
+    sgl_circle_t *circle = (sgl_circle_t *)obj;
+    circle->desc.border = width;
+    sgl_obj_set_dirty(obj);
+}
 
 
 #endif // !__SGL_CIRCLE_H__

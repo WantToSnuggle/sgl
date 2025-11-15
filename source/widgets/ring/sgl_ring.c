@@ -33,135 +33,23 @@
 #include "sgl_ring.h"
 
 
-/**
- * @brief Set the style of the ring
- * @param obj The ring object
- * @param type The style type
- * @param value The value of the style
- * @return None
- */
-void sgl_ring_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
-{
-    sgl_ring_t *ring = (sgl_ring_t*)obj;
-
-    switch((int)type) {
-    case SGL_STYLE_POS_X:
-        sgl_obj_set_pos_x(obj, value);
-        break;
-
-    case SGL_STYLE_POS_Y:
-        sgl_obj_set_pos_y(obj, value);
-        break;
-    
-    case SGL_STYLE_SIZE_W:
-        sgl_obj_set_width(obj, value);
-        break;
-    
-    case SGL_STYLE_SIZE_H:
-        sgl_obj_set_height(obj, value);
-        break;
-
-    case SGL_STYLE_COLOR:
-        ring->desc.color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_RADIUS:
-        ring->desc.radius_out = value;
-        obj->radius = ring->desc.radius_out;
-        break;
-
-    case SGL_STYLE_RING_WIDTH:
-        ring->desc.radius_in = ring->desc.radius_out - value;
-        break;
-
-    case SGL_STYLE_ALPHA:
-        ring->desc.alpha = value;
-        break;
-
-    case SGL_STYLE_CENTER_X_OFFSET:
-        ring->desc.cx = obj->coords.x1 + value;
-        break;
-
-    case SGL_STYLE_CENTER_Y_OFFSET:
-        ring->desc.cy = obj->coords.y1 + value;
-        break;
-
-    default:
-        SGL_LOG_WARN("sgl_ring_set_style: unsupported style type %d", type);
-        break;
-    }
-
-    /* set dirty */
-    sgl_obj_set_dirty(obj);
-}
-
-
-/**
- * @brief Get the style of the ring
- * @param obj The ring object
- * @param type The style type
- * @return The value of the style
- */
-size_t sgl_ring_get_style(sgl_obj_t *obj, sgl_style_type_t type)
-{
-    sgl_ring_t *ring = (sgl_ring_t*)obj;
-
-    switch((int)type) {
-    case SGL_STYLE_POS_X:
-        return sgl_obj_get_pos_x(obj);
-
-    case SGL_STYLE_POS_Y:
-        return sgl_obj_get_pos_y(obj);
-    
-    case SGL_STYLE_SIZE_W:
-        return sgl_obj_get_width(obj);
-    
-    case SGL_STYLE_SIZE_H:
-        return sgl_obj_get_height(obj);
-
-    case SGL_STYLE_COLOR:
-        return sgl_color2int(ring->desc.color);
-
-    case SGL_STYLE_RADIUS:
-        return ring->desc.radius_out;
-
-    case SGL_STYLE_RING_WIDTH:
-        return ring->desc.radius_out - ring->desc.radius_in;
-
-    case SGL_STYLE_ALPHA:
-        return ring->desc.alpha;
-
-    case SGL_STYLE_CENTER_X_OFFSET:
-        return ring->desc.cx;
-
-    case SGL_STYLE_CENTER_Y_OFFSET:
-        return ring->desc.cy;
-
-    default:
-        SGL_LOG_WARN("sgl_ring_set_style: unsupported style type %d", type);
-        break;
-    }
-
-    return SGL_STYLE_FAILED;
-}
-
-
 static void sgl_ring_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *evt)
 {
     sgl_ring_t *ring = (sgl_ring_t*)obj;
 
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
-        ring->desc.cx = (obj->coords.x2 + obj->coords.x1) / 2;
-        ring->desc.cy = (obj->coords.y2 + obj->coords.y1) / 2;
-        sgl_draw_ring(surf, &obj->area, &ring->desc);
+        SGL_LOG_INFO("sgl_ring_construct_cb = %d %d", obj->coords.x1, obj->coords.y1);
+        ring->cx = (obj->coords.x2 + obj->coords.x1) / 2;
+        ring->cy = (obj->coords.y2 + obj->coords.y1) / 2;
+        sgl_draw_fill_ring(surf, &obj->area, ring->cx, ring->cy, ring->radius_in, ring->radius_out, ring->color, ring->alpha);
     }
     else if(evt->type == SGL_EVENT_DRAW_INIT) {
-        if(ring->desc.radius_out == -1) {
-            ring->desc.radius_out = (obj->coords.x2 - obj->coords.x1) / 2;
+        if(ring->radius_out == -1) {
+            ring->radius_out = (obj->coords.x2 - obj->coords.x1) / 2;
         }
 
-        if(ring->desc.radius_in == -1) {
-            ring->desc.radius_in = ring->desc.radius_out - 2;
+        if(ring->radius_in == -1) {
+            ring->radius_in = ring->radius_out - 2;
         }
     }
 
@@ -190,18 +78,15 @@ sgl_obj_t* sgl_ring_create(sgl_obj_t* parent)
     sgl_obj_t *obj = &ring->obj;
     sgl_obj_init(&ring->obj, parent);
     obj->construct_fn = sgl_ring_construct_cb;
-#if CONFIG_SGL_USE_STYLE_UNIFIED_API
-    obj->set_style = sgl_ring_set_style;
-    obj->get_style = sgl_ring_get_style;
-#endif
-    obj->needinit = 1;
 
-    ring->desc.radius_in = -1;
-    ring->desc.radius_out = -1;
-    ring->desc.cx = -1;
-    ring->desc.cy = -1;
-    ring->desc.alpha = SGL_THEME_ALPHA;
-    ring->desc.color = SGL_THEME_COLOR;
+    obj->needinit = 1;
+    ring->radius_in = -1;
+    ring->radius_out = -1;
+    ring->cx = -1;
+    ring->cy = -1;
+    ring->alpha = SGL_THEME_ALPHA;
+    ring->color = SGL_THEME_COLOR;
 
     return obj;
 }
+

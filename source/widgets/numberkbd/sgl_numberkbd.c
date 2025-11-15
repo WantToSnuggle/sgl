@@ -108,162 +108,6 @@ static sgl_icon_pixmap_t backspace_icon = {
 
 
 /**
- * @brief Set style of numberkbd
- * @param obj numberkbd object
- * @param type style type
- * @param value style value
- * @return none
- */
-void sgl_numberkbd_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
-{
-    sgl_numberkbd_t *numberkbd = (sgl_numberkbd_t*)obj;
-    int16_t w = (obj->coords.x2 - obj->coords.x1 + 1) / 2;
-    int16_t h = (obj->coords.y2 - obj->coords.y1 + 1) / 2;
-    int16_t r_min = w > h ? h : w;
-
-    switch((int)type) {
-    case SGL_STYLE_POS_X:
-        sgl_obj_set_pos_x(obj, value);
-        break;
-
-    case SGL_STYLE_POS_Y:
-        sgl_obj_set_pos_y(obj, value);
-        break;
-    
-    case SGL_STYLE_SIZE_W:
-        sgl_obj_set_width(obj, value);
-        break;
-    
-    case SGL_STYLE_SIZE_H:
-        sgl_obj_set_height(obj, value);
-        break;
-
-    case SGL_STYLE_COLOR:
-        numberkbd->body_desc.color = sgl_int2color(value);
-        break;
-    
-    case SGL_STYLE_ALPHA:
-        numberkbd->body_desc.alpha = (uint8_t)value;
-        break;
-    
-    case SGL_STYLE_RADIUS:
-        numberkbd->body_desc.radius = sgl_obj_fix_radius(obj, value);
-        break;
-
-    case SGL_STYLE_PIXMAP:
-        numberkbd->body_desc.pixmap = (sgl_pixmap_t*)value;
-        break;
-
-    case SGL_STYLE_FONT:
-        numberkbd->font = (sgl_font_t*)value;
-        break;
-
-    case SGL_STYLE_TEXT_COLOR:
-        numberkbd->text_color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_BORDER_WIDTH:
-        numberkbd->body_desc.border = (uint8_t)value;
-        break;
-
-    case SGL_STYLE_BORDER_COLOR:
-        numberkbd->body_desc.color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_NUMBERKBD_TEXT_COLOR:
-        numberkbd->text_color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_NUMBERKBD_BG_COLOR:
-        numberkbd->body_desc.color = sgl_int2color(value);
-        break;    
-
-    case SGL_STYLE_NUMBERKBD_BTN_MARGIN:
-        numberkbd->margin = (uint8_t)value;
-        break;
-
-    case SGL_STYLE_NUMBERKBD_BTN_COLOR:
-        numberkbd->btn_desc.color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_NUMBERKBD_BTN_RADIUS:
-        numberkbd->btn_desc.radius = sgl_min((int16_t)value, r_min);
-        break;
-
-    case SGL_STYLE_NUMBERKBD_BTN_ALPHA:
-        numberkbd->btn_desc.alpha = (uint8_t)value;
-        break;
-
-    case SGL_STYLE_NUMBERKBD_BTN_PIXMAP:
-        numberkbd->btn_desc.pixmap = (sgl_pixmap_t*)(value);
-        break;
-
-    case SGL_STYLE_NUMBERKBD_BTN_BORDER_WIDTH:
-        numberkbd->btn_desc.border = (uint8_t)value;
-        break;
-    
-    case SGL_STYLE_NUMBERKBD_BTN_BORDER_COLOR:
-        numberkbd->btn_desc.border_color = sgl_int2color(value);
-        break;
-
-    default:
-        SGL_LOG_WARN("sgl_numberkbd_set_style: unsupported style type %d", type);
-    }
-
-    /* set dirty */
-    sgl_obj_set_dirty(obj);
-}
-
-
-/**
- * @brief Get style of numberkbd
- * @param obj numberkbd object
- * @param type style type
- * @return style value
- */
-size_t sgl_numberkbd_get_style(sgl_obj_t *obj, sgl_style_type_t type)
-{
-    sgl_numberkbd_t *numberkbd = (sgl_numberkbd_t*)obj;
-    switch((int)type) {
-    case SGL_STYLE_POS_X:
-        return sgl_obj_get_pos_x(obj);
-
-    case SGL_STYLE_POS_Y:
-        return sgl_obj_get_pos_y(obj);
-    
-    case SGL_STYLE_SIZE_W:
-        return sgl_obj_get_width(obj);
-    
-    case SGL_STYLE_SIZE_H:
-        return sgl_obj_get_height(obj);
-
-    case SGL_STYLE_COLOR:
-        return sgl_color2int(numberkbd->body_desc.color);
-
-    case SGL_STYLE_ALPHA:
-        return numberkbd->body_desc.alpha;
-    
-    case SGL_STYLE_RADIUS:
-        return obj->radius;
-
-    case SGL_STYLE_TEXT_COLOR:
-        return sgl_color2int(numberkbd->text_color);
-
-    case SGL_STYLE_FONT:
-        return (size_t)numberkbd->font;
-
-    case SGL_STYLE_NUMBERKBD_OPCODE:
-        return numberkbd->opcode;
-
-    default:
-        SGL_LOG_WARN("sgl_numberkbd_set_style: unsupported style type %d", type);
-    }
-
-    return SGL_STYLE_FAILED;
-}
-
-
-/**
  * @brief numberkbd constructor function
  * @param surf: pointer to surface
  * @param obj: pointer to numberkbd object
@@ -308,20 +152,20 @@ static void sgl_numberkbd_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_eve
                         sgl_draw_rect(surf, &btn, &btn, &numberkbd->btn_desc);
                         text_x = btn.x1 + ((box_w -  backspace_icon.width) / 2);
                         text_y = btn.y1 + ((box_h - backspace_icon.height + 1) / 2);
-                        sgl_draw_icon_on_bg(surf, &btn, text_x, text_y, numberkbd->text_color, &backspace_icon);
+                        sgl_draw_icon(surf, &btn, text_x, text_y, numberkbd->text_color, numberkbd->btn_desc.alpha, &backspace_icon);
                     }
                     else if (btn_row == 3) {
                         btn.y2 += (numberkbd->margin + box_h);
                         sgl_draw_rect(surf, &btn, &btn, &numberkbd->btn_desc);
                         text_x = btn.x1 + ((box_w -  enter_icon.width) / 2);
                         text_y = btn.y1 + ((2 * box_h - enter_icon.height) / 2);
-                        sgl_draw_icon_on_bg(surf, &btn, text_x, text_y, numberkbd->text_color, &enter_icon);
+                        sgl_draw_icon(surf, &btn, text_x, text_y, numberkbd->text_color, numberkbd->btn_desc.alpha, &enter_icon);
                     }
                 }
                 else {
                     sgl_draw_rect(surf, &btn, &btn, &numberkbd->btn_desc);
                     text_x = btn.x1 + ((box_w -  sgl_font_get_string_width("0", numberkbd->font)) / 2);
-                    sgl_draw_character_on_bg(surf, &obj->area, text_x, text_y, kbd_digits[btn_row][btn_col] - 32, numberkbd->text_color, numberkbd->font);
+                    sgl_draw_character(surf, &obj->area, text_x, text_y, kbd_digits[btn_row][btn_col] - 32, numberkbd->text_color, numberkbd->btn_desc.alpha, numberkbd->font);
                 }
                 btn_col ++;
             }
@@ -408,10 +252,7 @@ sgl_obj_t* sgl_numberkbd_create(sgl_obj_t* parent)
     sgl_obj_t *obj = &numberkbd->obj;
     sgl_obj_init(&numberkbd->obj, parent);
     obj->construct_fn = sgl_numberkbd_construct_cb;
-#if CONFIG_SGL_USE_STYLE_UNIFIED_API
-    obj->set_style = sgl_numberkbd_set_style;
-    obj->get_style = sgl_numberkbd_get_style;
-#endif
+
     obj->clickable = 1;
     obj->needinit  = 1;
 
@@ -432,15 +273,4 @@ sgl_obj_t* sgl_numberkbd_create(sgl_obj_t* parent)
     numberkbd->btn_desc.pixmap = NULL;
 
     return obj;
-}
-
-
-/**
- * @brief get numberkbd opcode
- * @param obj numberkbd object
- * @return opcode [0 ~ 255]
- */
-uint8_t sgl_numberkbd_get_opcode(sgl_obj_t *obj)
-{
-    return ((sgl_numberkbd_t*)obj)->opcode;
 }

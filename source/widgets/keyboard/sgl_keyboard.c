@@ -422,147 +422,6 @@ static int8_t keyboard_pos_to_index(int16_t x, int16_t y, sgl_keyboard_t *keyboa
 
 
 /**
- * @brief Set style of keyboard
- * @param obj keyboard object
- * @param type style type
- * @param value style value
- * @return none
- */
-void sgl_keyboard_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
-{
-    sgl_keyboard_t *keyboard = (sgl_keyboard_t*)obj;
-
-    switch((int)type) {
-    case SGL_STYLE_POS_X:
-        sgl_obj_set_pos_x(obj, value);
-        break;
-
-    case SGL_STYLE_POS_Y:
-        sgl_obj_set_pos_y(obj, value);
-        break;
-
-    case SGL_STYLE_SIZE_W:
-        sgl_obj_set_width(obj, value);
-        break;
-
-    case SGL_STYLE_SIZE_H:
-        sgl_obj_set_height(obj, value);
-        break;
-
-    case SGL_STYLE_COLOR:
-        keyboard->body_desc.color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_ALPHA:
-        keyboard->body_desc.alpha = (uint8_t)value;
-        break;
-
-    case SGL_STYLE_RADIUS:
-        keyboard->body_desc.radius = sgl_obj_fix_radius(obj, value);
-        break;
-
-    case SGL_STYLE_PIXMAP:
-        keyboard->body_desc.pixmap = (sgl_pixmap_t*)value;
-        break;
-
-    case SGL_STYLE_FONT:
-        keyboard->font = (sgl_font_t*)value;
-        break;
-
-    case SGL_STYLE_TEXT_COLOR:
-        keyboard->text_color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_BORDER_WIDTH:
-        keyboard->body_desc.border = (uint8_t)value;
-        break;
-
-    case SGL_STYLE_BORDER_COLOR:
-        keyboard->body_desc.color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_KEYBOARD_BTN_COLOR:
-        keyboard->btn_desc.color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_KEYBOARD_BTN_RADIUS:
-        keyboard->btn_desc.radius = sgl_obj_fix_radius(obj, value);
-        break;
-
-    case SGL_STYLE_KEYBOARD_BTN_ALPHA:
-        keyboard->btn_desc.alpha = (uint8_t)value;
-        break;
-
-    case SGL_STYLE_KEYBOARD_BTN_BORDER_WIDTH:
-        keyboard->btn_desc.border = (uint8_t)value;
-        break;
-
-    case SGL_STYLE_KEYBOARD_BTN_BORDER_COLOR:
-        keyboard->btn_desc.color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_KEYBOARD_BTN_PIXMAP:
-        keyboard->btn_desc.pixmap = (sgl_pixmap_t*)value;
-        break;
-
-    default:
-        SGL_LOG_WARN("sgl_keyboard_set_style: unsupported style type %d", type);
-    }
-
-    /* set dirty */
-    sgl_obj_set_dirty(obj);
-}
-
-
-/**
- * @brief Get style of keyboard
- * @param obj keyboard object
- * @param type style type
- * @return style value
- */
-size_t sgl_keyboard_get_style(sgl_obj_t *obj, sgl_style_type_t type)
-{
-    sgl_keyboard_t *keyboard = (sgl_keyboard_t*)obj;
-    switch((int)type) {
-    case SGL_STYLE_POS_X:
-        return sgl_obj_get_pos_x(obj);
-
-    case SGL_STYLE_POS_Y:
-        return sgl_obj_get_pos_y(obj);
-
-    case SGL_STYLE_SIZE_W:
-        return sgl_obj_get_width(obj);
-
-    case SGL_STYLE_SIZE_H:
-        return sgl_obj_get_height(obj);
-
-    case SGL_STYLE_COLOR:
-        return sgl_color2int(keyboard->body_desc.color);
-
-    case SGL_STYLE_ALPHA:
-        return keyboard->body_desc.alpha;
-
-    case SGL_STYLE_RADIUS:
-        return obj->radius;
-
-    case SGL_STYLE_TEXT_COLOR:
-        return sgl_color2int(keyboard->text_color);
-
-    case SGL_STYLE_FONT:
-        return (size_t)keyboard->font;
-
-    case SGL_STYLE_KEYBOARD_OPCODE:
-        return keyboard->opcode;
-
-    default:
-        SGL_LOG_WARN("sgl_keyboard_set_style: unsupported style type %d", type);
-    }
-
-    return SGL_STYLE_FAILED;
-}
-
-
-/**
  * @brief keyboard constructor function
  * @param surf: pointer to surface
  * @param obj: pointer to keyboard object
@@ -613,12 +472,12 @@ static void sgl_keyboard_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_even
                 if (icon_index != KEYBOARD_ICON_INVALID) {
                     text_x = btn.x1 + (btn_width[j] - keyboard_icon[icon_index].width) / 2;
                     text_y = btn.y1 + (btn_height[i] - keyboard_icon[icon_index].height) / 2;
-                    sgl_draw_icon_on_bg(surf, &btn, text_x, text_y, keyboard->text_color, (sgl_icon_pixmap_t*)&keyboard_icon[icon_index]);
+                    sgl_draw_icon(surf, &btn, text_x, text_y, keyboard->text_color, SGL_ALPHA_MAX, (sgl_icon_pixmap_t*)&keyboard_icon[icon_index]);
                 }
                 else {
                     text_x = btn.x1 + (btn_width[j] - sgl_font_get_string_width(keybd_btn_map[keyboard->key_mode][index], keyboard->font)) / 2;
                     text_y = btn.y1 + (btn_height[i] - keyboard->font->font_height) / 2;
-                    sgl_draw_string_on_bg(surf, &btn, text_x, text_y, keybd_btn_map[keyboard->key_mode][index], keyboard->text_color, keyboard->font, 0);
+                    sgl_draw_string(surf, &btn, text_x, text_y, keybd_btn_map[keyboard->key_mode][index], keyboard->text_color, SGL_ALPHA_MAX, keyboard->font);
                 }
 
                 btn.x1 += btn_width[j];
@@ -713,10 +572,7 @@ sgl_obj_t* sgl_keyboard_create(sgl_obj_t* parent)
     sgl_obj_t *obj = &keyboard->obj;
     sgl_obj_init(&keyboard->obj, parent);
     obj->construct_fn = sgl_keyboard_construct_cb;
-#if CONFIG_SGL_USE_STYLE_UNIFIED_API
-    obj->set_style = sgl_keyboard_set_style;
-    obj->get_style = sgl_keyboard_get_style;
-#endif
+
     obj->clickable = 1;
     obj->needinit  = 1;
 
@@ -742,27 +598,3 @@ sgl_obj_t* sgl_keyboard_create(sgl_obj_t* parent)
     return obj;
 }
 
-
-/**
- * @brief get keyboard opcode
- * @param obj keyboard object
- * @return opcode [0 ~ 255]
- */
-uint8_t sgl_keyboard_get_opcode(sgl_obj_t *obj)
-{
-    return ((sgl_keyboard_t*)obj)->opcode;
-}
-
-
-/**
- * @brief set keyboard text buffer
- * @param obj keyboard object
- * @param buffer edit buffer
- * @param buf_max_len edit buffer max length
- */
-void sgl_keyboard_set_textarea(sgl_obj_t *obj, char *buffer, int buf_max_len)
-{
-    sgl_keyboard_t *keyboard = (sgl_keyboard_t*)obj;
-    keyboard->edit = buffer;
-    keyboard->edit_max_len = buf_max_len;
-}

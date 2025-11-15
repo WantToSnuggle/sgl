@@ -43,7 +43,7 @@
  */
 typedef struct sgl_button {
     sgl_obj_t               obj;
-    sgl_draw_rect_t         desc;
+    sgl_draw_rect_t         rect;
     const char              *text;
     const sgl_font_t        *font;
     const sgl_icon_pixmap_t *icon;
@@ -60,23 +60,147 @@ typedef struct sgl_button {
  */
 sgl_obj_t* sgl_button_create(sgl_obj_t* parent);
 
+/**
+ * @brief set button color
+ * @param obj: object pointer
+ * @param color: color
+ * @return none
+ */
+static inline void sgl_button_set_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_button_t *button = (sgl_button_t*)obj;
+    button->rect.color = color;
+    sgl_obj_set_dirty(obj);
+}
 
 /**
- * @brief  set button style
- * @param  obj: object pointer
- * @param  type: style type
- * @param  value: style value
+ * @brief set button alpha
+ * @param obj: object pointer
+ * @param alpha: alpha
+ * @return none
  */
-void sgl_button_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value);
-
+static inline void sgl_button_set_alpha(sgl_obj_t *obj, uint8_t alpha)
+{
+    sgl_button_t *button = (sgl_button_t*)obj;
+    button->rect.alpha = alpha;
+    sgl_obj_set_dirty(obj);
+}
 
 /**
- * @brief  get button style
- * @param  obj: object pointer
- * @param  type: style type
- * @return style value
+ * @brief set button border width
+ * @param obj: object pointer
+ * @param width: border width
+ * @return none
  */
-size_t sgl_button_get_style(sgl_obj_t *obj, sgl_style_type_t type);
+static inline void sgl_button_set_border_width(sgl_obj_t *obj, uint8_t width)
+{
+    sgl_button_t *button = (sgl_button_t*)obj;
+    button->rect.border = width;
+    sgl_obj_set_dirty(obj);
+}
 
+/**
+ * @brief set button border color
+ * @param obj: object pointer
+ * @param color: border color
+ * @return none
+ */
+static inline void sgl_button_set_border_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_button_t *button = (sgl_button_t*)obj;
+    button->rect.border_color = color;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set button pixmap
+ * @param obj: object pointer
+ * @param pixmap: pixmap pointer
+ * @return none
+ */
+static inline void sgl_button_set_pixmap(sgl_obj_t *obj, const sgl_pixmap_t *pixmap)
+{
+    sgl_button_t *button = (sgl_button_t*)obj;
+    button->rect.pixmap = pixmap;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set button radius
+ * @param obj: object pointer
+ * @param radius: radius
+ * @return none
+ */
+static inline void sgl_button_set_radius(sgl_obj_t *obj, uint8_t radius)
+{
+    sgl_button_t *button = (sgl_button_t*)obj;
+    button->rect.radius = sgl_obj_fix_radius(obj, radius);
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set button text
+ * @param obj: object pointer
+ * @param text: text
+ * @return none
+ */
+static inline void sgl_button_set_text(sgl_obj_t *obj, const char *text)
+{
+    sgl_button_t *button = (sgl_button_t*)obj;
+    button->text = text; 
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set button text color
+ * @param obj: object pointer
+ * @param color: text color
+ * @return none
+ */
+static inline void sgl_button_set_text_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_button_t *button = (sgl_button_t*)obj;
+    button->text_color = color; 
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set button text font
+ * @param obj: object pointer
+ * @param font: font pointer
+ * @return none
+ */
+static inline void sgl_button_set_text_font(sgl_obj_t *obj, const sgl_font_t *font)
+{
+    sgl_button_t *button = (sgl_button_t*)obj;
+    button->font = font; 
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set button icon
+ * @param obj: object pointer
+ * @param icon: icon pointer
+ * @return none
+ */
+static inline void sgl_button_set_icon(sgl_obj_t *obj, const sgl_icon_pixmap_t *icon)
+{
+    sgl_button_t *button = (sgl_button_t*)obj;
+    button->icon = icon; 
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set button text align
+ * @param obj: object pointer
+ * @param align: align type
+ * @return none
+ */
+static inline void sgl_button_set_text_align(sgl_obj_t *obj, uint8_t align)
+{
+    sgl_button_t *button = (sgl_button_t*)obj;
+    button->align = align; 
+    sgl_obj_set_dirty(obj);
+}
 
 #endif // !__SGL_BUTTON_H__

@@ -35,8 +35,11 @@
 
 
 typedef struct sgl_icon {
-    sgl_obj_t        obj;
-    sgl_draw_icon_t  desc;
+    sgl_obj_t               obj;
+    const sgl_icon_pixmap_t *icon;
+    sgl_color_t       color;
+    uint8_t           alpha;
+    uint8_t           align;
 } sgl_icon_t;
 
 
@@ -49,22 +52,56 @@ sgl_obj_t* sgl_icon_create(sgl_obj_t* parent);
 
 
 /**
- * @brief set icon style
- * @param obj pointer to object
- * @param type style type
- * @param value style value
+ * @brief set icon color
+ * @param obj pointer to icon object
+ * @param color icon color
  * @return none
  */
-void sgl_icon_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value);
-
+static inline void sgl_icon_set_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_icon_t *icon = (sgl_icon_t *)obj;
+    icon->color = color;
+    sgl_obj_set_dirty(obj);
+}
 
 /**
- * @brief get icon style
- * @param obj pointer to object
- * @param type style type
- * @return style value
+ * @brief set icon alpha
+ * @param obj pointer to icon object
+ * @param alpha icon alpha
+ * @return none
  */
-size_t sgl_icon_get_style(sgl_obj_t *obj, sgl_style_type_t type);
+static inline void sgl_icon_set_alpha(sgl_obj_t *obj, uint8_t alpha)
+{
+    sgl_icon_t *icon = (sgl_icon_t *)obj;
+    icon->alpha = alpha;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set icon pixmap
+ * @param obj pointer to icon object
+ * @param icon pointer to icon pixmap
+ * @return none
+ */
+static inline void sgl_icon_set_icon(sgl_obj_t *obj, const sgl_icon_pixmap_t *icon)
+{
+    sgl_icon_t *icon_obj = (sgl_icon_t *)obj;
+    icon_obj->icon = icon;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set icon align
+ * @param obj pointer to icon object
+ * @param align icon align
+ * @return none
+ */
+static inline void sgl_icon_set_align(sgl_obj_t *obj, sgl_align_type_t align)
+{
+    sgl_icon_t *icon_obj = (sgl_icon_t *)obj;
+    icon_obj->align = align;
+    sgl_obj_set_dirty(obj);
+}
 
 
 #endif // !__SGL_ICON_H__

@@ -33,124 +33,6 @@
 #include "sgl_led.h"
 
 
-/**
- * @brief set led object style
- * @param obj led object
- * @param type style type
- * @param value style value
- */
-void sgl_led_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value)
-{
-    sgl_led_t *led = (sgl_led_t*)obj;
-
-    switch((int)type) {
-    case SGL_STYLE_POS_X:
-        sgl_obj_set_pos_x(obj, value);
-        break;
-
-    case SGL_STYLE_POS_Y:
-        sgl_obj_set_pos_y(obj, value);
-        break;
-    
-    case SGL_STYLE_SIZE_W:
-        sgl_obj_set_width(obj, value);
-        break;
-    
-    case SGL_STYLE_SIZE_H:
-        sgl_obj_set_height(obj, value);
-        break;
-
-    case SGL_STYLE_COLOR:
-        led->color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_BG_COLOR:
-        led->bg_color = sgl_int2color(value);
-        break;
-
-    case SGL_STYLE_RADIUS:
-        sgl_obj_fix_radius(obj, value);
-        break;
-
-    case SGL_STYLE_ALPHA:
-        led->alpha = value;
-        break;
-
-    case SGL_STYLE_CENTER_X_OFFSET:
-        led->cx = obj->coords.x1 + value;
-        break;
-
-    case SGL_STYLE_CENTER_Y_OFFSET:
-        led->cy = obj->coords.y1 + value;
-        break;
-    
-    case SGL_STYLE_STATUS:
-        led->status = value;
-        break;
-
-    default:
-        SGL_LOG_WARN("sgl_led_set_style: unsupported style type %d", type);
-        break;
-    }
-
-    /* set dirty flag */
-    sgl_obj_set_dirty(obj);
-}
-
-
-/**
- * @brief get led object style
- * @param obj led object
- * @param type style type
- * @return style value
- */
-size_t sgl_led_get_style(sgl_obj_t *obj, sgl_style_type_t type)
-{
-    sgl_led_t *led = (sgl_led_t*)obj;
-
-    switch((int)type) {
-    case SGL_STYLE_POS_X:
-        return sgl_obj_get_pos_x(obj);
-
-    case SGL_STYLE_POS_Y:
-        return sgl_obj_get_pos_y(obj);
-    
-    case SGL_STYLE_SIZE_W:
-        return sgl_obj_get_width(obj);
-    
-    case SGL_STYLE_SIZE_H:
-        return sgl_obj_get_height(obj);
-
-    case SGL_STYLE_COLOR:
-        return sgl_color2int(led->color);
-
-    case SGL_STYLE_BG_COLOR:
-        return sgl_color2int(led->bg_color);
-
-    case SGL_STYLE_RADIUS:
-        return obj->radius;
-
-    case SGL_STYLE_ALPHA:
-        return led->alpha;
-
-    case SGL_STYLE_CENTER_X_OFFSET:
-        return led->cx;
-
-    case SGL_STYLE_CENTER_Y_OFFSET:
-        return led->cy;
-
-    case SGL_STYLE_STATUS:
-        return led->status;
-
-    default:
-        SGL_LOG_WARN("sgl_led_get_style: unsupported style type %d", type);
-        break;
-    }
-
-    return SGL_STYLE_FAILED;
-}
-
-
 static void sgl_led_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t *evt)
 {
     sgl_led_t *led = (sgl_led_t*)obj;
@@ -238,10 +120,7 @@ sgl_obj_t* sgl_led_create(sgl_obj_t* parent)
     sgl_obj_t *obj = &led->obj;
     sgl_obj_init(&led->obj, parent);
     obj->construct_fn = sgl_led_construct_cb;
-#if CONFIG_SGL_USE_STYLE_UNIFIED_API
-    obj->set_style = sgl_led_set_style;
-    obj->get_style = sgl_led_get_style;
-#endif
+
     obj->needinit = 1;
 
     led->alpha = SGL_ALPHA_MAX;

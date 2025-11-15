@@ -28,65 +28,6 @@
 
 
 /**
- * @brief draw a ring on surface
- * @param surf: pointer of surface
- * @param area: pointer of area
- * @param cx: ring center x
- * @param cy: ring center y
- * @param radius_in: ring inner radius
- * @param radius_out: ring outer radius
- * @param color: ring color
- * @return none
- */
-void sgl_draw_fill_ring(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_t cy, int16_t radius_in, int16_t radius_out, sgl_color_t color)
-{
-    int y2 = 0, real_r2 = 0;
-    int in_r2 = sgl_pow2(radius_in);
-    int out_r2 = sgl_pow2(radius_out);
-    
-    int in_r2_max = sgl_pow2(radius_in - 1);
-    int out_r2_max = sgl_pow2(radius_out + 1);
-    sgl_color_t *buf = NULL;
-
-    sgl_area_t clip;
-
-    if (!sgl_surf_clip(surf, area, &clip)) {
-        return;
-    }
-
-    for (int y = clip.y1; y <= clip.y2; y++) {
-        y2 = sgl_pow2(y - cy);
-        buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
-
-        for (int x = clip.x1; x <= clip.x2; x++, buf++) {
-            real_r2 = sgl_pow2(x - cx) + y2;
-
-            if (real_r2 >= out_r2_max) {
-                if(x > cx) break;
-                continue;
-            }
-            if (real_r2 < in_r2_max) {
-                if(x < cx) {
-                    buf += ((cx - x) * 2);
-                    x = cx*2 - x;
-                }
-                continue;
-            }
-            if (real_r2 < in_r2 ) {
-                *buf = sgl_color_mixer(color, *buf, sgl_sqrt_error(real_r2));
-            }
-            else if (real_r2 > out_r2) {
-                *buf = sgl_color_mixer(color, *buf, SGL_ALPHA_MAX - sgl_sqrt_error(real_r2));
-            }
-            else {
-                *buf = color;
-            }
-        }
-    }
-}
-
-
-/**
  * @brief draw a ring on surface with alpha
  * @param surf: pointer of surface
  * @param area: pointer of area
@@ -95,9 +36,10 @@ void sgl_draw_fill_ring(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_t 
  * @param radius_in: ring inner radius
  * @param radius_out: ring outer radius
  * @param color: ring color
+ * @param alpha: ring alpha
  * @return none
  */
-void sgl_draw_fill_ring_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_t cy, int16_t radius_in, int16_t radius_out, sgl_color_t color, uint8_t alpha)
+void sgl_draw_fill_ring(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_t cy, int16_t radius_in, int16_t radius_out, sgl_color_t color, uint8_t alpha)
 {
     int y2 = 0, real_r2 = 0, edge_alpha = 0;
     int in_r2 = sgl_pow2(radius_in);
@@ -130,42 +72,33 @@ void sgl_draw_fill_ring_with_alpha(sgl_surf_t *surf, sgl_area_t *area, int16_t c
                 }
                 continue;
             }
-            if (real_r2 < in_r2 ) {
-                edge_alpha = sgl_sqrt_error(real_r2);
-                sgl_color_t color_mix = sgl_color_mixer(color, *buf, edge_alpha);
-                *buf = sgl_color_mixer(color_mix, *buf, alpha);
-            }
-            else if (real_r2 > out_r2) {
-                edge_alpha = SGL_ALPHA_MAX - sgl_sqrt_error(real_r2);
-                sgl_color_t color_mix = sgl_color_mixer(color, *buf, edge_alpha);
-                *buf = sgl_color_mixer(color_mix, *buf, alpha);
+
+            if (alpha == SGL_ALPHA_MAX) {
+                if (real_r2 < in_r2 ) {
+                    *buf = sgl_color_mixer(color, *buf, sgl_sqrt_error(real_r2));
+                }
+                else if (real_r2 > out_r2) {
+                    *buf = sgl_color_mixer(color, *buf, SGL_ALPHA_MAX - sgl_sqrt_error(real_r2));
+                }
+                else {
+                    *buf = color;
+                }
             }
             else {
-                *buf = sgl_color_mixer(color, *buf, alpha);
+                if (real_r2 < in_r2 ) {
+                    edge_alpha = sgl_sqrt_error(real_r2);
+                    sgl_color_t color_mix = sgl_color_mixer(color, *buf, edge_alpha);
+                    *buf = sgl_color_mixer(color_mix, *buf, alpha);
+                }
+                else if (real_r2 > out_r2) {
+                    edge_alpha = SGL_ALPHA_MAX - sgl_sqrt_error(real_r2);
+                    sgl_color_t color_mix = sgl_color_mixer(color, *buf, edge_alpha);
+                    *buf = sgl_color_mixer(color_mix, *buf, alpha);
+                }
+                else {
+                    *buf = sgl_color_mixer(color, *buf, alpha);
+                }
             }
         }
-    }
-}
-
-
-/**
- * @brief Draw rectangle
- * @param surf - surface
- * @param area - draw area
- * @param desc - ring description
- * @return none
- */
-void sgl_draw_ring(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_ring_t *desc)
-{
-    uint8_t alpha = desc->alpha;
-
-    if (alpha == SGL_ALPHA_MAX) {
-        sgl_draw_fill_ring(surf, area, desc->cx, desc->cy, desc->radius_in, desc->radius_out, desc->color);
-    }
-    else if(alpha > SGL_ALPHA_MIN) {
-        sgl_draw_fill_ring_with_alpha(surf, area, desc->cx, desc->cy, desc->radius_in, desc->radius_out, desc->color, alpha);
-    }
-    else {
-        return;
     }
 }

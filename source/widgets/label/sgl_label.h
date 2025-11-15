@@ -40,8 +40,15 @@
  * @desc: draw task descriptor
  */
 typedef struct sgl_label {
-    sgl_obj_t       obj;
-    sgl_draw_text_t desc;
+    sgl_obj_t        obj;
+    const char       *text;
+    const sgl_font_t *font;
+    const sgl_icon_pixmap_t *icon;
+    sgl_color_t      color;
+    sgl_color_t      bg_color;
+    uint8_t          align: 7;
+    uint8_t          bg_flag : 1;
+    uint8_t          alpha;
 }sgl_label_t;
 
 
@@ -54,22 +61,107 @@ sgl_obj_t* sgl_label_create(sgl_obj_t* parent);
 
 
 /**
- * @brief set the style of the label object
+ * @brief set label text
  * @param obj pointer to the label object
- * @param type style type
- * @param value style value
+ * @param text text to be set
  * @return none
  */
-void sgl_label_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value);
-
+static inline void sgl_label_set_text(sgl_obj_t *obj, const char *text)
+{
+    sgl_label_t *label = sgl_container_of(obj, sgl_label_t, obj);
+    label->text = text;
+    sgl_obj_set_dirty(obj);
+}
 
 /**
- * @brief get the style of the label object
+ * @brief set label font
  * @param obj pointer to the label object
- * @param type style type
- * @return style value
+ * @param font pointer to the font
+ * @return none
  */
-size_t sgl_label_get_style(sgl_obj_t *obj, sgl_style_type_t type);
+static inline void sgl_label_set_font(sgl_obj_t *obj, const sgl_font_t *font)
+{
+    sgl_label_t *label = sgl_container_of(obj, sgl_label_t, obj);
+    label->font = font;
+    sgl_obj_set_dirty(obj);
+}
 
+/**
+ * @brief set label icon
+ * @param obj pointer to the label object
+ * @param icon pointer to the icon
+ * @return none
+ */
+static inline void sgl_label_set_icon(sgl_obj_t *obj, const sgl_icon_pixmap_t *icon)
+{
+    sgl_label_t *label = sgl_container_of(obj, sgl_label_t, obj);
+    label->icon = icon;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set label text color
+ * @param obj pointer to the label object
+ * @param color color to be set
+ * @return none
+ */
+static inline void sgl_label_set_text_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_label_t *label = sgl_container_of(obj, sgl_label_t, obj);
+    label->color = color;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set label background color
+ * @param obj pointer to the label object
+ * @param color color to be set
+ * @return none
+ */
+static inline void sgl_label_set_bg_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_label_t *label = sgl_container_of(obj, sgl_label_t, obj);
+    label->bg_color = color;
+    label->bg_flag = 1;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set label radius
+ * @param obj pointer to the label object
+ * @param radius radius to be set
+ * @return none
+ */
+static inline void sgl_label_set_radius(sgl_obj_t *obj, uint8_t radius)
+{
+    sgl_obj_fix_radius(obj, radius);
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set label text align
+ * @param obj pointer to the label object
+ * @param align align to be set
+ * @return none
+ */
+static inline void sgl_label_set_text_align(sgl_obj_t *obj, sgl_align_type_t align)
+{
+    sgl_label_t *label = sgl_container_of(obj, sgl_label_t, obj);
+    label->align = align;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set label alpha
+ * @param obj pointer to the label object
+ * @param alpha alpha to be set
+ * @return none
+ */
+static inline void sgl_label_set_alpha(sgl_obj_t *obj, uint8_t alpha)
+{
+    sgl_label_t *label = sgl_container_of(obj, sgl_label_t, obj);
+    label->alpha = alpha;
+    sgl_obj_set_dirty(obj);
+}
 
 #endif // !__SGL_LABEL_H__

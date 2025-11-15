@@ -19,11 +19,9 @@
 #define  CONFIG_SGL_TEXT_UTF8                              0
 #define  CONFIG_SGL_EXTERNAL_PIXMAP                        0  
 #define  CONFIG_SGL_OBJ_USE_NAME                           0
-#define  CONFIG_SGL_USE_STYLE_UNIFIED_API                  1
 #define  CONFIG_SGL_BOOT_LOGO                              0
 #define  CONFIG_SGL_BOOT_ANIMATION                         0
 #define  CONFIG_SGL_HEAP_ALGO                              lwmem
-#define  CONFIG_SGL_FL_INDEX_MAX                           20
 #define  CONFIG_SGL_HEAP_MEMORY_SIZE                       10240
 #define  CONFIG_SGL_FONT_SONG23                            1
 #define  CONFIG_SGL_FONT_CONSOLAS23                        0

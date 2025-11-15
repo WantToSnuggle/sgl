@@ -1,4 +1,4 @@
-/* source/sgl.h
+/* source/include/sgl_bench.h
  *
  * MIT License
  *
@@ -22,37 +22,36 @@
  * SOFTWARE.
  */
 
-#ifndef  __SGL_H__
-#define  __SGL_H__ 
+#ifndef __SGL_BENCH_H__
+#define __SGL_BENCH_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <sgl.h>
+
+#define CONFIG_SGL_BENCH_PER_TIMES   5
+#define CONFIG_SGL_BENCH 1
+#if (CONFIG_SGL_BENCH)
+
+typedef struct sgl_bench {
+    struct sgl_bench *next;
+    const char       *name;
+    void             (*init)(void);
+    void             (*func)(void);
+    void             (*deinit)(void);
+    uint32_t          frame;
+} sgl_bench_t;
 
 
-#include <sgl_list.h>
-#include <sgl_core.h>
-#include <sgl_anim.h>
-#include <sgl_misc.h>
-#include <sgl_types.h>
-#include <sgl_font.h>
-#include "widgets/line/sgl_line.h"
-#include "widgets/rectangle/sgl_rectangle.h"
-#include "widgets/circle/sgl_circle.h"
-#include "widgets/ring/sgl_ring.h"
-#include "widgets/arc/sgl_arc.h"
-#include "widgets/button/sgl_button.h"
-#include "widgets/slider/sgl_slider.h"
-#include "widgets/progress/sgl_progress.h"
-#include "widgets/label/sgl_label.h"
-#include "widgets/switch/sgl_switch.h"
-#include "widgets/msgbox/sgl_msgbox.h"
-#include "widgets/textline/sgl_textline.h"
-// #include "widgets/textbox/sgl_textbox.h"
-#include "widgets/checkbox/sgl_checkbox.h"
-#include "widgets/icon/sgl_icon.h"
-// #include "widgets/listview/sgl_listview.h"
-#include "widgets/numberkbd/sgl_numberkbd.h"
-#include "widgets/keyboard/sgl_keyboard.h"
-// #include "widgets/unzip_image/sgl_unzip_image.h"
-#include "widgets/led/sgl_led.h"
-#include "widgets/2dball/sgl_2dball.h"
+extern sgl_bench_t sgl_bench_ctx;
 
 
-#endif // __SGL_H__
+#endif // ! CONFIG_SGL_BENCH
+
+#ifdef __cplusplus
+} /*extern "C"*/
+#endif
+
+#endif // ! __SGL_BENCH_H__

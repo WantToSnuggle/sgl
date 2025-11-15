@@ -60,21 +60,78 @@ sgl_obj_t* sgl_led_create(sgl_obj_t* parent);
 
 
 /**
- * @brief set led object style
+ * @brief set the color of the led
  * @param obj led object
- * @param type style type
- * @param value style value
+ * @param color color of the led
+ * @return none
  */
-void sgl_led_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value);
-
+static inline void sgl_led_set_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_led_t *led = (sgl_led_t *)obj;
+    led->color = color;
+    sgl_obj_set_dirty(obj);
+}
 
 /**
- * @brief get led object style
+ * @brief set the radius of the led
  * @param obj led object
- * @param type style type
- * @return style value
+ * @param radius radius of the led
+ * @return none
  */
-size_t sgl_led_get_style(sgl_obj_t *obj, sgl_style_type_t type);
+static inline void sgl_led_set_radius(sgl_obj_t *obj, uint8_t radius)
+{
+    sgl_obj_fix_radius(obj, radius);
+    sgl_obj_set_dirty(obj);
+}
 
+/**
+ * @brief set the background color of the led
+ * @param obj led object
+ * @param color background color of the led
+ * @return none
+ */
+static inline void sgl_led_set_bg_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_led_t *led = (sgl_led_t *)obj;
+    led->bg_color = color;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set the alpha of the led
+ * @param obj led object
+ * @param alpha alpha of the led
+ * @return none
+ */
+static inline void sgl_led_set_alpha(sgl_obj_t *obj, uint8_t alpha)
+{
+    sgl_led_t *led = (sgl_led_t *)obj;
+    led->alpha = alpha;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set the status of the led
+ * @param obj led object
+ * @param status status of the led
+ * @return none
+ */
+static inline void sgl_led_set_status(sgl_obj_t *obj, bool status)
+{
+    sgl_led_t *led = (sgl_led_t *)obj;
+    led->status = status;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief get the status of the led
+ * @param obj led object
+ * @return status of the led
+ */
+static inline bool sgl_led_get_status(sgl_obj_t *obj)
+{
+    sgl_led_t *led = (sgl_led_t *)obj;
+    return led->status;
+}
 
 #endif // !__SGL_LED_H__

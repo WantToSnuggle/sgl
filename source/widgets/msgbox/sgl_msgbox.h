@@ -42,13 +42,25 @@
 typedef struct sgl_msgbox {
     sgl_obj_t        obj;
     sgl_draw_rect_t  body_desc;
-    sgl_draw_text_t  title_desc;
-    sgl_draw_line_t  title_line_desc;
-    sgl_draw_text_t  text_desc;
-    sgl_rect_t       text_coords;
+    const sgl_font_t *font;
+
+    const char       *title_text;
+    sgl_color_t      title_color;
+    const sgl_icon_pixmap_t *title_icon;
+
+    const char       *msg_text;
+    sgl_color_t      msg_color;
+    uint8_t          msg_line_margin;
+
     uint8_t          status;
-    sgl_draw_text_t  apply_text;
-    sgl_draw_text_t  close_text;
+    sgl_color_t      btn_text_color;
+    sgl_color_t      apply_color;
+    sgl_color_t      close_color;
+    const char       *apply_text;
+    const char       *close_text;
+    const sgl_icon_pixmap_t *apply_icon;
+    const sgl_icon_pixmap_t *close_icon;
+
 }sgl_msgbox_t;
 
 
@@ -59,24 +71,275 @@ typedef struct sgl_msgbox {
  */
 sgl_obj_t* sgl_msgbox_create(sgl_obj_t* parent);
 
-
 /**
- * @brief Set style of message box
- * @param obj pointer to message box object
- * @param type style type
- * @param value value of style
+ * @brief set message box color
+ * @param obj message box object
+ * @param color message box color
  * @return none
  */
-void sgl_msgbox_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value);
-
+static inline void sgl_msgbox_set_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
+    msgbox->body_desc.color = color;
+    sgl_obj_set_dirty(obj);
+}
 
 /**
- * @brief Get style of message box
- * @param obj pointer to message box object
- * @param type style type
- * @return value of style
+ * @brief set message box alpha
+ * @param obj message box object
+ * @param alpha message box alpha
+ * @return none
  */
-size_t sgl_msgbox_get_style(sgl_obj_t *obj, sgl_style_type_t type);
+static inline void sgl_msgbox_set_alpha(sgl_obj_t *obj, uint8_t alpha)
+{
+    sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
+    msgbox->body_desc.alpha = alpha;
+    sgl_obj_set_dirty(obj);
+}
 
+/**
+ * @brief set message box radius
+ * @param obj message box object
+ * @param radius message box radius
+ * @return none
+ */
+static inline void sgl_msgbox_set_radius(sgl_obj_t *obj, uint8_t radius)
+{
+    sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
+    msgbox->body_desc.radius = sgl_obj_fix_radius(obj, radius);
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set message box border width
+ * @param obj message box object
+ * @param width message box border width
+ * @return none
+ */
+static inline void sgl_msgbox_set_border_width(sgl_obj_t *obj, uint8_t width)
+{
+    sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
+    msgbox->body_desc.border = width;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set message box border color
+ * @param obj message box object
+ * @param color message box border color
+ * @return none
+ */
+static inline void sgl_msgbox_set_border_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
+    msgbox->body_desc.border_color = color;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set message box pixmap
+ * @param obj message box object
+ * @param pixmap message box pixmap
+ * @return none
+ */
+static inline void sgl_msgbox_set_pixmap(sgl_obj_t *obj, const sgl_pixmap_t *pixmap)
+{
+    sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
+    msgbox->body_desc.pixmap = pixmap;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set message box all text font
+ * @param obj message box object
+ * @param font message box font
+ * @return none
+ */
+static inline void sgl_msgbox_set_font(sgl_obj_t *obj, const sgl_font_t *font)
+{
+    sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
+    msgbox->font = font;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set message box title text
+ * @param obj message box object
+ * @param text message box title text
+ * @return none
+ */
+static inline void sgl_msgbox_set_title_text(sgl_obj_t *obj, const char *text)
+{
+    sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
+    msgbox->title_text = text;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set message box title text color
+ * @param obj message box object
+ * @param color message box title text color
+ * @return none
+ */
+static inline void sgl_msgbox_set_title_text_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
+    msgbox->title_color = color;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set message box title icon
+ * @param obj message box object
+ * @param icon message box title icon
+ * @return none
+ */
+static inline void sgl_msgbox_set_title_icon(sgl_obj_t *obj, const sgl_icon_pixmap_t *icon)
+{
+    sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
+    msgbox->title_icon = icon;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set message box message text
+ * @param obj message box object
+ * @param text message box message text
+ * @return none
+ */
+static inline void sgl_msgbox_set_msg_text(sgl_obj_t *obj, const char *text)
+{
+    sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
+    msgbox->msg_text = text;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set message box message text color
+ * @param obj message box object
+ * @param color message box message text color
+ * @return none
+ */
+static inline void sgl_msgbox_set_msg_text_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
+    msgbox->msg_color = color;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set message box message text line margin
+ * @param obj message box object
+ * @param margin message box message text line margin
+ * @return none
+ */
+static inline void sgl_msgbox_set_msg_line_margin(sgl_obj_t *obj, uint8_t margin)
+{
+    sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
+    msgbox->msg_line_margin = margin;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set message box apply button text
+ * @param obj message box object
+ * @param text message box apply button text
+ * @return none
+ */
+static inline void sgl_msgbox_set_apply_text(sgl_obj_t *obj, const char *text)
+{
+    sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
+    msgbox->apply_text = text;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set message box apply button icon
+ * @param obj message box object
+ * @param icon message box apply button icon
+ * @return none
+ */
+static inline void sgl_msgbox_set_apply_icon(sgl_obj_t *obj, const sgl_icon_pixmap_t *icon)
+{
+    sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
+    msgbox->apply_icon = icon;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set message box apply button text color
+ * @param obj message box object
+ * @param color message box apply button text color
+ * @return none
+ */
+static inline void sgl_msgbox_set_apply_text_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
+    msgbox->btn_text_color = color;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set message box apply button color
+ * @param obj message box object
+ * @param color message box apply button color
+ * @return none
+ */
+static inline void sgl_msgbox_set_apply_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
+    msgbox->apply_color = color;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set message box close button text
+ * @param obj message box object
+ * @param text message box close button text
+ * @return none
+ */
+static inline void sgl_msgbox_set_close_text(sgl_obj_t *obj, const char *text)
+{
+    sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
+    msgbox->close_text = text;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set message box close button icon
+ * @param obj message box object
+ * @param icon message box close button icon
+ * @return none
+ */
+static inline void sgl_msgbox_set_close_icon(sgl_obj_t *obj, const sgl_icon_pixmap_t *icon)
+{
+    sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
+    msgbox->close_icon = icon;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set message box close button text color
+ * @param obj message box object
+ * @param color message box close button text color
+ * @return none
+ */
+static inline void sgl_msgbox_set_close_text_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
+    msgbox->btn_text_color = color;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief get message box exit answer
+ * @param obj message box object
+ * @return true if exit answer is yes, false otherwise
+ */
+static inline bool sgl_msgbox_get_exit_answer(sgl_obj_t *obj)
+{
+    sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
+    return msgbox->status;
+}
 
 #endif // !__SGL_MSGBOX_H__

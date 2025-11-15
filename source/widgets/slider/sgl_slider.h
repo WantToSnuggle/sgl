@@ -58,23 +58,143 @@ typedef struct sgl_slider {
  */
 sgl_obj_t* sgl_slider_create(sgl_obj_t* parent);
 
+/**
+ * @brief set the fill color of the slider
+ * @param obj slider object
+ * @param color fill color
+ * @return none
+ */
+static inline void sgl_slider_set_fill_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_slider_t *slider = (sgl_slider_t *)obj;
+    slider->color = color;
+    sgl_obj_set_dirty(obj);
+}
 
 /**
- * @brief set slider object style
+ * @brief set the fill alpha of the slider
  * @param obj slider object
- * @param type style type
- * @param value style value
+ * @param alpha fill alpha
+ * @return none
  */
-void sgl_slider_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value);
-
+static inline void sgl_slider_set_fill_alpha(sgl_obj_t *obj, uint8_t alpha)
+{
+    sgl_slider_t *slider = (sgl_slider_t *)obj;
+    slider->alpha = alpha;
+    sgl_obj_set_dirty(obj);
+}
 
 /**
- * @brief get slider object style
+ * @brief set the track color of the slider
  * @param obj slider object
- * @param type style type
- * @return style value
+ * @param color track color
+ * @return none
  */
-size_t sgl_slider_get_style(sgl_obj_t *obj, sgl_style_type_t type);
+static inline void sgl_slider_set_track_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_slider_t *slider = (sgl_slider_t *)obj;
+    slider->body.color = color;
+    sgl_obj_set_dirty(obj);
+}
 
+/**
+ * @brief set the track alpha of the slider
+ * @param obj slider object
+ * @param alpha track alpha
+ * @return none
+ */
+static inline void sgl_slider_set_track_alpha(sgl_obj_t *obj, uint8_t alpha)
+{
+    sgl_slider_t *slider = (sgl_slider_t *)obj;
+    slider->body.alpha = alpha;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set the slider direction
+ * @param obj slider object
+ * @param direct slider direction
+ * @return none
+ * @note direct : SGL_DIRECT_HORIZONTAL or SGL_DIRECT_VERTICAL
+ */
+static inline void sgl_slider_set_direct(sgl_obj_t *obj, uint8_t direct)
+{
+    sgl_slider_t *slider = (sgl_slider_t *)obj;
+    slider->direct = direct;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set the slider radius
+ * @param obj slider object
+ * @param radius slider radius
+ * @return none
+ */
+static inline void sgl_slider_set_radius(sgl_obj_t *obj, uint8_t radius)
+{
+    sgl_slider_t *slider = (sgl_slider_t *)obj;
+    slider->body.radius = sgl_obj_fix_radius(obj, radius);
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set the slider value
+ * @param obj slider object
+ * @param value slider value
+ * @return none
+ */
+static inline void sgl_slider_set_value(sgl_obj_t *obj, uint8_t value)
+{
+    sgl_slider_t *slider = (sgl_slider_t *)obj;
+    slider->value = value;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief get the slider value
+ * @param obj slider object
+ * @return slider value
+ */
+static inline uint8_t sgl_slider_get_value(sgl_obj_t *obj)
+{
+    sgl_slider_t *slider = (sgl_slider_t *)obj;
+    return slider->value;
+}
+
+/**
+ * @brief set the slider border width
+ * @param obj slider object
+ * @param width border width
+ */
+static inline void sgl_slider_set_border_width(sgl_obj_t *obj, uint8_t width)
+{
+    sgl_slider_t *slider = (sgl_slider_t *)obj;
+    slider->body.border = width;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set the slider border color
+ * @param obj slider object
+ * @param color border color
+ */
+static inline void sgl_slider_set_border_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_slider_t *slider = (sgl_slider_t *)obj;
+    slider->body.border_color = color;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief set the slider pixmap
+ * @param obj slider object
+ * @param pixmap pixmap
+ */
+static inline void sgl_slider_set_pixmap(sgl_obj_t *obj, const sgl_pixmap_t *pixmap)
+{
+    sgl_slider_t *slider = (sgl_slider_t *)obj;
+    slider->body.pixmap = pixmap;
+    sgl_obj_set_dirty(obj);
+}
 
 #endif // !__SGL_SLIDER_H__

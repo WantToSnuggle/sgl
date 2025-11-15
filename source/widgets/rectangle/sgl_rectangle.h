@@ -54,22 +54,82 @@ sgl_obj_t* sgl_rect_create(sgl_obj_t* parent);
 
 
 /**
- * @brief set style of rectangle object
- * @param  obj: object
- * @param  type: style type
- * @param  value: style value
+ * @brief  set rectangle color
+ * @param  obj: rectangle object
+ * @param  color: rectangle color
  * @retval none
  */
-void sgl_rect_set_style(sgl_obj_t *obj, sgl_style_type_t type, size_t value);
+static inline void sgl_rect_set_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_rectangle_t *rect = (sgl_rectangle_t *)obj;
+    rect->desc.color = color;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief  set rectangle alpha
+ * @param  obj: rectangle object
+ * @param  alpha: rectangle alpha
+ * @retval none
+ */
+static inline void sgl_rect_set_alpha(sgl_obj_t *obj, uint8_t alpha)
+{
+    sgl_rectangle_t *rect = (sgl_rectangle_t *)obj;
+    rect->desc.alpha = alpha;
+    sgl_obj_set_dirty(obj);
+}
 
 
 /**
- * @brief get style of rectangle object
- * @param  obj: object
- * @param  type: style type
- * @retval style value
+ * @brief  set rectangle radius
+ * @param  obj: rectangle object
+ * @param  radius: rectangle radius
+ * @retval none
  */
-size_t sgl_rect_get_style(sgl_obj_t *obj, sgl_style_type_t type);
+static inline void sgl_rect_set_radius(sgl_obj_t *obj, uint8_t radius)
+{
+    sgl_rectangle_t *rect = (sgl_rectangle_t *)obj;
+    rect->desc.radius = radius;
+    sgl_obj_set_dirty(obj);
+}
 
+/**
+ * @brief  set rectangle border width
+ * @param  obj: rectangle object
+ * @param  width: rectangle border width
+ * @retval none
+ */
+static inline void sgl_rect_set_border_width(sgl_obj_t *obj, uint8_t width)
+{
+    sgl_rectangle_t *rect = (sgl_rectangle_t *)obj;
+    rect->desc.border = width;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief  set rectangle border color
+ * @param  obj: rectangle object
+ * @param  color: rectangle border color
+ * @retval none
+ */
+static inline void sgl_rect_set_border_color(sgl_obj_t *obj, sgl_color_t color)
+{
+    sgl_rectangle_t *rect = (sgl_rectangle_t *)obj;
+    rect->desc.border_color = color;
+    sgl_obj_set_dirty(obj);
+}
+
+/**
+ * @brief  set rectangle pixmap
+ * @param  obj: rectangle object
+ * @param  pixmap: rectangle pixmap
+ * @retval none
+ */
+static inline void sgl_rect_set_pixmap(sgl_obj_t *obj, const sgl_pixmap_t *pixmap)
+{
+    sgl_rectangle_t *rect = (sgl_rectangle_t *)obj;
+    rect->desc.pixmap = pixmap;
+    sgl_obj_set_dirty(obj);
+}
 
 #endif // !__SGL_RECTANGLE_H__
