@@ -342,5 +342,4 @@ static inline bool sgl_msgbox_get_exit_answer(sgl_obj_t *obj)
     return msgbox->status;
 }
 
-
 #endif // !__SGL_MSGBOX_H__

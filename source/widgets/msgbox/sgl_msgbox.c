@@ -57,12 +57,7 @@ static void sgl_msgbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
     sgl_msgbox_t *msgbox = (sgl_msgbox_t *)obj;
     const sgl_font_t *font = msgbox->font;
     int32_t font_height = sgl_font_get_height(font) + 8;
-    uint16_t text_x = 0, text_y = 0;
-    int16_t ch_index, ch_width, border = msgbox->body_desc.border;
-    const char *str = msgbox->msg_text;
-    #if CONFIG_SGL_TEXT_UTF8
-    uint32_t unicode = 0;
-    #endif
+    int16_t border = msgbox->body_desc.border;
 
     sgl_color_t tmp_color;
     sgl_area_t  button_coords = {
@@ -118,27 +113,7 @@ static void sgl_msgbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
                                        msgbox->body_desc.alpha
                                       );
 
-        text_x = text_coords.x1;
-        text_y = text_coords.y1;
-        while (*str) {
-            #if CONFIG_SGL_TEXT_UTF8
-            str += sgl_utf8_to_unicode(str, &unicode);
-            ch_index = sgl_search_unicode_ch_index(font, unicode);
-            #else
-            ch_index = ((uint32_t)*str) - 32;
-            str++;
-            #endif
-
-            ch_width = font->table[ch_index].box_w;
-
-            if ((text_x + ch_width + 2) > text_coords.x2) {
-                text_x = text_coords.x1;
-                text_y += (font->font_height + msgbox->msg_line_margin);
-            }
-
-            sgl_draw_character(surf, &text_coords, text_x, text_y, ch_index, msgbox->msg_color, msgbox->body_desc.alpha, font);
-            text_x += ch_width;
-        }
+        sgl_draw_string_mult_line(surf, &text_coords, text_coords.x1, text_coords.y1, msgbox->msg_text, msgbox->msg_color, msgbox->body_desc.alpha, font, 2, msgbox->msg_line_margin);
 
         if(msgbox->status & SGL_MSGBOX_STATUS_APPLY) {
             tmp_color = msgbox->apply_color;

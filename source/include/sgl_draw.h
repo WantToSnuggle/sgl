@@ -423,6 +423,23 @@ void sgl_draw_string(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, c
 
 
 /**
+ * @brief Draw a string on the surface with alpha blending and multiple lines
+ * @param surf Pointer to the surface where the string will be drawn
+ * @param area Pointer to the area where the string will be drawn
+ * @param x X coordinate of the top-left corner of the string
+ * @param y Y coordinate of the top-left corner of the string
+ * @param str Pointer to the string to be drawn
+ * @param color Foreground color of the string
+ * @param alpha Alpha value for blending
+ * @param font Pointer to the font structure containing character data
+ * @param edge_margin Margin between characters
+ * @param line_margin Margin between lines
+ * @return none
+ */
+void sgl_draw_string_mult_line(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str, sgl_color_t color, uint8_t alpha, const sgl_font_t *font, uint8_t edge_margin, uint8_t line_margin);
+
+
+/**
  * @brief draw a ring on surface with alpha
  * @param surf: pointer of surface
  * @param area: pointer of area

@@ -1122,6 +1122,13 @@ int32_t sgl_font_get_string_height(sgl_area_t *rect, const char *str, const sgl_
     #endif
 
     while (*str) {
+        if (*str == '\n') {
+            lines ++;
+            offset_x = margin;
+            str ++;
+            continue;
+        }
+
         #if CONFIG_SGL_TEXT_UTF8
         str += sgl_utf8_to_unicode(str, &unicode);
         ch_index = sgl_search_unicode_ch_index(font, unicode);

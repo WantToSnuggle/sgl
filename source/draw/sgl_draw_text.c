@@ -140,3 +140,54 @@ void sgl_draw_string(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, c
         x += font->table[ch_index].box_w;
     }
 }
+
+
+/**
+ * @brief Draw a string on the surface with alpha blending and multiple lines
+ * @param surf Pointer to the surface where the string will be drawn
+ * @param area Pointer to the area where the string will be drawn
+ * @param x X coordinate of the top-left corner of the string
+ * @param y Y coordinate of the top-left corner of the string
+ * @param str Pointer to the string to be drawn
+ * @param color Foreground color of the string
+ * @param alpha Alpha value for blending
+ * @param font Pointer to the font structure containing character data
+ * @param edge_margin Margin between characters
+ * @param line_margin Margin between lines
+ * @return none
+ */
+void sgl_draw_string_mult_line(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str, sgl_color_t color, uint8_t alpha, const sgl_font_t *font, uint8_t edge_margin, uint8_t line_margin)
+{
+    int16_t ch_index, ch_width;
+    #if CONFIG_SGL_TEXT_UTF8
+    uint32_t unicode = 0;
+    #endif
+    x += edge_margin;
+
+    while (*str) {
+        if (*str == '\n') {
+            x = (area->x1 + edge_margin);
+            y += (font->font_height + line_margin);
+            str ++;
+            continue;
+        }
+
+        #if CONFIG_SGL_TEXT_UTF8
+        str += sgl_utf8_to_unicode(str, &unicode);
+        ch_index = sgl_search_unicode_ch_index(font, unicode);
+        #else
+        ch_index = ((uint32_t)*str) - 32;
+        str++;
+        #endif
+
+        ch_width = font->table[ch_index].box_w;
+
+        if ((x + ch_width + edge_margin) > area->x2) {
+            x = area->x1 + edge_margin;
+            y += (font->font_height + line_margin);
+        }
+
+        sgl_draw_character(surf, area, x, y, ch_index, color, alpha, font);
+        x += ch_width;
+    }
+}
