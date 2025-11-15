@@ -50,7 +50,7 @@
 // #include "widgets/listview/sgl_listview.h"
 #include "widgets/numberkbd/sgl_numberkbd.h"
 #include "widgets/keyboard/sgl_keyboard.h"
-// #include "widgets/unzip_image/sgl_unzip_image.h"
+#include "widgets/unzip_image/sgl_unzip_image.h"
 #include "widgets/led/sgl_led.h"
 #include "widgets/2dball/sgl_2dball.h"
 
