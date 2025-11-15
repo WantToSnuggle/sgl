@@ -159,14 +159,15 @@ void sgl_draw_string(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, c
 void sgl_draw_string_mult_line(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, const char *str, sgl_color_t color, uint8_t alpha, const sgl_font_t *font, uint8_t edge_margin, uint8_t line_margin)
 {
     int16_t ch_index, ch_width;
+    int16_t x_off = x;
     #if CONFIG_SGL_TEXT_UTF8
     uint32_t unicode = 0;
     #endif
-    x += edge_margin;
+    x_off += edge_margin;
 
     while (*str) {
         if (*str == '\n') {
-            x = (area->x1 + edge_margin);
+            x_off = (x + edge_margin);
             y += (font->font_height + line_margin);
             str ++;
             continue;
@@ -182,12 +183,12 @@ void sgl_draw_string_mult_line(sgl_surf_t *surf, sgl_area_t *area, int16_t x, in
 
         ch_width = font->table[ch_index].box_w;
 
-        if ((x + ch_width + edge_margin) > area->x2) {
-            x = area->x1 + edge_margin;
+        if ((x_off + ch_width + edge_margin) > area->x2) {
+            x_off = x + edge_margin;
             y += (font->font_height + line_margin);
         }
 
-        sgl_draw_character(surf, area, x, y, ch_index, color, alpha, font);
-        x += ch_width;
+        sgl_draw_character(surf, area, x_off, y, ch_index, color, alpha, font);
+        x_off += ch_width;
     }
 }

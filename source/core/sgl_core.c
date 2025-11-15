@@ -473,6 +473,11 @@ static void sgl_page_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t 
             sgl_draw_fill_rect_pixmap(surf, &obj->area, &obj->coords, page->bg_img, SGL_ALPHA_MAX);
         }
     }
+    else {
+        if (obj->event_fn) {
+            obj->event_fn(evt);
+        }
+    }
 }
 
 

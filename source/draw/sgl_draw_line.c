@@ -31,7 +31,6 @@
 /**
  * @brief draw a horizontal line with alpha
  * @param surf surface
- * @param area area that you want to draw
  * @param y y coordinate
  * @param x1 x start coordinate
  * @param x2 x end coordinate
@@ -67,7 +66,6 @@ void sgl_draw_fill_hline(sgl_surf_t *surf, int16_t y, int16_t x1, int16_t x2, in
 /**
  * @brief draw a vertical line with alpha
  * @param surf surface
- * @param area area that you want to draw
  * @param x x coordinate
  * @param y1 y start coordinate
  * @param y2 y end coordinate
@@ -79,6 +77,7 @@ void sgl_draw_fill_hline(sgl_surf_t *surf, int16_t y, int16_t x1, int16_t x2, in
 void sgl_draw_fill_vline(sgl_surf_t *surf, int16_t x, int16_t y1, int16_t y2, int16_t width, sgl_color_t color, uint8_t alpha)
 {
     sgl_area_t clip;
+    sgl_color_t *buf = NULL;
     sgl_area_t coords = {
         .x1 = x,
         .y1 = y1,
@@ -90,15 +89,12 @@ void sgl_draw_fill_vline(sgl_surf_t *surf, int16_t x, int16_t y1, int16_t y2, in
         return;
     }
 
-    for (int i = clip.y1; i <= clip.y2; i++) {
-        for (int j = clip.x1; j <= clip.x2; j++) {
-            if (alpha == SGL_ALPHA_MAX) {
-                sgl_surf_set_pixel(surf, j, i - surf->y, color);
-            }
-            else {
-                sgl_surf_set_pixel(surf, j, i - surf->y, sgl_color_mixer(color, sgl_surf_get_pixel(surf, j, i - surf->y), alpha));
-            }
+    for (int y = clip.y1; y <= clip.y2; y++) {
+        buf = sgl_surf_get_buf(surf,  clip.x1 - surf->x, y - surf->y);
+        for (int x = clip.x1; x <= clip.x2; x++, buf++) {
+            *buf = (alpha == SGL_ALPHA_MAX ? color : sgl_color_mixer(color, *buf, alpha));
         }
+        buf += surf->w;
     }
 }
 
@@ -106,7 +102,6 @@ void sgl_draw_fill_vline(sgl_surf_t *surf, int16_t x, int16_t y1, int16_t y2, in
 /**
  * @brief draw a line
  * @param surf surface
- * @param area draw area
  * @param desc line description
  * @return none
  */
@@ -126,6 +121,6 @@ void sgl_draw_line(sgl_surf_t *surf, sgl_draw_line_t *desc)
         sgl_draw_fill_vline(surf, x1, y1, y2, desc->width, desc->color, alpha);
     }
     else {
-
+        /* TODO: draw line */
     }
 }

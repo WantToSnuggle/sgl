@@ -38,7 +38,6 @@ static void sgl_ring_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t 
     sgl_ring_t *ring = (sgl_ring_t*)obj;
 
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
-        SGL_LOG_INFO("sgl_ring_construct_cb = %d %d", obj->coords.x1, obj->coords.y1);
         ring->cx = (obj->coords.x2 + obj->coords.x1) / 2;
         ring->cy = (obj->coords.y2 + obj->coords.y1) / 2;
         sgl_draw_fill_ring(surf, &obj->area, ring->cx, ring->cy, ring->radius_in, ring->radius_out, ring->color, ring->alpha);

@@ -499,6 +499,13 @@ static inline int16_t sgl_panel_resolution_width(void)
     return sgl_ctx.fb_dev.xres;
 }
 
+/**
+ * @brief get panel resolution height
+ * @param none
+ * @return panel resolution height
+ */
+#define  SGL_SCREEN_WIDTH  sgl_panel_resolution_width()
+
 
 /**
  * @brief get panel resolution height
@@ -509,6 +516,13 @@ static inline int16_t sgl_panel_resolution_height(void)
 {
     return sgl_ctx.fb_dev.yres;
 }
+
+/**
+ * @brief get panel resolution width
+ * @param none
+ * @return panel resolution width
+ */
+#define  SGL_SCREEN_HEIGHT  sgl_panel_resolution_height()
 
 
 /**
@@ -639,14 +653,6 @@ static inline sgl_color_t sgl_rgb2color(uint8_t red, uint8_t green, uint8_t blue
     color.ch.red = red;
     return color;
 }
-
-
-#define SGL_RADIUS(x)                                             (size_t)(x)
-#define SGL_TEXT(x)                                               (size_t)(x)
-#define SGL_COLOR(x)                                              (sgl_color2int((x)))
-#define SGL_PIXMAP(x)                                             (size_t)(&(x))
-#define SGL_FONT(x)                                               (size_t)(&(x))
-#define SGL_ICON(x)                                               (size_t)(&(x))
 
 
 /**
