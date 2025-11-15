@@ -38,7 +38,7 @@ static void sgl_line_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t 
     sgl_line_t *line = (sgl_line_t*)obj;
 
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
-        sgl_draw_line(surf, &obj->area, &line->desc);
+        sgl_draw_line(surf, &line->desc);
     }
 }
 

@@ -466,7 +466,7 @@ void sgl_draw_fill_ring(sgl_surf_t *surf, sgl_area_t *area, int16_t cx, int16_t 
  * @param alpha alpha of color
  * @return none
  */
-void sgl_draw_fill_hline(sgl_surf_t *surf, sgl_area_t *area, int16_t y, int16_t x1, int16_t x2, int16_t width, sgl_color_t color, uint8_t alpha);
+void sgl_draw_fill_hline(sgl_surf_t *surf, int16_t y, int16_t x1, int16_t x2, int16_t width, sgl_color_t color, uint8_t alpha);
 
 
 /**
@@ -481,7 +481,7 @@ void sgl_draw_fill_hline(sgl_surf_t *surf, sgl_area_t *area, int16_t y, int16_t 
  * @param alpha alpha of color
  * @return none
  */
-void sgl_draw_fill_vline(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y1, int16_t y2, int16_t width, sgl_color_t color, uint8_t alpha);
+void sgl_draw_fill_vline(sgl_surf_t *surf, int16_t x, int16_t y1, int16_t y2, int16_t width, sgl_color_t color, uint8_t alpha);
 
 
 /**
@@ -491,7 +491,7 @@ void sgl_draw_fill_vline(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t 
  * @param desc line description
  * @return none
  */
-void sgl_draw_line(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_line_t *desc);
+void sgl_draw_line(sgl_surf_t *surf, sgl_draw_line_t *desc);
 
 
 /**

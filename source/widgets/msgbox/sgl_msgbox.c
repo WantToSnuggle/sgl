@@ -104,14 +104,14 @@ static void sgl_msgbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
         
         msgbox_draw_text(surf, &obj->area, &title_coords, msgbox->title_icon, msgbox->title_text, font, msgbox->title_color, msgbox->body_desc.alpha, 0);
 
-        sgl_draw_fill_hline(surf, &obj->area,
-                                       obj->coords.y1 + font_height + 4,
-                                       obj->coords.x1 + msgbox->body_desc.border,
-                                       obj->coords.x2 - msgbox->body_desc.border,
-                                       msgbox->body_desc.border,
-                                       msgbox->body_desc.border_color,
-                                       msgbox->body_desc.alpha
-                                      );
+        sgl_draw_fill_hline(surf, 
+                            obj->coords.y1 + font_height + 4,
+                            obj->coords.x1 + msgbox->body_desc.border,
+                            obj->coords.x2 - msgbox->body_desc.border,
+                            msgbox->body_desc.border,
+                            msgbox->body_desc.border_color,
+                            msgbox->body_desc.alpha
+                           );
 
         sgl_draw_string_mult_line(surf, &text_coords, text_coords.x1, text_coords.y1, msgbox->msg_text, msgbox->msg_color, msgbox->body_desc.alpha, font, 2, msgbox->msg_line_margin);
 

@@ -101,7 +101,6 @@ void sgl_draw_fill_circle_pixmap(sgl_surf_t *surf, sgl_area_t *area, int16_t cx,
     int y2 = 0, real_r2 = 0;
     int r2 = radius * radius;
     int r2_max = (radius + 1) * (radius + 1);
-    sgl_color_t edge_color;
     sgl_color_t *buf = NULL;
     sgl_area_t clip = SGL_AREA_MAX;
     uint8_t edge_alpha = 0;

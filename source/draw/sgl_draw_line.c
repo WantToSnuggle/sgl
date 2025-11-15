@@ -40,7 +40,7 @@
  * @param alpha alpha of color
  * @return none
  */
-void sgl_draw_fill_hline(sgl_surf_t *surf, sgl_area_t *area, int16_t y, int16_t x1, int16_t x2, int16_t width, sgl_color_t color, uint8_t alpha)
+void sgl_draw_fill_hline(sgl_surf_t *surf, int16_t y, int16_t x1, int16_t x2, int16_t width, sgl_color_t color, uint8_t alpha)
 {
     sgl_area_t clip;
     sgl_color_t *buf = NULL;
@@ -76,7 +76,7 @@ void sgl_draw_fill_hline(sgl_surf_t *surf, sgl_area_t *area, int16_t y, int16_t 
  * @param alpha alpha of color
  * @return none
  */
-void sgl_draw_fill_vline(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y1, int16_t y2, int16_t width, sgl_color_t color, uint8_t alpha)
+void sgl_draw_fill_vline(sgl_surf_t *surf, int16_t x, int16_t y1, int16_t y2, int16_t width, sgl_color_t color, uint8_t alpha)
 {
     sgl_area_t clip;
     sgl_area_t coords = {
@@ -110,7 +110,7 @@ void sgl_draw_fill_vline(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t 
  * @param desc line description
  * @return none
  */
-void sgl_draw_line(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_line_t *desc)
+void sgl_draw_line(sgl_surf_t *surf, sgl_draw_line_t *desc)
 {
     uint8_t alpha = desc->alpha;
 
@@ -120,10 +120,10 @@ void sgl_draw_line(sgl_surf_t *surf, sgl_area_t *area, sgl_draw_line_t *desc)
     int16_t y2 = desc->end.y;
 
     if (y1 == y2) {
-        sgl_draw_fill_hline(surf, area, y1, x1, x2, desc->width, desc->color, alpha);
+        sgl_draw_fill_hline(surf, y1, x1, x2, desc->width, desc->color, alpha);
     }
     else if (x1 == x2) {
-        sgl_draw_fill_vline(surf, area, x1, y1, y2, desc->width, desc->color, alpha);
+        sgl_draw_fill_vline(surf, x1, y1, y2, desc->width, desc->color, alpha);
     }
     else {
 

@@ -41,7 +41,6 @@
 void sgl_draw_icon( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, sgl_color_t color, uint8_t alpha, const sgl_icon_pixmap_t *icon)
 {
     const uint8_t *dot = icon->bitmap;
-    sgl_color_t color_mix;
     sgl_area_t clip = SGL_AREA_MAX;
     sgl_color_t *buf = NULL;
     int rel_x, rel_y, byte_x, dot_index;

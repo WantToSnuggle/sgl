@@ -45,7 +45,7 @@ static void sgl_button_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
 {
     sgl_button_t *button = (sgl_button_t*)obj;
     sgl_pos_t   align_pos;
-    int text_x = 0, icon_y = 0;
+    int text_x = 0;
 
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
         sgl_draw_rect(surf, &obj->area, &obj->coords, &button->rect);
