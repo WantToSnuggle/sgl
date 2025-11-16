@@ -64,12 +64,16 @@
  * @return none
  * @note this function is only support bpp:4
  */
-void sgl_draw_character( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, uint32_t ch_index, sgl_color_t color, uint8_t alpha, const sgl_font_t *font)
+void sgl_draw_character(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y, uint32_t ch_index, sgl_color_t color, uint8_t alpha, const sgl_font_t *font)
 {
     int offset_y2 = font->font_height - font->table[ch_index].ofs_y;
     const uint8_t *dot = &font->bitmap[font->table[ch_index].bitmap_index];
     const uint8_t font_w = font->table[ch_index].box_w;
-    int rel_x, rel_y, byte_x, dot_index;
+    const uint8_t font_h = font->table[ch_index].box_h;
+
+    int rel_x, rel_y;
+    uint32_t pixel_index;
+    uint16_t byte_index;
     uint16_t alpha_dot;
     sgl_color_t color_mix;
     sgl_color_t *buf = NULL;
@@ -77,15 +81,14 @@ void sgl_draw_character( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t 
 
     sgl_area_t text_rect = {
         .x1 = x + font->table[ch_index].ofs_x,
-        .x2 = x + font_w - 1,
-        .y1 = y + offset_y2 - font->table[ch_index].box_h,
+        .x2 = x + font->table[ch_index].ofs_x + font_w - 1,
+        .y1 = y + offset_y2 - font_h,
         .y2 = y + offset_y2 - 1,
     };
 
     if (!sgl_surf_clip(surf, &text_rect, &clip)) {
         return;
     }
-
     if (!sgl_area_selfclip(&clip, area)) {
         return;
     }
@@ -97,10 +100,12 @@ void sgl_draw_character( sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t 
         for (int x = clip.x1; x <= clip.x2; x++) {
             rel_x = x - text_rect.x1;
 
-            byte_x = rel_x >> 1;
-            dot_index = byte_x + (rel_y * (font_w >> 1));
-            alpha_dot = (rel_x & 1) ? dot[dot_index] & 0xF : (dot[dot_index] >> 4);
-            alpha_dot = alpha_dot | (alpha_dot << 4);
+            pixel_index = rel_y * font_w + rel_x;
+
+            byte_index = pixel_index >> 1;
+            alpha_dot = (pixel_index & 1) ? (dot[byte_index] & 0x0F) : (dot[byte_index] >> 4);
+            alpha_dot |= (alpha_dot << 4);
+
             color_mix = sgl_color_mixer(color, *buf, alpha_dot);
             *buf = sgl_color_mixer(color_mix, *buf, alpha);
             buf++;
