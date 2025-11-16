@@ -183,10 +183,9 @@ void sgl_obj_set_pos(sgl_obj_t *obj, int16_t x, int16_t y)
     int16_t y_inc = y - obj->coords.y1;
 
     obj->dirty = 1;
-    obj->needinit = 1;
-    obj->coords.x1 = x;
+    obj->coords.x1 = x + obj->parent->coords.x1;
     obj->coords.x2 += x_inc;
-    obj->coords.y1 = y;
+    obj->coords.y1 = y + obj->parent->coords.y1;
     obj->coords.y2 += y_inc;
 
     sgl_obj_dirty_merge(obj);
@@ -201,7 +200,6 @@ void sgl_obj_set_pos(sgl_obj_t *obj, int16_t x, int16_t y)
 		obj = stack[--top];
 
         obj->dirty = 1;
-        obj->needinit = 1;
         obj->coords.x1 += x_inc;
         obj->coords.x2 += x_inc;
         obj->coords.y1 += y_inc;
