@@ -213,6 +213,7 @@ static inline void sgl_progress_set_value(sgl_obj_t *obj, uint8_t value)
 {
     sgl_progress_t *progress = (sgl_progress_t *)obj;
     progress->value = value;
+    progress->shift ++;
     sgl_obj_set_dirty(obj);
 }
 

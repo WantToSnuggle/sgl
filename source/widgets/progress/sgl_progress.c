@@ -48,7 +48,6 @@ static void sgl_progress_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_even
     if (progress->shift > progress->interval * 2) {
         progress->shift = 0;
     }
-    progress->shift ++;
 
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
         knob.x2 = obj->coords.x1 + (obj->coords.x2 - obj->coords.x1) * progress->value / 100;
