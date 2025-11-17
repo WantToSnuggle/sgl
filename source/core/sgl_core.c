@@ -1136,7 +1136,7 @@ int32_t sgl_font_get_string_height(sgl_area_t *rect, const char *str, const sgl_
         str += sgl_utf8_to_unicode(str, &unicode);
         ch_index = sgl_search_unicode_ch_index(font, unicode);
         #else
-        ch_index = ((uint32_t)*str) - 32;
+        ch_index = ((uint32_t)*str) - SGL_TEXT_ASCII_OFFSET;
         str++;
         #endif
 

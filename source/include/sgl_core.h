@@ -49,6 +49,9 @@ extern "C" {
 #define  SGL_DIRTY_AREA_THRESHOLD          CONFIG_SGL_DIRTY_AREA_THRESHOLD
 #endif
 
+/* the ASCII offset of fonts */
+#define  SGL_TEXT_ASCII_OFFSET             (32)
+
 
 /**
 * @brief This enumeration type defines the alignment of controls in sgl,
