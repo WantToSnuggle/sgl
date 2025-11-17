@@ -33,23 +33,26 @@
 #include <sgl_types.h>
 #include <sgl_core.h>
 
-
 /* declare all font */
+
 #if CONFIG_SGL_FONT_SONG23
 extern const sgl_font_t song23;
-#endif
-
-#if CONFIG_SGL_FONT_CONSOLAS23
-extern const sgl_font_t consolas23;
 #endif
 
 #if CONFIG_SGL_FONT_CONSOLAS14
 extern const sgl_font_t consolas14;
 #endif
 
+#if CONFIG_SGL_FONT_CONSOLAS23
+extern const sgl_font_t consolas23;
+#endif
+
+#if CONFIG_SGL_FONT_CONSOLAS24
+extern const sgl_font_t consolas24;
+#endif
+
 #if CONFIG_SGL_FONT_KAI33
 extern const sgl_font_t kai33;
 #endif
-
 
 #endif // !__SGL_FONT_H__

@@ -50,6 +50,12 @@
     --------------------------------------
 ***/
 
+/**
+ * @brief Alpha blending table for 4 bpp and 2 bpp
+ */
+static const uint8_t opa4_table[16] = {0,  17, 34,  51, 68, 85, 102, 119, 136, 153, 170, 187, 204, 221, 238, 255 };
+static const uint8_t opa2_table[4]  = {0, 85, 170, 255};
+
 
 /**
  * @brief Draw a character on the surface with alpha blending
@@ -71,12 +77,10 @@ void sgl_draw_character(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y
     const uint8_t font_w = font->table[ch_index].box_w;
     const uint8_t font_h = font->table[ch_index].box_h;
 
-    int rel_x, rel_y;
-    uint32_t pixel_index;
-    uint16_t byte_index;
-    uint16_t alpha_dot;
-    sgl_color_t color_mix;
-    sgl_color_t *buf = NULL;
+    uint8_t shift = 0;
+    uint32_t pixel_index, rel_x, rel_y;
+    uint16_t byte_index, alpha_dot;
+    sgl_color_t color_mix, *buf = NULL;
     sgl_area_t clip;
 
     sgl_area_t text_rect = {
@@ -93,22 +97,42 @@ void sgl_draw_character(sgl_surf_t *surf, sgl_area_t *area, int16_t x, int16_t y
         return;
     }
 
-    for (int y = clip.y1; y <= clip.y2; y++) {
-        buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
-        rel_y = y - text_rect.y1;
+    if (font->bpp == 4) {
+        for (int y = clip.y1; y <= clip.y2; y++) {
+            buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
+            rel_y = y - text_rect.y1;
 
-        for (int x = clip.x1; x <= clip.x2; x++) {
-            rel_x = x - text_rect.x1;
+            for (int x = clip.x1; x <= clip.x2; x++) {
+                rel_x = x - text_rect.x1;
 
-            pixel_index = rel_y * font_w + rel_x;
+                pixel_index = rel_y * font_w + rel_x;
 
-            byte_index = pixel_index >> 1;
-            alpha_dot = (pixel_index & 1) ? (dot[byte_index] & 0x0F) : (dot[byte_index] >> 4);
-            alpha_dot |= (alpha_dot << 4);
+                byte_index = pixel_index >> 1;
+                alpha_dot =  opa4_table[(pixel_index & 1) ? (dot[byte_index] & 0x0F) : (dot[byte_index] >> 4)];
 
-            color_mix = sgl_color_mixer(color, *buf, alpha_dot);
-            *buf = sgl_color_mixer(color_mix, *buf, alpha);
-            buf++;
+                color_mix = sgl_color_mixer(color, *buf, alpha_dot);
+                *buf = sgl_color_mixer(color_mix, *buf, alpha);
+                buf++;
+            }
+        }
+    }
+    else if (font->bpp == 2) {
+        for (int y = clip.y1; y <= clip.y2; y++) {
+            buf = sgl_surf_get_buf(surf, clip.x1 - surf->x, y - surf->y);
+            rel_y = y - text_rect.y1;
+
+            for (int x = clip.x1; x <= clip.x2; x++) {
+                rel_x = x - text_rect.x1;
+                pixel_index = rel_y * font_w + rel_x;
+
+                byte_index = pixel_index >> 2;
+                shift = (3 - (pixel_index & 0x3)) * 2;
+                alpha_dot = opa2_table[(dot[byte_index] >> shift) & 0x03];
+
+                color_mix = sgl_color_mixer(color, *buf, alpha_dot);
+                *buf = sgl_color_mixer(color_mix, *buf, alpha);
+                buf++;
+            }
         }
     }
 }
