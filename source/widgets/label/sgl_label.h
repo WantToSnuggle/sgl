@@ -49,8 +49,8 @@ typedef struct sgl_label {
     uint8_t          alpha;
     uint8_t          align: 4;
     uint8_t          bg_flag : 1;
-    uint8_t          offset_x;
-    uint8_t          offset_y;
+    int8_t           offset_x;
+    int8_t           offset_y;
 }sgl_label_t;
 
 
@@ -173,7 +173,7 @@ static inline void sgl_label_set_alpha(sgl_obj_t *obj, uint8_t alpha)
  * @param offset_y offset_y to be set
  * @return none
  */
-static inline void sgl_label_set_text_offset(sgl_obj_t *obj, uint8_t offset_x, uint8_t offset_y)
+static inline void sgl_label_set_text_offset(sgl_obj_t *obj, int8_t offset_x, int8_t offset_y)
 {
     sgl_label_t *label = sgl_container_of(obj, sgl_label_t, obj);
     label->offset_x = offset_x;
