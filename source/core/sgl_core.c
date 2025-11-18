@@ -667,6 +667,7 @@ void sgl_screen_load(sgl_obj_t *obj)
 
     /* initialize dirty area */
     sgl_dirty_area_init();
+    sgl_obj_set_dirty(obj);
 }
 
 
@@ -1539,9 +1540,11 @@ static inline void sgl_draw_task(sgl_area_t *dirty)
     sgl_surf_t *surf = &sgl_ctx.page->surf;
     sgl_obj_t *head = &sgl_ctx.page->obj;
 
-    /* fix button press increase area */
-    dirty->y1 = sgl_max(dirty->y1 - 2, 0);
-    dirty->y2 = sgl_min(dirty->y2 + 3, head->area.y2);
+    /* fix dirty area if it is out of screen */
+    dirty->x1 = sgl_max(dirty->x1, 0);
+    dirty->x2 = sgl_min(dirty->x2, sgl_panel_resolution_width());
+    dirty->y1 = sgl_max(dirty->y1, 0);
+    dirty->y2 = sgl_min(dirty->y2, sgl_panel_resolution_height());
 
 #if (!CONFIG_SGL_USE_FULL_FB)
     /* to set start x and y position for dirty area */
