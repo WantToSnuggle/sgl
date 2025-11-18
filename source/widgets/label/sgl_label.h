@@ -46,9 +46,11 @@ typedef struct sgl_label {
     const sgl_icon_pixmap_t *icon;
     sgl_color_t      color;
     sgl_color_t      bg_color;
-    uint8_t          align: 7;
-    uint8_t          bg_flag : 1;
     uint8_t          alpha;
+    uint8_t          align: 4;
+    uint8_t          bg_flag : 1;
+    uint8_t          offset_x;
+    uint8_t          offset_y;
 }sgl_label_t;
 
 
@@ -163,5 +165,21 @@ static inline void sgl_label_set_alpha(sgl_obj_t *obj, uint8_t alpha)
     label->alpha = alpha;
     sgl_obj_set_dirty(obj);
 }
+
+/**
+ * @brief set label text offset
+ * @param obj pointer to the label object
+ * @param offset_x offset_x to be set
+ * @param offset_y offset_y to be set
+ * @return none
+ */
+static inline void sgl_label_set_text_offset(sgl_obj_t *obj, uint8_t offset_x, uint8_t offset_y)
+{
+    sgl_label_t *label = sgl_container_of(obj, sgl_label_t, obj);
+    label->offset_x = offset_x;
+    label->offset_y = offset_y;
+    sgl_obj_set_dirty(obj);
+}
+
 
 #endif // !__SGL_LABEL_H__
