@@ -1542,6 +1542,10 @@ static inline void sgl_draw_task(sgl_area_t *dirty)
 
     /* fix dirty area if it is out of screen */
     dirty->x1 = sgl_max(dirty->x1, 0);
+    /**
+     * dirty->x2 should be sgl_panel_resolution_width() - 1, but later surf->w is dirty->x2 - dirty->x1 + 1,
+     * so dirty->x2 can be sgl_panel_resolution_width(), the surf->w can be dirty->x2 - dirty->x1, for dirty->y2 is also.
+    */
     dirty->x2 = sgl_min(dirty->x2, sgl_panel_resolution_width());
     dirty->y1 = sgl_max(dirty->y1, 0);
     dirty->y2 = sgl_min(dirty->y2, sgl_panel_resolution_height());
