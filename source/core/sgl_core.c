@@ -1550,11 +1550,11 @@ static inline void sgl_draw_task(sgl_area_t *dirty)
     /* to set start x and y position for dirty area */
     surf->y = dirty->y1;
     surf->x = dirty->x1;
-    surf->w = dirty->x2 - dirty->x1 + 1;
+    surf->w = dirty->x2 - dirty->x1;
     surf->h = surf->size / surf->w;
     SGL_LOG_TRACE("sgl_draw_task: dirty area: x: %d, y: %d, w: %d, h: %d", dirty->x1, dirty->y1, surf->w, dirty->y2 - dirty->y1 + 1);
 
-    while (surf->y <= dirty->y2) {
+    while (surf->y < dirty->y2) {
         /* cycle draw widget slice until the end of dirty area */
         draw_obj_slice(head, surf, sgl_min(dirty->y2 - surf->y + 1, surf->h));
         surf->y += surf->h;
