@@ -165,12 +165,25 @@ static inline void sgl_button_set_text_color(sgl_obj_t *obj, sgl_color_t color)
 }
 
 /**
+ * @brief set button text align
+ * @param obj: object pointer
+ * @param align: align type
+ * @return none
+ */
+static inline void sgl_button_set_text_align(sgl_obj_t *obj, uint8_t align)
+{
+    sgl_button_t *button = (sgl_button_t*)obj;
+    button->align = align; 
+    sgl_obj_set_dirty(obj);
+}
+
+/**
  * @brief set button text font
  * @param obj: object pointer
  * @param font: font pointer
  * @return none
  */
-static inline void sgl_button_set_text_font(sgl_obj_t *obj, const sgl_font_t *font)
+static inline void sgl_button_set_font(sgl_obj_t *obj, const sgl_font_t *font)
 {
     sgl_button_t *button = (sgl_button_t*)obj;
     button->font = font; 
@@ -187,19 +200,6 @@ static inline void sgl_button_set_icon(sgl_obj_t *obj, const sgl_icon_pixmap_t *
 {
     sgl_button_t *button = (sgl_button_t*)obj;
     button->icon = icon; 
-    sgl_obj_set_dirty(obj);
-}
-
-/**
- * @brief set button text align
- * @param obj: object pointer
- * @param align: align type
- * @return none
- */
-static inline void sgl_button_set_text_align(sgl_obj_t *obj, uint8_t align)
-{
-    sgl_button_t *button = (sgl_button_t*)obj;
-    button->align = align; 
     sgl_obj_set_dirty(obj);
 }
 

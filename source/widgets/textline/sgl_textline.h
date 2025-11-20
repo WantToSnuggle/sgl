@@ -91,7 +91,7 @@ static inline void sgl_textline_set_font(sgl_obj_t *obj, const sgl_font_t *font)
  * @param color color of text
  * @return none
  */
-static inline void sgl_textline_set_color(sgl_obj_t *obj, sgl_color_t color)
+static inline void sgl_textline_set_text_color(sgl_obj_t *obj, sgl_color_t color)
 {
     sgl_textline_t *textline = (sgl_textline_t *)obj;
     textline->color = color;

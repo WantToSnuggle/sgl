@@ -93,7 +93,7 @@ static inline void sgl_textbox_set_text_color(sgl_obj_t *obj, sgl_color_t color)
  * @param font font of text
  * @return none
  */
-static inline void sgl_textbox_set_text_font(sgl_obj_t *obj, const sgl_font_t *font)
+static inline void sgl_textbox_set_font(sgl_obj_t *obj, const sgl_font_t *font)
 {
     sgl_textbox_t *textbox = (sgl_textbox_t*)obj;
     textbox->font = font;

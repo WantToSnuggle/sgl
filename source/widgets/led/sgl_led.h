@@ -134,4 +134,24 @@ static inline bool sgl_led_get_status(sgl_obj_t *obj)
     return led->status;
 }
 
+/**
+ * @brief turn on the led
+ * @param obj led object
+ * @return none
+ */
+static inline void sgl_led_on(sgl_obj_t *obj)
+{
+    sgl_led_set_status(obj, true);
+}
+
+/**
+ * @brief turn off the led
+ * @param obj led object
+ * @return none
+ */
+static inline void sgl_led_off(sgl_obj_t *obj)
+{
+    sgl_led_set_status(obj, false);
+}
+
 #endif // !__SGL_LED_H__
