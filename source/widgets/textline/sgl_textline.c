@@ -36,6 +36,8 @@ static void sgl_textline_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_even
 {
     sgl_textline_t *textline = (sgl_textline_t*)obj;
 
+    SGL_ASSERT(textline->font != NULL);
+
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
         sgl_obj_set_height(obj, sgl_font_get_string_height(&obj->coords, textline->text, textline->font, textline->line_margin, textline->edge_margin));
         sgl_area_clip(&obj->parent->area, &obj->coords, &obj->area);

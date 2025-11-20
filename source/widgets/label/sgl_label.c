@@ -46,6 +46,8 @@ static void sgl_label_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_t
     int text_x = 0, icon_y = 0;
     sgl_pos_t align_pos;
 
+    SGL_ASSERT(label->font != NULL);
+
     if (evt->type == SGL_EVENT_DRAW_MAIN) {
         if (label->bg_flag) {
             if (obj->radius > 0) {

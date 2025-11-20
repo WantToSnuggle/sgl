@@ -131,6 +131,8 @@ static void sgl_numberkbd_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_eve
         .y2 = obj->coords.y1 + numberkbd->margin + box_h,
     };
 
+    SGL_ASSERT(numberkbd->font != NULL);
+
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
         sgl_draw_rect(surf, &obj->area, &obj->coords, &numberkbd->body_desc);
 

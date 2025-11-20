@@ -57,6 +57,8 @@ static void sgl_textbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event
         .y2 = obj->coords.y2
     };
 
+    SGL_ASSERT(textbox->font != NULL);
+
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
         sgl_draw_rect(surf, &obj->area, &obj->coords, &textbox->bg);
         sgl_draw_string_mult_line(surf, &obj->area, obj->coords.x1, obj->coords.y1 + textbox->y_offset, textbox->text, textbox->text_color, textbox->bg.alpha, textbox->font, textbox->line_margin, textbox->edge_margin);

@@ -115,6 +115,8 @@ static void sgl_checkbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_even
     sgl_checkbox_t *checkbox = (sgl_checkbox_t*)(obj);
     int text_x = 0, icon_y = 0;
     sgl_pos_t align_pos;
+    
+    SGL_ASSERT(checkbox->font != NULL);
 
     if(evt->type == SGL_EVENT_DRAW_MAIN) {
         if(checkbox->status) {

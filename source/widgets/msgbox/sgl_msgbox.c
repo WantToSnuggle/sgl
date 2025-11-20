@@ -59,6 +59,8 @@ static void sgl_msgbox_construct_cb(sgl_surf_t *surf, sgl_obj_t* obj, sgl_event_
     int32_t font_height = sgl_font_get_height(font) + 8;
     int16_t border = msgbox->body_desc.border;
 
+    SGL_ASSERT(msgbox->font != NULL);
+
     sgl_color_t tmp_color;
     sgl_area_t  button_coords = {
         .x1 = obj->coords.x1,
